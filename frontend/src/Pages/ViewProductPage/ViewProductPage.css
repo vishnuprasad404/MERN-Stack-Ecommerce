@@ -1,0 +1,122 @@
+.view-product-page {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-wrap: wrap;
+}
+.view-product-page-left-container {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+.view-product-image-container {
+  width: 500px;
+  height: 500px;
+  border: 1px solid rgb(207, 203, 203);
+  border-radius: 0;
+  margin-bottom: 40px;
+  display: grid;
+  place-items: center;
+}
+.sub-image-container-wrapper {
+  display: flex;
+  margin-bottom: 50px;
+}
+.sub-image-container {
+  width: 60px;
+  height: 60px;
+  display: grid;
+  place-content: center;
+  border: 1px solid rgb(207, 205, 205);
+  margin: 0px 20px;
+  cursor: pointer;
+}
+
+.view-product-btns button {
+  width: 150px;
+  height: 40px;
+  margin: 10px;
+  border: none;
+  border-radius: 2px;
+  letter-spacing: 1px;
+}
+
+.view-product-page-right-container {
+  width: 50%;
+}
+.view-product-page-right-container h4{
+  max-width: 70%;
+  line-height: 40px;
+}
+.prise {
+  display: flex;
+  align-items: center;
+}
+.prise .dis-prise {
+  font-size: 25px;
+  margin: 20px 5px;
+}
+.prise .cut-prise {
+  font-size: 14px;
+}
+.product-heading {
+  color: grey;
+}
+.description {
+  max-width: 85%;
+  max-height: 400px;
+  overflow: auto;
+  padding: 20px 0;
+}
+
+.color-container {
+  display: flex;
+}
+.color {
+  width: 40px;
+  height: 40px;
+  border-radius: 100%;
+  margin: 30px 20px 40px 0px;
+}
+.review-container-wrapper {
+  width: 95%;
+  max-height: 500px;
+  overflow-x: auto;
+}
+
+
+@media (max-width: 1100px) {
+  .view-product-page-left-container,
+  .view-product-page-right-container {
+    width: 100%;
+    padding: 20px;
+  }
+  .view-product-image-container {
+    width: 70%;
+    height: auto;
+  }
+}
+
+@media (max-width: 450px) {
+  .view-product-image-container {
+    width: 100%;
+    height: auto;
+  }
+  .view-product-image-container img {
+    width: 95%;
+  }
+}
+@media (max-width: 380px) {
+  .view-product-btns button {
+    width: 100%;
+    margin: 10px 0px;
+  }
+}
+
+@media (max-width: 280px) {
+  .sub-image-container {
+    margin: 5px;
+  }
+}

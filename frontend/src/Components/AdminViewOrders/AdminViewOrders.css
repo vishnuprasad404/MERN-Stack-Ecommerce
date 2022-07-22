@@ -1,0 +1,118 @@
+.admin-view-orders {
+  /* max-height: 90vh; */
+  padding: 20px;
+  overflow: auto;
+}
+.orders-types-selector {
+  margin-top: 40px;
+  display: flex;
+}
+.isActive{
+  color: red;
+}
+.orders-types-selector p {
+  margin-right: 30px;
+  cursor: pointer;
+}
+.orders-list {
+  width: 100%;
+  max-height: 700px;
+  overflow: auto;
+}
+.orders-list .table {
+  width: 100%;
+  margin-top: 20px;
+}
+.admin-view-orders th {
+  padding: 10px;
+  background-color: rgb(242, 248, 253);
+  font-weight: 500;
+}
+
+.admin-view-orders th:nth-child(1) {
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+}
+.admin-view-orders th:last-child {
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+}
+.orders-list tbody{
+  border-top: 10px solid rgb(255, 255, 255); 
+}
+.admin-view-orders td {
+  /* padding: 15px 10px; */
+  background-color: rgb(255, 255, 255);
+  font-weight: 500;
+  border: 1px solid rgb(247, 247, 247);
+}
+
+.admin-view-orders select{
+  /* width: 100px; */
+  background-color: rgb(236, 236, 236);
+  border: none;
+  border-radius: 5px;
+  outline: none;
+}
+
+/* //pagination */
+
+
+.pagination-container{
+  max-width: 100%;
+  margin-top: 20px;
+  list-style-type: none;
+  display: flex;
+  text-decoration: none;
+  overflow: auto;
+  padding: 0;
+}
+.previous-btn,.next-btn{
+  margin:20px;
+  text-decoration: none;
+}
+.pagination-container a{
+ margin: 10px; 
+ padding: 8px;
+ background-color: rgb(238, 235, 235);
+ border-radius: 10px;
+ max-width: 100px;
+}
+.pagination-disabled-btn a{
+  color: rgb(109, 109, 109);
+  cursor: not-allowed;
+}
+
+
+
+@media (max-width : 1200px) {
+  .pagination-container{
+    font-size: calc(.5rem + 1vw);
+    padding: 20px 0px;
+  }
+  .orders-types-selector{
+    width: 100%;
+    overflow: auto;
+  }
+  .admin-view-orders .table{
+    font-size: calc(.5rem + 1vw);
+    text-align: center;
+  }
+  .admin-view-orders .table thead{
+    display: none;
+  }
+  .admin-view-orders .table tbody, .table tr, .table td{
+    display: block;
+  }
+  .admin-view-orders .table tr{
+    margin-bottom: 15px;
+  }
+  .table td{
+    text-align: right;
+  }
+  .table td::before{
+    content: attr(data-label);
+    float: left;
+    color: black;
+  }
+}

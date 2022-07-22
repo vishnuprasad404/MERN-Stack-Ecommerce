@@ -1,0 +1,116 @@
+.admin-view-users {
+  width: 100%;
+  padding: 30px;
+}
+.admin-view-users-filter {
+  display: flex;
+  margin: 20px 0px;
+  align-items: center;
+}
+.admin-view-users-filter-input{
+    border: 1px solid grey;
+    padding: 8px;
+    border-radius: 10px;
+}
+.admin-view-users-filter-input input {
+  border: none;
+  padding-left: 10px;
+  outline: none;
+}
+.admin-view-users-filter-btn {
+    background-color: rgb(109, 167, 255);
+    color: white;
+    padding: 12px 25px;
+    margin-left: 10px;
+    border-radius: 10%;
+    cursor: pointer;
+}
+
+.admin-view-users-list{
+    width: 100%;
+    max-height: 700px;
+    overflow: auto;
+    padding: 20px 0px;
+}
+
+.admin-view-users-list table{
+    width: 100%;
+    text-align: center;
+}
+.admin-view-users-list thead{
+  background-color: rgb(239, 246, 255);
+}
+.admin-view-users-list th{
+  font-weight: 600;
+  padding: 10px 0px;
+}
+.admin-view-users-list td{
+  padding: 20px 0px;
+}
+
+.admin-remove-user-btn{
+  color: rgb(94, 94, 94);
+  cursor: pointer;
+}
+.admin-remove-user-btn:hover{
+  color: red;
+}
+
+@media (max-width:760px) {
+  .admin-view-users{
+    padding: 10px;
+  }
+  .admin-view-users-list{
+    padding: 0;
+  }
+  .admin-view-users-table{
+    padding: 0px;
+    font-size: calc(0.5rem + 1vw);
+    text-align: center;
+  }
+  .admin-view-users-table tbody{
+    border-top: none;
+    box-shadow: none;
+    margin: 40px 0px;
+    padding: 0;
+    border: 1px solid rgb(223, 223, 223);
+    padding: 20px;
+  }
+  .admin-view-users-table thead {
+    display: none;
+    
+  }
+  .admin-view-users-table tbody,
+  .admin-view-users-table tr,
+  .admin-view-users-table td {
+    display: block;
+  }
+  .admin-view-users-table tr {
+    margin-bottom: 15px;
+  }
+  .admin-view-users-table td {
+    text-align: right;
+  }
+  .admin-view-users-table td::before {
+    content: attr(data-label);
+    float: left;
+    color: black;
+  }
+}
+
+@media (max-width : 500px) {
+  .admin-view-users-filter-btn{
+    display: none;
+  }
+  .admin-view-users-filter-input{
+    width: 100%;
+  }
+  .admin-view-users-filter-input input{
+    width: 90%;
+  }
+}
+/* @media (max-width : 350px) {
+  .admin-view-users{
+    padding: 5px;
+  }
+} */

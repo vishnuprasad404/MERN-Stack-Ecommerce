@@ -1,0 +1,18 @@
+.notification{
+    width: 100%;
+    position: absolute;
+    top: 100px;
+}
+
+.notify{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.288);
+    color: rgb(0, 0, 0) !important;
+}
+.notify span{
+    margin-left: 10px;
+}

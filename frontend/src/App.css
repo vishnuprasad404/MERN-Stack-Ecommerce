@@ -1,0 +1,23 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;900&display=swap");
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: poppins;
+  scrollbar-width: none;
+  scrollbar-color: white white;
+  transition: .1s;
+}
+button,
+i {
+  cursor: pointer;
+}
+
+button {
+  border: none;
+  outline: none;
+  border-radius: 5px;
+}
+button:disabled {
+  cursor: not-allowed;
+}

@@ -1,0 +1,28 @@
+.delivery-address-page {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap-reverse;
+}
+.delivery-address-page-form-container,
+.delivery-address-list-container {
+    width: 50%;
+    padding-top: 30px;
+}
+.delivery-address-list-container{
+  margin-top: 30px;
+}
+
+
+@media (max-width: 1500px) {
+  .delivery-address-page-form-container,
+  .delivery-address-list-container {
+      width: 100%;
+      padding-top: 0px;
+  }
+  .delivery-address-list-container{
+    display: grid;
+    place-items: center;
+  }
+  
+}
+

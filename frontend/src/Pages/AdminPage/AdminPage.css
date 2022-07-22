@@ -1,0 +1,72 @@
+.admin-page {
+  width: 100%;
+  min-height: 100vh;
+}
+.admin-content {
+  height: 100vh;
+  display: flex;
+}
+.admin-navbar {
+  width: 100%;
+  height: 60px;
+  background-color: rgb(255, 255, 255);
+  display: flex;
+  align-items: center;
+  padding-left: 20px;
+  display: none;
+  position: fixed;
+}
+.admin-navbar .icon {
+  margin-right: 15px;
+}
+.sidebar {
+  width: 15%;
+  background-color: rgb(4, 26, 44);
+  color: white;
+  text-align: center;
+}
+.sidebar h3 {
+  font-size: calc(0.7rem + 0.7vw);
+  margin: 40px 20px;
+  letter-spacing: 1px;
+}
+.sidebar-content {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  padding-left: 20px;
+  margin: 45px 0px;
+}
+.sidebar-content:hover {
+  background-color: rgba(176, 191, 255, 0.11);
+  border-left: 5px solid rgb(40, 108, 255);
+}
+.sidebar-content p {
+  margin: 10px 10px;
+  text-decoration: none;
+  color: white;
+}
+
+.admin-page-content {
+  width: 85%;
+  margin-top: 20px;
+}
+
+@media (max-width: 1300px) {
+  .admin-page-content {
+    width: 100%;
+  }
+  .admin-navbar {
+    display: flex;
+  }
+  .sidebar {
+    width: 300px;
+    height: calc(10% + 100vh);
+    position: absolute;
+    top: 50px;
+    display: none;
+  }
+}
+
+@media (device-height: 100px) {
+}

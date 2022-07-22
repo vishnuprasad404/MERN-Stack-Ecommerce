@@ -1,0 +1,106 @@
+.account-page{
+    display: flex;
+    flex-wrap: wrap;
+}
+.account-page-left,.account-page-right{
+    width: 50%;
+}
+
+.user-avatar-name-container{
+    width: 80%;
+    height: 100px;
+    background-color: rgb(244, 253, 255);
+    display: flex;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+.avatar{
+    width: 80px;
+    height: 80px;
+    background-color: white;
+    margin-right: 10px;
+    border-radius: 100%;
+    background-image: url("https://media.wired.com/photos/5a8de3bfb2b92b689be91201/master/pass/ChatBot-FINAL.jpg");
+    background-size: 200%  ;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+.user-avatar-name-container span{
+    color: grey;
+}
+.user-avatar-name-container h4{
+    letter-spacing: 1px;
+    font-size: 18px;
+    line-height: 25px;
+}
+
+.account-link-container{
+    display: flex;
+    align-items: center;
+    width: 80%;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: rgb(255, 255, 255);
+    box-shadow: 0px 20px 50px 19px rgba(245, 245, 245, 0.774);
+    margin: 20px 0px;
+    cursor: pointer;
+}
+.account-link-container:hover{
+    background-color: rgb(210, 231, 255);
+}
+.account-link-container .icon{
+    padding: 8px;
+    background-color: rgb(112, 186, 255);
+    border-radius: 100%;
+    color: rgb(0, 0, 0);
+    font-size: 11px;
+}
+.account-link-container p{
+    margin-left: 10px;
+    margin-top: 6px;
+}
+
+.account-heading{
+    margin: 30px 0px;
+    font-size: calc(.7rem + .4vw);
+    color: grey;
+}
+.user-email-and-password{
+    display: flex;
+}
+.user-email-and-password-block{
+    display: none;
+}
+
+.update-account-btn{
+    width: 100%;
+    height: 45px;
+    background-color: rgb(124, 181, 255);
+    border: none;
+    border-radius: 5px;
+    color: white;
+    margin-bottom: 20px;
+}
+
+
+@media (max-width : 770px) {
+    .account-page-left,.account-page-right{
+        width: 100%;
+    }
+    .account-link-container{
+        display: none;
+    }
+    .user-avatar-name-container{
+        width: 100%;
+    }
+}
+@media (max-width:400px) {
+    .user-email-and-password{
+        display: none;
+    }
+    .user-email-and-password-block{
+        display: block;
+    }
+
+}

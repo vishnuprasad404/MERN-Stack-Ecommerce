@@ -1,0 +1,154 @@
+import React, { useState } from "react";
+import "./AdminViewProducts.css";
+import Paginate from "react-paginate";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEdit, faSearch, faTrash } from "@fortawesome/free-solid-svg-icons";
+import {data} from "../../MockData";
+import { useNavigate } from "react-router-dom";
+
+function AdminViewProducts() {
+  const nav = useNavigate();
+  const [adminViewProducts] = useState(data);
+  const [adminViewProductsFilterd, setAdminViewProductsFilterd] =
+    useState(adminViewProducts);
+  const [pageNumber, setPageNumber] = useState(0);
+
+  const searchAdminViewProducts = (e) => {
+    let filterdData = adminViewProducts.filter((data, key) => {
+      return data.title.toLowerCase().includes(e.target.value);
+    });
+    console.log(filterdData);
+    setAdminViewProductsFilterd(
+      filterdData.length >= 1 ? filterdData : adminViewProducts
+    );
+  };
+
+  const filterProductsByCategory = (e) => {
+    if (e.target.value !== "") {
+      let filterdData = adminViewProducts.filter((data) => {
+        return data.category === e.target.value;
+      });
+      setAdminViewProductsFilterd(filterdData);
+    }
+  };
+
+  //--------------->> Paginate Products..------------------->>//
+
+  const allProductPage = 7;
+  const pagesVisited = pageNumber * allProductPage;
+
+  const displayProducts = adminViewProductsFilterd
+    .slice(pagesVisited, pagesVisited + allProductPage)
+    .map((itm, key) => {
+      return (
+        <tbody>
+          <td data-label='Id'>1</td>
+          <td data-label='Product'>
+            {" "}
+            <img
+              width="40px"
+              src="https://alltech.mv/wp-content/uploads/2021/10/iphone-13-pro-silver-1.jpg"
+              alt=""
+            />
+          </td>
+          <td data-label='Title'>{itm.title}</td>
+          <td data-label='Category'>{itm.category}</td>
+          <td data-label='Prise'>{itm.prise}</td>
+          <td data-label='Date Added'>{itm.date}</td>
+          <td data-label='Remove'>
+            <FontAwesomeIcon
+              icon={faTrash}
+              className="admin-product-remove-btn"
+            />
+          </td>
+          <td data-label='Edit'>
+            <FontAwesomeIcon
+              icon={faEdit}
+              className="admin-product-edit-btn"
+              onClick={() => nav("/admin/product/update/id")}
+            />
+          </td>
+        </tbody>
+      );
+    });
+
+  const pageCount = Math.ceil(adminViewProductsFilterd.length / allProductPage);
+
+  const changePage = ({ selected }) => {
+    setPageNumber(selected);
+  };
+
+  return (
+    <div className="admin-view-products">
+      <h2 className="heading">Product Inventory</h2>
+      <div className="products-types">
+        <div className="product-type">
+          <h5>Total products</h5>
+          <h2>75</h2>
+        </div>
+        <div className="product-type">
+          <h5>In stock</h5>
+          <h2>75</h2>
+        </div>
+        <div className="product-type">
+          <h5>Out of stock</h5>
+          <h2>75</h2>
+        </div>
+      </div>
+
+      <div className="products-filter-container">
+        <div className="filter">
+          <p>Category :</p>
+          <select onChange={filterProductsByCategory}>
+            <option
+              value=""
+              onClick={() => setAdminViewProductsFilterd(adminViewProducts)}
+            >
+              All
+            </option>
+            <option value="mobiles">Mobiles</option>
+            <option value="appliences">Appliences</option>
+            <option value="headphones">Headphones</option>
+          </select>
+        </div>
+        <div className="filter filter-search">
+          <FontAwesomeIcon icon={faSearch} />
+          <input
+            type="text"
+            placeholder="Search Product"
+            onChange={searchAdminViewProducts}
+          />
+        </div>
+      </div>
+
+      <div className="admin-products-list-container">
+        <table className="admin-products-list-table">
+          <thead>
+            <th>id</th>
+            <th>Product</th>
+            <th>Title</th>
+            <th>Category</th>
+            <th>Prise</th>
+            <th>Date Added</th>
+            <th>Remove</th>
+            <th>Edit</th>
+          </thead>
+          {displayProducts}
+        </table>
+        <Paginate
+          previousLabel={"Previous"}
+          nextLabel={"Next"}
+          pageCount={pageCount}
+          onPageChange={changePage}
+          containerClassName={"pagination-container"}
+          previousLinkClassName={"previous-btn"}
+          nextLinkClassName={"next-btn"}
+          disabledClassName={"pagination-disabled-btn"}
+          activeClassName={"pagination-active"}
+        />
+      </div>
+    </div>
+  );
+}
+
+export default AdminViewProducts;

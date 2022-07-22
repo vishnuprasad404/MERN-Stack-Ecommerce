@@ -1,0 +1,21 @@
+
+.banner {
+  width: 100%;
+  height: 380px;
+  background: linear-gradient(45deg, rgb(138, 154, 243), rgb(190, 235, 248));
+  background-size: contain ;
+  background-repeat: no-repeat;
+  background-position: center;
+  display: flex;
+  flex-wrap: wrap-reverse;
+  padding: 20px;
+  overflow: hidden;
+  border-radius: 5px;
+}
+
+@media (max-width: 1000px) {
+  .banner {
+    height: 180px;
+    background-size: cover;
+  }
+}

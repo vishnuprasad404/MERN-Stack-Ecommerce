@@ -1,0 +1,38 @@
+.order-placed-notify-page {
+  background: linear-gradient(
+    45deg,
+    red,
+    rgb(0, 255, 0),
+    rgb(0, 195, 255),
+    rgb(255, 85, 0)
+  );
+  padding-top: 7px;
+}
+
+.order-placed-notify-container {
+  width: 100%;
+  min-height: 100vh;
+  /* margin-top: 20px; */
+  border-top: 5px solid limegreen red;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgb(243, 243, 243);
+  text-align: center;
+}
+
+.order-placed-container {
+  width: 50%;
+  padding: 50px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: rgb(255, 255, 255);
+}
+
+.order-placed-container button{
+    padding: 8px 30px;
+    margin-top: 20px;
+    background-color: rgb(241, 241, 241);
+}
