@@ -91,6 +91,7 @@ function AdminViewUsers() {
             <th>No</th>
             <th>Username</th>
             <th>Email ID</th>
+            <th>Phone Number</th>
             <th>Account Created Date</th>
             <th>Remove</th>
           </thead>
