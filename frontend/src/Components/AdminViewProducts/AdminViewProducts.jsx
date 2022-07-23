@@ -1,17 +1,24 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./AdminViewProducts.css";
 import Paginate from "react-paginate";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit, faSearch, faTrash } from "@fortawesome/free-solid-svg-icons";
-import {data} from "../../MockData";
 import { useNavigate } from "react-router-dom";
+import axios from 'axios'
 
 function AdminViewProducts() {
   const nav = useNavigate();
-  const [adminViewProducts] = useState(data);
+  const [adminViewProducts,setAdminViewProducts] = useState([]);
   const [adminViewProductsFilterd, setAdminViewProductsFilterd] =
     useState(adminViewProducts);
   const [pageNumber, setPageNumber] = useState(0);
+
+  useEffect(()=>{
+    axios.get(`${process.env.REACT_APP_BASE_URL}/products`).then((res)=>{
+      setAdminViewProducts(res.data);
+      setAdminViewProductsFilterd(res.data)
+    })
+  })
 
   const searchAdminViewProducts = (e) => {
     let filterdData = adminViewProducts.filter((data, key) => {
@@ -34,27 +41,27 @@ function AdminViewProducts() {
 
   //--------------->> Paginate Products..------------------->>//
 
-  const allProductPage = 7;
+  const allProductPage = 6;
   const pagesVisited = pageNumber * allProductPage;
 
   const displayProducts = adminViewProductsFilterd
     .slice(pagesVisited, pagesVisited + allProductPage)
     .map((itm, key) => {
-      return (
+      return ( 
         <tbody>
-          <td data-label='Id'>1</td>
+          <td data-label='Id'>{key + 1}</td>
           <td data-label='Product'>
             {" "}
             <img
               width="40px"
-              src="https://alltech.mv/wp-content/uploads/2021/10/iphone-13-pro-silver-1.jpg"
+              src={itm.image1}
               alt=""
             />
           </td>
-          <td data-label='Title'>{itm.title}</td>
+          <td data-label='Title' className="admin-product-title">{itm.title}</td>
           <td data-label='Category'>{itm.category}</td>
-          <td data-label='Prise'>{itm.prise}</td>
-          <td data-label='Date Added'>{itm.date}</td>
+          <td data-label='Prise'>${itm.discountPrise}</td>
+          <td data-label='Date Added'>{itm.created_at}</td>
           <td data-label='Remove'>
             <FontAwesomeIcon
               icon={faTrash}

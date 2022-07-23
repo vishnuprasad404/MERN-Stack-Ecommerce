@@ -58,7 +58,7 @@
 
 .admin-products-list-table th {
   padding: 10px 20px;
-  background-color: rgb(241, 241, 241);
+  background-color: rgb(247, 247, 247);
   font-weight: 600;
 }
 .admin-products-list-table th:nth-child(1) {
@@ -77,6 +77,11 @@
 .admin-products-list-table td {
   padding: 10px 25px;
   background-color: rgb(255, 255, 255);
+}
+.admin-product-title{
+  max-width: 200px;
+  max-height: 10px;
+  background-color: red;
 }
 
 .admin-product-remove-btn,
