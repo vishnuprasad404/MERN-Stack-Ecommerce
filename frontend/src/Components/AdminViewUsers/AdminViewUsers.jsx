@@ -4,11 +4,13 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch, faTrash } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import Paginate from "react-paginate";
+import { Loading } from "../Loading/Loading";
 
 function AdminViewUsers() {
   const [users, setUsers] = useState([]);
   const [filterdUsers, setFilterdUsers] = useState(users);
   const [pageNumber, setPageNumber] = useState(0);
+  const [loading, setLoading] = useState(new Set());
 
   useEffect(() => {
     axios
@@ -19,11 +21,22 @@ function AdminViewUsers() {
       });
   }, []);
 
-  const deleteUser = (id) => {
+  const deleteUser = (id, selectedIndex) => {
+    setLoading((prev) => new Set([...prev, selectedIndex]));
+
     axios
       .delete(`${process.env.REACT_APP_BASE_URL}/admin/delete-user/${id}`)
       .then((res) => {
-        console.log(res);
+        if (res.data) {
+          setTimeout(() => {
+            setLoading((prev) => {
+              const updated = new Set(prev);
+              updated.delete(selectedIndex);
+              return updated;
+            });
+            users.splice(selectedIndex, 1);
+          }, 1000);
+        }
       });
   };
 
@@ -43,7 +56,6 @@ function AdminViewUsers() {
   const displayUsers = filterdUsers
     .slice(pagesVisited, pagesVisited + allUsersPage)
     .map((itm, key) => {
-      console.log(users);
       return (
         <tbody>
           <td data-label="No">#{key + 1}</td>
@@ -52,12 +64,25 @@ function AdminViewUsers() {
           <td data-label="Phone">{itm.phone}</td>
           <td data-label="Account Created Date">{itm.created_at}</td>
           <td data-label="Remove">
-            <FontAwesomeIcon
-              icon={faTrash}
-              className="admin-remove-user-btn"
-              onClick={() => deleteUser(itm._id)}
-            />
+            {!loading.has(key) ? (
+              <FontAwesomeIcon
+                icon={faTrash}
+                className="admin-remove-user-btn"
+                onClick={() => deleteUser(itm._id, key)}
+              />
+            ) : (
+              <Loading iconSize="17px" color="black" />
+            )}
           </td>
+          {/* {!loading ? (
+              <FontAwesomeIcon
+                icon={faTrash}
+                className="admin-remove-user-btn"
+                onClick={() => deleteUser(itm._id)}
+              />
+            ) : (
+              <Loading iconSize="17px" color="black" />
+            )} */}
         </tbody>
       );
     });
