@@ -122,17 +122,26 @@ function AdminViewUsers() {
           </thead>
           {displayUsers}
         </table>
-        <Paginate
-          previousLabel={"Previous"}
-          nextLabel={"Next"}
-          pageCount={pageCount}
-          onPageChange={changePage}
-          containerClassName={"pagination-container"}
-          previousLinkClassName={"previous-btn"}
-          nextLinkClassName={"next-btn"}
-          disabledClassName={"pagination-disabled-btn"}
-          activeClassName={"pagination-active"}
-        />
+        {users.length < 1 || filterdUsers.length < 1 ? (
+          <center className="no-user">
+            {" "}
+            <FontAwesomeIcon className="no-user-icon" icon={faSearch} /> No user
+            found
+          </center>
+        ) : null}
+        {users.length > 1 && filterdUsers.length > 1 ? (
+          <Paginate
+            previousLabel={"Previous"}
+            nextLabel={"Next"}
+            pageCount={pageCount}
+            onPageChange={changePage}
+            containerClassName={"pagination-container"}
+            previousLinkClassName={"previous-btn"}
+            nextLinkClassName={"next-btn"}
+            disabledClassName={"pagination-disabled-btn"}
+            activeClassName={"pagination-active"}
+          />
+        ) : null}
       </div>
     </div>
   );

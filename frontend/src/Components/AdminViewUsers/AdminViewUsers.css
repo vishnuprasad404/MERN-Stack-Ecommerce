@@ -55,6 +55,13 @@
 .admin-remove-user-btn:hover{
   color: red;
 }
+.no-user{
+  margin-top: 40px;
+  color: grey;
+}
+.no-user .no-user-icon{
+  margin-right: 8px;
+}
 
 @media (max-width:760px) {
   .admin-view-users{
