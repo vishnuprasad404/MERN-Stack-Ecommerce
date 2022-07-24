@@ -45,7 +45,7 @@ function App() {
           <Route path="" element={<AdminDashboard/>}/>
           <Route path="orders" element={<AdminViewOrders/>}/>
           <Route path="products" element={<AdminViewProducts/>}/>
-          <Route path="product/:action/:id" element={<AdminAddProduct/>}/>
+          <Route path="product/:action" element={<AdminAddProduct/>}/>
           <Route path="users" element={<AdminViewUsers/>}/>
         </Route>
           <Route path="/" element={<HomePage />} />

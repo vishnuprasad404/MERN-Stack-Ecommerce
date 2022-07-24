@@ -42,7 +42,7 @@ function AdminPage() {
             <SidebarContent
               icon={faPlus}
               title="Add Product"
-              path="product/add/1"
+              path="product/add"
             />
             <SidebarContent icon={faUsers} title="Users" path="users" />
             <SidebarContent icon={faRightFromBracket} title="LogOut" />
