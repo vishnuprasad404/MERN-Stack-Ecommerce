@@ -4,30 +4,41 @@ import Paginate from "react-paginate";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit, faSearch, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
-import axios from 'axios'
+import axios from "axios";
 
 function AdminViewProducts() {
   const nav = useNavigate();
-  const [adminViewProducts,setAdminViewProducts] = useState([]);
+  const [adminViewProducts, setAdminViewProducts] = useState([]);
   const [adminViewProductsFilterd, setAdminViewProductsFilterd] =
     useState(adminViewProducts);
   const [pageNumber, setPageNumber] = useState(0);
+  const [totalProducts, setTotalProducts] = useState("");
+  const [inStock, setInStock] = useState("");
+  const [outOfStock, setOutOfStock] = useState("");
 
-  useEffect(()=>{
-    axios.get(`${process.env.REACT_APP_BASE_URL}/products`).then((res)=>{
+  useEffect(() => {
+    axios.get(`${process.env.REACT_APP_BASE_URL}/products`).then((res) => {
       setAdminViewProducts(res.data);
-      setAdminViewProductsFilterd(res.data)
-    })
-  })
+      setAdminViewProductsFilterd(res.data);
+    });
+  }, []);
+  useEffect(() => {
+    setTotalProducts(adminViewProducts.length);
+    let out_of_stock = adminViewProducts.filter((itm) => {
+      return itm.inStock < 1;
+    });
+    setInStock(adminViewProducts.length - out_of_stock.length);
+    setOutOfStock(out_of_stock.length);
+  }, [adminViewProducts]);
 
   const searchAdminViewProducts = (e) => {
     let filterdData = adminViewProducts.filter((data, key) => {
-      return data.title.toLowerCase().includes(e.target.value);
+      return (
+        data.title.toLowerCase().includes(e.target.value) ||
+        data.category.toLowerCase().includes(e.target.value)
+      );
     });
-    console.log(filterdData);
-    setAdminViewProductsFilterd(
-      filterdData.length >= 1 ? filterdData : adminViewProducts
-    );
+    setAdminViewProductsFilterd(filterdData);
   };
 
   const filterProductsByCategory = (e) => {
@@ -41,34 +52,32 @@ function AdminViewProducts() {
 
   //--------------->> Paginate Products..------------------->>//
 
-  const allProductPage = 6;
+  const allProductPage = 5;
   const pagesVisited = pageNumber * allProductPage;
 
   const displayProducts = adminViewProductsFilterd
     .slice(pagesVisited, pagesVisited + allProductPage)
     .map((itm, key) => {
-      return ( 
+      return (
         <tbody>
-          <td data-label='Id'>{key + 1}</td>
-          <td data-label='Product'>
+          <td data-label="Id">{key + 1}</td>
+          <td data-label="Product">
             {" "}
-            <img
-              width="40px"
-              src={itm.image1}
-              alt=""
-            />
+            <img width="40px" src={itm.image1} alt="" />
           </td>
-          <td data-label='Title' className="admin-product-title">{itm.title}</td>
-          <td data-label='Category'>{itm.category}</td>
-          <td data-label='Prise'>${itm.discountPrise}</td>
-          <td data-label='Date Added'>{itm.created_at}</td>
-          <td data-label='Remove'>
+          <td data-label="Title" className="admin-product-title">
+            {itm.title}
+          </td>
+          <td data-label="Category">{itm.category}</td>
+          <td data-label="Prise">${itm.discountPrise}</td>
+          <td data-label="Date Added">{itm.created_at}</td>
+          <td data-label="Remove">
             <FontAwesomeIcon
               icon={faTrash}
               className="admin-product-remove-btn"
             />
           </td>
-          <td data-label='Edit'>
+          <td data-label="Edit">
             <FontAwesomeIcon
               icon={faEdit}
               className="admin-product-edit-btn"
@@ -91,15 +100,15 @@ function AdminViewProducts() {
       <div className="products-types">
         <div className="product-type">
           <h5>Total products</h5>
-          <h2>75</h2>
+          <h2>{totalProducts}</h2>
         </div>
         <div className="product-type">
           <h5>In stock</h5>
-          <h2>75</h2>
+          <h2>{inStock}</h2>
         </div>
         <div className="product-type">
           <h5>Out of stock</h5>
-          <h2>75</h2>
+          <h2>{outOfStock}</h2>
         </div>
       </div>
 
