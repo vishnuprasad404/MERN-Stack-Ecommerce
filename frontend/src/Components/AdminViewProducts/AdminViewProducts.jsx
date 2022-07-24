@@ -60,6 +60,11 @@ function AdminViewProducts() {
       .delete(`${process.env.REACT_APP_BASE_URL}/admin/remove-product/${id}`)
       .then((res) => {
         if (res.data) {
+          setLoading((prev) => {
+            const updated = new Set(prev);
+            updated.delete(selectedIndex);
+            return updated;
+          });
           adminViewProducts.splice(selectedIndex, 1);
         }
       });
