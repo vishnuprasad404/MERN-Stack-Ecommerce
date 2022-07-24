@@ -175,7 +175,6 @@ router.get("/signout", (req, res) => {
 // user sign out end
 
 router.delete("/admin/delete-user/:id", (req, res) => {
-  console.log(req.params.id);
   db.get()
     .collection(process.env.USERS_COLLECTION)
     .deleteOne({ _id: ObjectId(req.params.id) }).then((result)=>{

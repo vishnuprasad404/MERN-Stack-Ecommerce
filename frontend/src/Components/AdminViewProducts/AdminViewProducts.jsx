@@ -1,40 +1,57 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./AdminViewProducts.css";
 import Paginate from "react-paginate";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit, faSearch, faTrash } from "@fortawesome/free-solid-svg-icons";
-import {data} from "../../MockData";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function AdminViewProducts() {
   const nav = useNavigate();
-  const [adminViewProducts] = useState(data);
+  const [adminViewProducts, setAdminViewProducts] = useState([]);
   const [adminViewProductsFilterd, setAdminViewProductsFilterd] =
     useState(adminViewProducts);
   const [pageNumber, setPageNumber] = useState(0);
+  const [totalProducts, setTotalProducts] = useState("");
+  const [inStock, setInStock] = useState("");
+  const [outOfStock, setOutOfStock] = useState("");
 
-  const searchAdminViewProducts = (e) => {
-    let filterdData = adminViewProducts.filter((data, key) => {
-      return data.title.toLowerCase().includes(e.target.value);
+  useEffect(() => {
+    axios.get(`${process.env.REACT_APP_BASE_URL}/products`).then((res) => {
+      setAdminViewProducts(res.data);
+      setAdminViewProductsFilterd(res.data);
     });
-    console.log(filterdData);
-    setAdminViewProductsFilterd(
-      filterdData.length >= 1 ? filterdData : adminViewProducts
-    );
+  }, []);
+  useEffect(() => {
+    setTotalProducts(adminViewProducts.length);
+    let out_of_stock = adminViewProducts.filter((itm) => {
+      return itm.inStock < 1;
+    });
+    setInStock(adminViewProducts.length - out_of_stock.length);
+    setOutOfStock(out_of_stock.length);
+  }, [adminViewProducts]);
+
+  const filterProducts = (e) => {
+    let query = e.target.value.toLowerCase();
+    let filterdData = adminViewProducts.filter((data, key) => {
+      return (
+        data.title.toLowerCase().includes(query) ||
+        data.category.toLowerCase().includes(query)
+      );
+    });
+    setAdminViewProductsFilterd(filterdData);
   };
 
-  const filterProductsByCategory = (e) => {
-    if (e.target.value !== "") {
-      let filterdData = adminViewProducts.filter((data) => {
-        return data.category === e.target.value;
-      });
-      setAdminViewProductsFilterd(filterdData);
-    }
+  const filterProductsByStock = () => {
+    let filterdData = adminViewProducts.filter((data) => {
+      return data.inStock < 1;
+    });
+    setAdminViewProductsFilterd(filterdData);
   };
 
   //--------------->> Paginate Products..------------------->>//
 
-  const allProductPage = 7;
+  const allProductPage = 5;
   const pagesVisited = pageNumber * allProductPage;
 
   const displayProducts = adminViewProductsFilterd
@@ -42,26 +59,30 @@ function AdminViewProducts() {
     .map((itm, key) => {
       return (
         <tbody>
-          <td data-label='Id'>1</td>
-          <td data-label='Product'>
+          <td data-label="Id">{key + 1}</td>
+          <td data-label="Product">
             {" "}
-            <img
-              width="40px"
-              src="https://alltech.mv/wp-content/uploads/2021/10/iphone-13-pro-silver-1.jpg"
-              alt=""
-            />
+            <img width="40px" src={itm.image1} alt="" />
           </td>
-          <td data-label='Title'>{itm.title}</td>
-          <td data-label='Category'>{itm.category}</td>
-          <td data-label='Prise'>{itm.prise}</td>
-          <td data-label='Date Added'>{itm.date}</td>
-          <td data-label='Remove'>
+          <td data-label="Title" className="admin-product-title">
+            {itm.title}
+          </td>
+          <td data-label="Category">{itm.category}</td>
+          <td data-label="Prise">${itm.discountPrise}</td>
+          <td data-label="Date Added">{itm.created_at}</td>
+          <td
+            data-label="Date Added"
+            style={{ color: itm.inStock >= 1 ? "green" : "red" }}
+          >
+            {itm.inStock >= 1 ? "inStock" : "outofStock"}
+          </td>
+          <td data-label="Remove">
             <FontAwesomeIcon
               icon={faTrash}
               className="admin-product-remove-btn"
             />
           </td>
-          <td data-label='Edit'>
+          <td data-label="Edit">
             <FontAwesomeIcon
               icon={faEdit}
               className="admin-product-edit-btn"
@@ -84,22 +105,26 @@ function AdminViewProducts() {
       <div className="products-types">
         <div className="product-type">
           <h5>Total products</h5>
-          <h2>75</h2>
+          <h2>{totalProducts}</h2>
         </div>
         <div className="product-type">
           <h5>In stock</h5>
-          <h2>75</h2>
+          <h2>{inStock}</h2>
         </div>
-        <div className="product-type">
+        <div
+          className="product-type"
+          style={{ cursor: "pointer" }}
+          onClick={filterProductsByStock}
+        >
           <h5>Out of stock</h5>
-          <h2>75</h2>
+          <h2>{outOfStock}</h2>
         </div>
       </div>
 
       <div className="products-filter-container">
         <div className="filter">
           <p>Category :</p>
-          <select onChange={filterProductsByCategory}>
+          <select onChange={filterProducts}>
             <option
               value=""
               onClick={() => setAdminViewProductsFilterd(adminViewProducts)}
@@ -109,6 +134,10 @@ function AdminViewProducts() {
             <option value="mobiles">Mobiles</option>
             <option value="appliences">Appliences</option>
             <option value="headphones">Headphones</option>
+            <option value="electronics">Electronics</option>
+            <option value="headphones">Desktops & Computer accessories</option>
+            <option value="headphones">Headphones</option>
+            <option value="headphones">Headphones</option>
           </select>
         </div>
         <div className="filter filter-search">
@@ -116,7 +145,7 @@ function AdminViewProducts() {
           <input
             type="text"
             placeholder="Search Product"
-            onChange={searchAdminViewProducts}
+            onChange={filterProducts}
           />
         </div>
       </div>
@@ -130,6 +159,7 @@ function AdminViewProducts() {
             <th>Category</th>
             <th>Prise</th>
             <th>Date Added</th>
+            <th>Stock</th>
             <th>Remove</th>
             <th>Edit</th>
           </thead>
