@@ -42,6 +42,13 @@ function AdminViewProducts() {
     setAdminViewProductsFilterd(filterdData);
   };
 
+  const filterProductsByStock = () => {
+    let filterdData = adminViewProducts.filter((data) => {
+      return data.inStock < 1;
+    });
+    setAdminViewProductsFilterd(filterdData);
+  };
+
   //--------------->> Paginate Products..------------------->>//
 
   const allProductPage = 5;
@@ -63,6 +70,12 @@ function AdminViewProducts() {
           <td data-label="Category">{itm.category}</td>
           <td data-label="Prise">${itm.discountPrise}</td>
           <td data-label="Date Added">{itm.created_at}</td>
+          <td
+            data-label="Date Added"
+            style={{ color: itm.inStock >= 1 ? "green" : "red" }}
+          >
+            {itm.inStock >= 1 ? "inStock" : "outofStock"}
+          </td>
           <td data-label="Remove">
             <FontAwesomeIcon
               icon={faTrash}
@@ -98,7 +111,11 @@ function AdminViewProducts() {
           <h5>In stock</h5>
           <h2>{inStock}</h2>
         </div>
-        <div className="product-type">
+        <div
+          className="product-type"
+          style={{ cursor: "pointer" }}
+          onClick={filterProductsByStock}
+        >
           <h5>Out of stock</h5>
           <h2>{outOfStock}</h2>
         </div>
@@ -142,6 +159,7 @@ function AdminViewProducts() {
             <th>Category</th>
             <th>Prise</th>
             <th>Date Added</th>
+            <th>Stock</th>
             <th>Remove</th>
             <th>Edit</th>
           </thead>

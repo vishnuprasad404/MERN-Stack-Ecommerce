@@ -80,8 +80,6 @@
 }
 .admin-product-title{
   max-width: 200px;
-  max-height: 10px;
-  background-color: red;
 }
 
 .admin-product-remove-btn,
@@ -132,6 +130,10 @@
     content: attr(data-label);
     float: left;
     color: black;
+  }
+  .admin-product-title{
+    max-width: 100%;
+    background-color: red;
   }
 }
 
