@@ -31,23 +31,15 @@ function AdminViewProducts() {
     setOutOfStock(out_of_stock.length);
   }, [adminViewProducts]);
 
-  const searchAdminViewProducts = (e) => {
+  const filterProducts = (e) => {
+    let query = e.target.value.toLowerCase();
     let filterdData = adminViewProducts.filter((data, key) => {
       return (
-        data.title.toLowerCase().includes(e.target.value) ||
-        data.category.toLowerCase().includes(e.target.value)
+        data.title.toLowerCase().includes(query) ||
+        data.category.toLowerCase().includes(query)
       );
     });
     setAdminViewProductsFilterd(filterdData);
-  };
-
-  const filterProductsByCategory = (e) => {
-    if (e.target.value !== "") {
-      let filterdData = adminViewProducts.filter((data) => {
-        return data.category === e.target.value;
-      });
-      setAdminViewProductsFilterd(filterdData);
-    }
   };
 
   //--------------->> Paginate Products..------------------->>//
@@ -115,7 +107,7 @@ function AdminViewProducts() {
       <div className="products-filter-container">
         <div className="filter">
           <p>Category :</p>
-          <select onChange={filterProductsByCategory}>
+          <select onChange={filterProducts}>
             <option
               value=""
               onClick={() => setAdminViewProductsFilterd(adminViewProducts)}
@@ -125,6 +117,10 @@ function AdminViewProducts() {
             <option value="mobiles">Mobiles</option>
             <option value="appliences">Appliences</option>
             <option value="headphones">Headphones</option>
+            <option value="electronics">Electronics</option>
+            <option value="headphones">Desktops & Computer accessories</option>
+            <option value="headphones">Headphones</option>
+            <option value="headphones">Headphones</option>
           </select>
         </div>
         <div className="filter filter-search">
@@ -132,7 +128,7 @@ function AdminViewProducts() {
           <input
             type="text"
             placeholder="Search Product"
-            onChange={searchAdminViewProducts}
+            onChange={filterProducts}
           />
         </div>
       </div>
