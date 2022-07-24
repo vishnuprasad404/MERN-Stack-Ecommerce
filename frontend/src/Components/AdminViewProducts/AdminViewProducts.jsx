@@ -4,6 +4,7 @@ import Paginate from "react-paginate";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit, faSearch, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
+import { Loading } from "../Loading/Loading";
 import axios from "axios";
 
 function AdminViewProducts() {
@@ -15,6 +16,7 @@ function AdminViewProducts() {
   const [totalProducts, setTotalProducts] = useState("");
   const [inStock, setInStock] = useState("");
   const [outOfStock, setOutOfStock] = useState("");
+  const [loading, setLoading] = useState(new Set());
 
   useEffect(() => {
     axios.get(`${process.env.REACT_APP_BASE_URL}/products`).then((res) => {
@@ -49,17 +51,21 @@ function AdminViewProducts() {
     setAdminViewProductsFilterd(filterdData);
   };
 
-
   // remove products start//
 
-  const removeProduct=(id,selectedIndex)=>{
-    axios.delete(`${process.env.REACT_APP_BASE_URL}/admin/remove-product/${id}`).then((res)=>{
-      
-    })
-  }
+  const removeProduct = (id, selectedIndex) => {
+    console.log(selectedIndex);
+    setLoading((prev) => new Set([...prev, selectedIndex]));
+    axios
+      .delete(`${process.env.REACT_APP_BASE_URL}/admin/remove-product/${id}`)
+      .then((res) => {
+        if (res.data) {
+          adminViewProducts.splice(selectedIndex, 1);
+        }
+      });
+  };
 
   //remove products end//
-
 
   //--------------->> Paginate Products..------------------->>//
 
@@ -89,11 +95,17 @@ function AdminViewProducts() {
             {itm.inStock >= 1 ? "inStock" : "outofStock"}
           </td>
           <td data-label="Remove">
-            <FontAwesomeIcon
-              icon={faTrash}
-              className="admin-product-remove-btn"
-              onClick={()=>{removeProduct(itm._id)}}
-            />
+            {!loading.has(key) ? (
+              <FontAwesomeIcon
+                icon={faTrash}
+                className="admin-product-remove-btn"
+                onClick={() => {
+                  removeProduct(itm._id, key);
+                }}
+              />
+            ) : (
+              <Loading iconSize="17px" color="black" />
+            )}
           </td>
           <td data-label="Edit">
             <FontAwesomeIcon

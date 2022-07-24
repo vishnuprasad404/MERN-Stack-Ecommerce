@@ -74,7 +74,6 @@ router.delete("/admin/remove-product/:id", (req, res) => {
     .collection(process.env.PRODUCTS_COLLECTION)
     .deleteOne({ _id: ObjectID(req.params.id) })
     .then((result) => {
-      console.log(result);
       if (result.deletedCount === 1) {
         res.status(200).send(true);
       } else {
