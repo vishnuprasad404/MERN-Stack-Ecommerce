@@ -1,3 +1,4 @@
+const { ObjectID } = require("bson");
 const express = require("express");
 const router = express.Router();
 const db = require("../database_config");
@@ -5,14 +6,14 @@ const db = require("../database_config");
 //get products start
 
 router.get("/products", async (req, res) => {
-    let products = await db
-      .get()
-      .collection(process.env.PRODUCTS_COLLECTION)
-      .find()
-      .toArray();
-    if (products) {
-      res.json(products);
-    }
+  let products = await db
+    .get()
+    .collection(process.env.PRODUCTS_COLLECTION)
+    .find()
+    .toArray();
+  if (products) {
+    res.json(products);
+  }
 });
 
 //get products end
@@ -65,5 +66,22 @@ router.post("/admin/addproduct", (req, res) => {
 });
 
 // admin add product end
+
+//admin remove products start//
+
+router.delete("/admin/remove-product/:id", (req, res) => {
+  db.get()
+    .collection(process.env.PRODUCTS_COLLECTION)
+    .deleteOne({ _id: ObjectID(req.params.id) })
+    .then((result) => {
+      if (result.deletedCount === 1) {
+        res.status(200).send(true);
+      } else {
+        res.status(400).send(false);
+      }
+    });
+});
+
+//admin remove products end/
 
 module.exports = router;

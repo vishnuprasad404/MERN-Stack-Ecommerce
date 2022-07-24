@@ -54,12 +54,15 @@
   letter-spacing: 1px;
   border-collapse: collapse;
   margin-top: 20px;
+  text-align: center;
+
 }
 
 .admin-products-list-table th {
   padding: 10px 20px;
   background-color: rgb(247, 247, 247);
   font-weight: 600;
+
 }
 .admin-products-list-table th:nth-child(1) {
   border-top-left-radius: 10px;
