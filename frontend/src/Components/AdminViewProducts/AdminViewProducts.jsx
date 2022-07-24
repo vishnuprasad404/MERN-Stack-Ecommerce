@@ -54,18 +54,21 @@ function AdminViewProducts() {
   // remove products start//
 
   const removeProduct = (id, selectedIndex) => {
-    console.log(selectedIndex);
     setLoading((prev) => new Set([...prev, selectedIndex]));
     axios
       .delete(`${process.env.REACT_APP_BASE_URL}/admin/remove-product/${id}`)
       .then((res) => {
         if (res.data) {
-          setLoading((prev) => {
-            const updated = new Set(prev);
-            updated.delete(selectedIndex);
-            return updated;
-          });
-          adminViewProducts.splice(selectedIndex, 1);
+          setTimeout(() => {
+            setLoading((prev) => {
+              const updated = new Set(prev);
+              updated.delete(selectedIndex);
+              return updated;
+            });
+            adminViewProducts.splice(selectedIndex,1)
+            adminViewProductsFilterd.splice(selectedIndex,1)
+
+          }, 1000);
         }
       });
   };

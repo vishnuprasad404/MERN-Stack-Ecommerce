@@ -4,6 +4,7 @@ import AdminSelectImage from "./AdminSelectImage/AdminSelectImage";
 import { useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import { useEffect } from "react";
 
 function AdminManageProduct() {
   const { action } = useParams();
@@ -17,6 +18,14 @@ function AdminManageProduct() {
   const [image2, setImage2] = useState();
   const [image3, setImage3] = useState();
   const [imageError, setimageError] = useState("none");
+
+  useEffect(()=>{
+    if(action === 'update'){
+      axios.get(`${process.env.REACT_APP_BASE_URL}/product`).then((res)=>{
+        
+      })
+    }
+  })
 
   const onAddProduct = (data) => {
     console.log(image);
@@ -39,7 +48,8 @@ function AdminManageProduct() {
       image2 !== undefined &&
       image3 !== undefined
     ) {
-      axios
+      if(action === 'add'){
+        axios
         .post(`${process.env.REACT_APP_BASE_URL}/admin/addproduct`, formData, {
           headers: {
             "Content-Type": "multipart/form-data",
@@ -54,6 +64,23 @@ function AdminManageProduct() {
             alert("item Cannot be added");
           }
         });
+      }else if(action === 'update'){
+        axios
+        .put(`${process.env.REACT_APP_BASE_URL}/admin/update-product`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then((res) => {
+          console.log(res.data);
+          if (res.data) {
+            alert("Item Updated");
+            
+          } else {
+            alert("item Cannot be updated");
+          }
+        });
+      }
     } else {
       setimageError("block");
     }
