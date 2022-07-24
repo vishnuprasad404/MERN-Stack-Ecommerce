@@ -49,6 +49,18 @@ function AdminViewProducts() {
     setAdminViewProductsFilterd(filterdData);
   };
 
+
+  // remove products start//
+
+  const removeProduct=(id,selectedIndex)=>{
+    axios.delete(`${process.env.REACT_APP_BASE_URL}/admin/remove-product/${id}`).then((res)=>{
+      
+    })
+  }
+
+  //remove products end//
+
+
   //--------------->> Paginate Products..------------------->>//
 
   const allProductPage = 5;
@@ -80,6 +92,7 @@ function AdminViewProducts() {
             <FontAwesomeIcon
               icon={faTrash}
               className="admin-product-remove-btn"
+              onClick={()=>{removeProduct(itm._id)}}
             />
           </td>
           <td data-label="Edit">
