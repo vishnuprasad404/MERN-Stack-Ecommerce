@@ -119,7 +119,7 @@ function AdminViewProducts() {
             <FontAwesomeIcon
               icon={faEdit}
               className="admin-product-edit-btn"
-              onClick={() => nav("/admin/product/update/id")}
+              onClick={() => nav(`/admin/product/update/?id=${itm._id}`)}
             />
           </td>
         </tbody>

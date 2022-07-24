@@ -2,12 +2,11 @@ import React, { useState } from "react";
 import "./AdminSelectImage.css";
 
 function AdminSelectImage(props) {
-  const { setImage, setImage1, setImage2, setImage3 ,onAddProduct} = props;
-  const [imagePreview, setImagePreview] = useState();
+  const { setImage, setImage1, setImage2, setImage3 ,updateImg} = props;
+  const [imagePreview, setImagePreview] = useState(); 
   const [imagePreview1, setImagePreview1] = useState();
   const [imagePreview2, setImagePreview2] = useState();
   const [imagePreview3, setImagePreview3] = useState();
-
 
   const selectImage = (e) => {
     setImage(e.target.files[0]);
@@ -40,10 +39,10 @@ function AdminSelectImage(props) {
           onDragOver={(e) => {
             alert(e);
           }}
-          style={{ backgroundImage: `url(${imagePreview})` }}
+          style={{ backgroundImage: `url(${imagePreview || updateImg.img1})` }}
           className="image-container"
         >
-          {!imagePreview ? "drag and drop or select image" : ""}
+          {!imagePreview && !updateImg.img1 ? "drag and drop or select image" : ""}
         </div>
       </label>
       <div className="admin-select-sub-image">
@@ -55,11 +54,11 @@ function AdminSelectImage(props) {
         />
         <label htmlFor="image1">
           <div
-            style={{ backgroundImage: `url(${imagePreview1})` }}
+            style={{ backgroundImage: `url(${imagePreview1 || updateImg.img2})` }}
             className="sub-image-container"
           >
             {" "}
-            {!imagePreview ? "image1" : ""}
+            {!imagePreview && !updateImg.img2 ? "image1" : ""}
           </div>
         </label>
         <input
@@ -70,10 +69,10 @@ function AdminSelectImage(props) {
         />
         <label htmlFor="image2">
           <div
-            style={{ backgroundImage: `url(${imagePreview2})` }}
+            style={{ backgroundImage: `url(${imagePreview2 || updateImg.img3})` }}
             className="sub-image-container"
           >
-            {!imagePreview ? "image2" : ""}
+            {!imagePreview && !updateImg.img3 ? "image2" : ""}
           </div>
         </label>
         <input
@@ -84,10 +83,10 @@ function AdminSelectImage(props) {
         />
         <label htmlFor="image3">
           <div
-            style={{ backgroundImage: `url(${imagePreview3})` }}
+            style={{ backgroundImage: `url(${imagePreview3 || updateImg.img4})` }}
             className="sub-image-container"
           >
-            {!imagePreview ? "image3" : ""}
+            {!imagePreview && !updateImg.img4  ? "image3" : ""}
           </div>
         </label>
       </div>
