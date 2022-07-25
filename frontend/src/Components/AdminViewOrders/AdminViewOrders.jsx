@@ -3,13 +3,23 @@ import "./AdminViewOrders.css";
 import Paginate from "react-paginate";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleCheck, faCircleDot } from "@fortawesome/free-solid-svg-icons";
-import {data} from "../../MockData";
+import { useEffect } from "react";
+import axios from 'axios'
 
 function AdminViewOrders() {
-  const [orders] = useState(data);
-  const [filterOrders, setFilterOrders] = useState(data);
+  const [orders,setOrders] = useState([]);
+  const [filterOrders, setFilterOrders] = useState(orders);
   const [active, setActive] = useState("");
   const [pageNumber, setPageNumber] = useState(0);
+
+
+  useEffect(()=>{
+    axios.get(`${process.env.REACT_APP_BASE_URL}/admin/orders`).then((res)=>{
+      console.log(res.data);
+      setOrders(res.data)
+      setFilterOrders(res.data)
+    })
+  },[])
 
   const selectStatus = (key) => {
     setActive(key);
