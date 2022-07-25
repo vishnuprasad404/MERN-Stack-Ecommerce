@@ -3,21 +3,42 @@ import "./AdminViewOrders.css";
 import Paginate from "react-paginate";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleCheck, faCircleDot } from "@fortawesome/free-solid-svg-icons";
-import {data} from "../../MockData";
+import { useEffect } from "react";
+import axios from "axios";
 
 function AdminViewOrders() {
-  const [orders] = useState(data);
-  const [filterOrders, setFilterOrders] = useState(data);
+  const [orders, setOrders] = useState([]);
+  const [filterOrders, setFilterOrders] = useState(orders);
   const [active, setActive] = useState("");
   const [pageNumber, setPageNumber] = useState(0);
 
+  useEffect(() => {
+    getAllOrders()
+  }, []);
+
+  function getAllOrders(){
+    axios.get(`${process.env.REACT_APP_BASE_URL}/admin/orders`).then((res) => {
+      setOrders(res.data);
+      setFilterOrders(res.data);
+    });
+  }
+
   const selectStatus = (key) => {
     setActive(key);
-    console.log(active);
-    var filterdData = orders.filter((data, index) => {
+    var filterdData = orders.filter((data) => {
       return data.status === key;
     });
     setFilterOrders(filterdData);
+  };
+
+  const changeOrderStatus = (e, id, selectedIndex) => {
+    axios
+      .put(
+        `${process.env.REACT_APP_BASE_URL}/admin/change-order-status/${id}/${e.target.value}`
+      )
+      .then((res) => {
+        getAllOrders()
+      });
   };
 
   const ordersPerPage = 5;
@@ -38,17 +59,15 @@ function AdminViewOrders() {
         >
           <td data-label="ID"># {key + 1}</td>
           <td data-label="Product">
-            <img
-              width="50px"
-              src="https://inventstore.in/wp-content/uploads/2020/11/iPhone-12-Midnight-600x600.png"
-              alt=""
-            />
+            <img width="50px" src={itm.product.image1} alt="" />
           </td>
-          <td> iphone 12 pro max</td>
-          <td data-label="User">{itm.name}</td>
-          <td data-label="Place">{itm.place}</td>
-          <td data-label="Phone">{itm.phone}</td>
-          <td data-label="Date">12/01/2022</td>
+          <td data-label="Title" className="admin-orders-title">
+            {itm.product.title}
+          </td>
+          <td data-label="User">{itm.username}</td>
+          <td data-label="Place"></td>
+          <td data-label="Phone">{itm.prise}</td>
+          <td data-label="Date">{itm.created_at}</td>
           <td data-label="Prise">$ {itm.prise}</td>
           <td
             data-label="Status"
@@ -56,7 +75,7 @@ function AdminViewOrders() {
               color: `${
                 itm.status === "cancelled"
                   ? "red"
-                  : itm.status === "pending"
+                  : itm.status === "placed"
                   ? "rgb(255, 144, 53)"
                   : "green"
               }`,
@@ -66,18 +85,41 @@ function AdminViewOrders() {
               <FontAwesomeIcon
                 icon={itm.status === "completed" ? faCircleCheck : faCircleDot}
               />
-              <span style={{ marginLeft: "10px" }}>{itm.status}</span>
+              <span style={{ marginLeft: "10px" }}>
+                {itm.status === "placed"
+                  ? "Pending"
+                  : itm.status === "dispatched"
+                  ? "Dispatched"
+                  : itm.status === "completed"
+                  ? "Completed"
+                  : "Canceled"}
+              </span>
             </div>
           </td>
           <td
             style={{
-              display: `${itm.status === "cancelled" ? "none" : "flex"}`,
+              display: `${itm.status === "cancelled" || itm.status === "completed" ? "none" : "flex"}`,
             }}
           >
-            <select>
-              <option value="">Change Status</option>
-              <option value="dispatch">Dispatch</option>
-              <option value="complete">Complete</option>
+            <select
+              onChange={(e) => changeOrderStatus(e, itm._id, key)}
+              value={itm.status}
+            >
+              <option value="" disabled={itm.status === "pending" || itm.status === "dispatched" || itm.status === "completed" ? true : false}>
+                Pending
+              </option>
+              <option
+                value="dispatched"
+                disabled={itm.status === "dispatched" || itm.status === "completed" ? true : false}
+              >
+                Dispatched
+              </option>
+              <option
+                value="completed"
+                disabled={itm.status === "completed" ? true : false}
+              >
+                Completed
+              </option>
             </select>
           </td>
         </tbody>
@@ -111,8 +153,8 @@ function AdminViewOrders() {
           Dispatched
         </p>
         <p
-          style={{ color: `${active === "pending" ? "blue" : "black"}` }}
-          onClick={() => selectStatus("pending")}
+          style={{ color: `${active === "placed" ? "blue" : "black"}` }}
+          onClick={() => selectStatus("placed")}
         >
           Pending
         </p>

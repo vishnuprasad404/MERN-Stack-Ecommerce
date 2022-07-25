@@ -22,9 +22,10 @@
 .orders-list .table {
   width: 100%;
   margin-top: 20px;
+  text-align: center;
 }
 .admin-view-orders th {
-  padding: 10px;
+  padding: 15px 5px;
   background-color: rgb(242, 248, 253);
   font-weight: 500;
 }
@@ -41,10 +42,12 @@
   border-top: 10px solid rgb(255, 255, 255); 
 }
 .admin-view-orders td {
-  /* padding: 15px 10px; */
+  padding: 15px 10px;
   background-color: rgb(255, 255, 255);
   font-weight: 500;
-  border: 1px solid rgb(247, 247, 247);
+}
+.admin-orders-title{
+  max-width: 220px;
 }
 
 .admin-view-orders select{

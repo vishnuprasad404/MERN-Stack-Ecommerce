@@ -4,10 +4,82 @@ const router = express.Router();
 const db = require("../database_config");
 const crypto = require("crypto");
 const Razorpay = require("razorpay");
+const { pid } = require("process");
 
 let instance = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID,
   key_secret: process.env.RAZORPAY_KEY_SECRET,
+});
+
+//admin get all orders route start
+
+router.get("/admin/orders", async (req, res) => {
+  let orders = await db
+    .get()
+    .collection(process.env.ORDERS_COLLECTION)
+    .aggregate([
+      {
+        $match: {
+          $and: [
+            {
+              $or: [
+                { status: "placed" },
+                { status: "dispatched" },
+                { status: "completed" },
+                { status: "cancelled" },
+              ],
+            },
+          ],
+        },
+      },
+      {
+        $unwind: "$products",
+      },
+      {
+        $project: {
+          username: "$username",
+          created_at: "$created_at",
+          status: "$status",
+          address: "$address",
+          payment_methord: "$payment_methord",
+          pid: { $toObjectId: "$products.item" },
+          quantity: "$products.quantity",
+          prise: "$products.prise",
+        },
+      },
+      {
+        $lookup: {
+          from: process.env.PRODUCTS_COLLECTION,
+          localField: "pid",
+          foreignField: "_id",
+          as: "product",
+        },
+      },
+      {
+        $unwind: "$product",
+      },
+    ])
+    .toArray();
+
+  res.status(200).json(orders);
+});
+
+//admin get all orders route end
+
+//admin change order status route start//
+
+router.put("/admin/change-order-status/:id/:status", (req, res) => {
+  db.get()
+    .collection(process.env.ORDERS_COLLECTION)
+    .updateOne(
+      { _id: ObjectId(req.params.id) },
+      {
+        $set: { status: req.params.status },
+      }
+    )
+    .then(() => {
+      res.status(200).json({status : req.params.status});
+    });
 });
 
 router.get("/user/get-orders", async (req, res) => {
@@ -27,8 +99,8 @@ router.get("/user/get-orders", async (req, res) => {
             item: { $toObjectId: "$products.item" },
             quantity: "$products.quantity",
             prise: "$products.prise",
-            status : "$status",
-            created_at : "$created_at"
+            status: "$status",
+            created_at: "$created_at",
           },
         },
         {
@@ -102,13 +174,13 @@ router.get("/get-order/:order_id", async (req, res) => {
 router.post("/create-order", async (req, res) => {
   let today = new Date();
   const yyyy = today.getFullYear();
-  let mm = today.getMonth() + 1; 
+  let mm = today.getMonth() + 1;
   let dd = today.getDate();
-  
-  if (dd < 10) dd = '0' + dd;
-  if (mm < 10) mm = '0' + mm;
-  
-  today = dd + '/' + mm + '/' + yyyy;
+
+  if (dd < 10) dd = "0" + dd;
+  if (mm < 10) mm = "0" + mm;
+
+  today = dd + "/" + mm + "/" + yyyy;
 
   if (req.session.user) {
     const orderID = crypto.randomBytes(16).toString("hex");
@@ -152,13 +224,13 @@ router.put(
           {
             $set: {
               "products.$.prise": parseInt(req.params.prise),
-              "products.$.quantity": parseInt(req.params.quantity), 
+              "products.$.quantity": parseInt(req.params.quantity),
             },
-          } 
-        ); 
+          }
+        );
     }
-  } 
-); 
+  }
+);
 
 router.delete("/remove-checkout-item/:OrderId/:ItemId", (req, res) => {
   if (req.session.user) {
