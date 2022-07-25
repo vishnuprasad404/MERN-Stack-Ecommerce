@@ -13,11 +13,15 @@ function AdminViewOrders() {
   const [pageNumber, setPageNumber] = useState(0);
 
   useEffect(() => {
+    getAllOrders()
+  }, []);
+
+  function getAllOrders(){
     axios.get(`${process.env.REACT_APP_BASE_URL}/admin/orders`).then((res) => {
       setOrders(res.data);
       setFilterOrders(res.data);
     });
-  }, []);
+  }
 
   const selectStatus = (key) => {
     setActive(key);
@@ -33,6 +37,7 @@ function AdminViewOrders() {
         `${process.env.REACT_APP_BASE_URL}/admin/change-order-status/${id}/${e.target.value}`
       )
       .then((res) => {
+        getAllOrders()
       });
   };
 
