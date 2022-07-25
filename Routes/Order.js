@@ -26,6 +26,7 @@ router.get("/admin/orders", async (req, res) => {
                 { status: "placed" },
                 { status: "dispatched" },
                 { status: "completed" },
+                { status: "cancelled" },
               ],
             },
           ],
@@ -64,6 +65,22 @@ router.get("/admin/orders", async (req, res) => {
 });
 
 //admin get all orders route end
+
+//admin change order status route start//
+
+router.put("/admin/change-order-status/:id/:status", (req, res) => {
+  db.get()
+    .collection(process.env.ORDERS_COLLECTION)
+    .updateOne(
+      { _id: ObjectId(req.params.id) },
+      {
+        $set: { status: req.params.status },
+      }
+    )
+    .then(() => {
+      res.status(200).json({status : req.params.status});
+    });
+});
 
 router.get("/user/get-orders", async (req, res) => {
   if (req.session.user) {

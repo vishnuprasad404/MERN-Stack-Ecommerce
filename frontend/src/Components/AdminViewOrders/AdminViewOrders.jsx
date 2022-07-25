@@ -14,7 +14,6 @@ function AdminViewOrders() {
 
   useEffect(() => {
     axios.get(`${process.env.REACT_APP_BASE_URL}/admin/orders`).then((res) => {
-      console.log(res.data);
       setOrders(res.data);
       setFilterOrders(res.data);
     });
@@ -22,11 +21,19 @@ function AdminViewOrders() {
 
   const selectStatus = (key) => {
     setActive(key);
-    console.log(active);
-    var filterdData = orders.filter((data, index) => {
+    var filterdData = orders.filter((data) => {
       return data.status === key;
     });
     setFilterOrders(filterdData);
+  };
+
+  const changeOrderStatus = (e, id, selectedIndex) => {
+    axios
+      .put(
+        `${process.env.REACT_APP_BASE_URL}/admin/change-order-status/${id}/${e.target.value}`
+      )
+      .then((res) => {
+      });
   };
 
   const ordersPerPage = 5;
@@ -49,7 +56,9 @@ function AdminViewOrders() {
           <td data-label="Product">
             <img width="50px" src={itm.product.image1} alt="" />
           </td>
-          <td data-label="Title" className="admin-orders-title">{itm.product.title}</td>
+          <td data-label="Title" className="admin-orders-title">
+            {itm.product.title}
+          </td>
           <td data-label="User">{itm.username}</td>
           <td data-label="Place"></td>
           <td data-label="Phone">{itm.prise}</td>
@@ -84,13 +93,28 @@ function AdminViewOrders() {
           </td>
           <td
             style={{
-              display: `${itm.status === "cancelled" ? "none" : "flex"}`,
+              display: `${itm.status === "cancelled" || itm.status === "completed" ? "none" : "flex"}`,
             }}
           >
-            <select>
-              <option value="">Change Status</option>
-              <option value="dispatch">Dispatch</option>
-              <option value="complete">Complete</option>
+            <select
+              onChange={(e) => changeOrderStatus(e, itm._id, key)}
+              value={itm.status}
+            >
+              <option value="" disabled={itm.status === "pending" || itm.status === "dispatched" || itm.status === "completed" ? true : false}>
+                Pending
+              </option>
+              <option
+                value="dispatched"
+                disabled={itm.status === "dispatched" || itm.status === "completed" ? true : false}
+              >
+                Dispatched
+              </option>
+              <option
+                value="completed"
+                disabled={itm.status === "completed" ? true : false}
+              >
+                Completed
+              </option>
             </select>
           </td>
         </tbody>
