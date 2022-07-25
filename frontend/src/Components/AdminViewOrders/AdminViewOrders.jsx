@@ -4,22 +4,21 @@ import Paginate from "react-paginate";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleCheck, faCircleDot } from "@fortawesome/free-solid-svg-icons";
 import { useEffect } from "react";
-import axios from 'axios'
+import axios from "axios";
 
 function AdminViewOrders() {
-  const [orders,setOrders] = useState([]);
+  const [orders, setOrders] = useState([]);
   const [filterOrders, setFilterOrders] = useState(orders);
   const [active, setActive] = useState("");
   const [pageNumber, setPageNumber] = useState(0);
 
-
-  useEffect(()=>{
-    axios.get(`${process.env.REACT_APP_BASE_URL}/admin/orders`).then((res)=>{
+  useEffect(() => {
+    axios.get(`${process.env.REACT_APP_BASE_URL}/admin/orders`).then((res) => {
       console.log(res.data);
-      setOrders(res.data)
-      setFilterOrders(res.data)
-    })
-  },[])
+      setOrders(res.data);
+      setFilterOrders(res.data);
+    });
+  }, []);
 
   const selectStatus = (key) => {
     setActive(key);
@@ -48,17 +47,13 @@ function AdminViewOrders() {
         >
           <td data-label="ID"># {key + 1}</td>
           <td data-label="Product">
-            <img
-              width="50px"
-              src="https://inventstore.in/wp-content/uploads/2020/11/iPhone-12-Midnight-600x600.png"
-              alt=""
-            />
+            <img width="50px" src={itm.product.image1} alt="" />
           </td>
-          <td> iphone 12 pro max</td>
-          <td data-label="User">{itm.name}</td>
-          <td data-label="Place">{itm.place}</td>
-          <td data-label="Phone">{itm.phone}</td>
-          <td data-label="Date">12/01/2022</td>
+          <td data-label="Title" className="admin-orders-title">{itm.product.title}</td>
+          <td data-label="User">{itm.username}</td>
+          <td data-label="Place"></td>
+          <td data-label="Phone">{itm.prise}</td>
+          <td data-label="Date">{itm.created_at}</td>
           <td data-label="Prise">$ {itm.prise}</td>
           <td
             data-label="Status"
@@ -66,7 +61,7 @@ function AdminViewOrders() {
               color: `${
                 itm.status === "cancelled"
                   ? "red"
-                  : itm.status === "pending"
+                  : itm.status === "placed"
                   ? "rgb(255, 144, 53)"
                   : "green"
               }`,
@@ -76,7 +71,15 @@ function AdminViewOrders() {
               <FontAwesomeIcon
                 icon={itm.status === "completed" ? faCircleCheck : faCircleDot}
               />
-              <span style={{ marginLeft: "10px" }}>{itm.status}</span>
+              <span style={{ marginLeft: "10px" }}>
+                {itm.status === "placed"
+                  ? "Pending"
+                  : itm.status === "dispatched"
+                  ? "Dispatched"
+                  : itm.status === "completed"
+                  ? "Completed"
+                  : "Canceled"}
+              </span>
             </div>
           </td>
           <td
@@ -121,8 +124,8 @@ function AdminViewOrders() {
           Dispatched
         </p>
         <p
-          style={{ color: `${active === "pending" ? "blue" : "black"}` }}
-          onClick={() => selectStatus("pending")}
+          style={{ color: `${active === "placed" ? "blue" : "black"}` }}
+          onClick={() => selectStatus("placed")}
         >
           Pending
         </p>
