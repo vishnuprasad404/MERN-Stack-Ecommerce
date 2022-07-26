@@ -1,5 +1,5 @@
 import "./App.css";
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import HomePage from "./Pages/HomePage/HomePage";
 import SigninPage from "./Pages/SigninPage/SigninPage";
 import SignupPage from "./Pages/SignupPage/SignupPage";
@@ -26,14 +26,12 @@ import OrderPlacedNotifyPage from "./Pages/OrderPlacedNotifyPage/OrderPlacedNoti
 import OrdersItemDetailPage from "./Pages/OrdersItemDetailPage/OrdersItemDetailPage";
 
 function App() {
-  const nav = useNavigate()
   const [user, setUser] = useState(false);
   const [admin, setAdmin] = useState(false);
 
   axios.defaults.withCredentials = true;
   useEffect(() => {
     axios.get(`${process.env.REACT_APP_BASE_URL}/admin`).then((res) => {
-      console.log(res.data);
       setAdmin(res.data.isLoggedIn);
     });
     axios.get(`${process.env.REACT_APP_BASE_URL}/user`).then((res) => {

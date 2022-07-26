@@ -14,7 +14,6 @@ function ViewProductPage() {
   const {user} = useContext(EContextData)
   const { id } = useParams();
   const nav = useNavigate();
-
   const [product, setProduct] = useState();
 
   useEffect(() => {
@@ -23,14 +22,10 @@ function ViewProductPage() {
         return itm._id === id;
       });
       setProduct(proObj);
-      console.log(product);
     });
-    axios.get(`${process.env.REACT_APP_BASE_URL}/get-all-reviews/${id}`).then((res)=>{
-      console.log(res.data);
-    })
-  },[id,product]);
-  const [productImage, setProductImage] = useState();
+  });
 
+  const [productImage, setProductImage] = useState();
   const addToCart = (pid, prise) => {
     axios
       .post(`${process.env.REACT_APP_BASE_URL}/addtocart`, {
@@ -135,7 +130,7 @@ function ViewProductPage() {
 
           <div className="view-product-page-right-container">
             <h4>{product.title}</h4>
-            <Rating id={id} margin="20px 0px 0px 0px"/>
+            <Rating id={id} reviewDisplay={true}/>
      
             <div className="prise">
               <p className="dis-prise">$ {product.discountPrise}</p>
@@ -145,11 +140,7 @@ function ViewProductPage() {
             <p className="description">{product.description}</p>
             <p className="product-heading">Reviews</p>
             <div className="review-container-wrapper">
-              <Review
-                name="Vishnu"
-                message="This is a good phone in this budjet"
-                id={id}
-              />
+              <Review id={id} />
             </div>
           </div>
         </>

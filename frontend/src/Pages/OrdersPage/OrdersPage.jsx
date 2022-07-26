@@ -83,10 +83,10 @@ function OrdersPage() {
                     {itm.status === "placed" ? (
                       <span className="placed-bnr">Active</span>
                     ) : null}
-                    {itm.status === "pending" ? (
-                      <span className="pending-bnr">Pending</span>
+                    {itm.status === "dispatched" ? (
+                      <span className="pending-bnr">Shipped</span>
                     ) : null}
-                    {itm.status === "deliverd" ? (
+                    {itm.status === "completed" ? (
                       <span className="deliverd-bnr">Deliverd</span>
                     ) : null}
                     {itm.status === "cancelled" ? (

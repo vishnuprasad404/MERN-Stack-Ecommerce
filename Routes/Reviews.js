@@ -17,7 +17,7 @@ router.get("/get-all-reviews/:id", async (req, res) => {
             total_ratings: {
               $divide: [{ $sum: "$reviews.rating" }, { $size: "$reviews" }],
             },
-            userRatings : "$reviews"
+            userRatings: "$reviews",
           },
         },
       ])
@@ -29,26 +29,25 @@ router.get("/get-all-reviews/:id", async (req, res) => {
 });
 
 router.post("/add-review", (req, res) => {
-  let reviewObj = {
-    user: ObjectId(req.session.user._id),
-    rating: parseInt(req.body.rating),
-    feedback: req.body.feedback,
-  };
-
-  console.log(reviewObj);
-
-  db.get()
-    .collection(process.env.PRODUCTS_COLLECTION)
-    .updateOne(
-      {
-        _id: ObjectId(req.body.id),
-      },
-      {
-        $push: {
-          reviews: reviewObj,
+  if (req.session.user) {
+    let reviewObj = {
+      user: req.session.user.username,
+      rating: parseInt(req.body.rating),
+      feedback: req.body.feedback,
+    };
+    db.get()
+      .collection(process.env.PRODUCTS_COLLECTION)
+      .updateOne(
+        {
+          _id: ObjectId(req.body.id),
         },
-      }
-    );
+        {
+          $push: {
+            reviews: reviewObj,
+          },
+        }
+      );
+  }
 });
 
 module.exports = router;

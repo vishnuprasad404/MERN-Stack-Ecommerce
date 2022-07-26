@@ -188,7 +188,7 @@
 input[type="radio"]{
   display: none;
 }
-.rating-star{
+.order-rating-star{
   color: rgb(201, 199, 199);
   margin-right: 10px;
 }

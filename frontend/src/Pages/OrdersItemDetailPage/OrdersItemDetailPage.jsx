@@ -17,9 +17,8 @@ function OrdersItemDetailPage() {
   const [ratingHover, setRatingHover] = useState();
   const [starPersentageRounded, setStarPersentageRounded] = useState("");
   const [totalReviews, setTotalReviews] = useState(0);
-
   const { id } = useParams();
-  const [orders, setOrders] = useState();
+  const [product, setProduct] = useState();
 
   useEffect(() => {
     axios
@@ -28,7 +27,7 @@ function OrdersItemDetailPage() {
         let getItem = res.data.find((data) => {
           return data.item === id;
         });
-        setOrders(getItem);
+        setProduct(getItem);
       });
 
     axios
@@ -57,25 +56,25 @@ function OrdersItemDetailPage() {
   return (
     <>
       <Navbar />
-      {orders ? (
+      {product ? (
         <div className="view-orders-item-details">
           <section className="view-orders-product-detail-section">
             <div className="view-orders-item-details-container">
               <section className="step-wizard">
                 <ul className="step-wizard-list">
-                  <li className="step-wizard-item ">
+                  <li className={`step-wizard-item `}>
                     <span className="progress-count"></span>
                     <span className="progress-label">Placed</span>
                   </li>
-                  <li className="step-wizard-item current-item ">
+                  <li className={`step-wizard-item ${product.status === "placed" ? "current-item" : null }`}>
                     <span className="progress-count"></span>
                     <span className="progress-label">Processing</span>
                   </li>
-                  <li className="step-wizard-item">
+                  <li className={`step-wizard-item ${product.status === "dispatched" ? "current-item" : null }`}>
                     <span className="progress-count"></span>
                     <span className="progress-label">Shipped</span>
                   </li>
-                  <li className="step-wizard-item">
+                  <li className={`step-wizard-item ${product.status === "completed" ? "current-item" : null }`}>
                     <span className="progress-count"></span>
                     <span className="progress-label">Deliverd</span>
                   </li>
@@ -85,10 +84,10 @@ function OrdersItemDetailPage() {
               <section className="view-orders-product-detail-content-section">
                 <div className="purshased-item-image-container">
                   <div className="purshased-item-image">
-                    <img width="100%" src={orders.product.image1} alt="" />
+                    <img width="100%" src={product.product.image1} alt="" />
                   </div>
                   <div className="purchased-item-title-and-rating">
-                    <p>{orders.product.title}</p>
+                    <p>{product.product.title}</p>
                     {starPersentageRounded ? (
                       <div className="stars-outer">
                         <div
@@ -102,25 +101,25 @@ function OrdersItemDetailPage() {
                     ) : null}
                     <br />
                     <p>
-                      $ {orders.prise} (quantity : {orders.quantity})
+                      $ {product.prise} (quantity : {product.quantity})
                     </p>
                   </div>
                 </div>
                 <div className="purchased-item-action">
                   <button>Buy again</button>
-                  {orders.status === "placed" ? (
+                  {product.status === "placed" ? (
                     <button> Cancel Order</button>
                   ) : null}
-                  {orders.status === "pending" ? (
+                  {product.status === "pending" ? (
                     <button> Complete Order</button>
                   ) : null}
                   {/* <FontAwesomeIcon icon={faRoadCircleCheck}/> */}
                 </div>
-                {orders.status === "placed" ? (
+                {product.status === "completed" ? (
                   <div className="add-review">
                     <p>Add a review</p>
                     <form onSubmit={handleSubmit(addReview)}>
-                      <div className="rating-stars">
+                      <div className="order-rating-stars">
                         {[...Array(5)].map((star, i) => {
                           const ratingValue = i + 1;
                           return (
@@ -134,7 +133,7 @@ function OrdersItemDetailPage() {
                               />
                               <FontAwesomeIcon
                                 icon={faStar}
-                                className="rating-star"
+                                className="order-rating-star"
                                 style={{
                                   color: `${
                                     ratingValue <= (ratingHover || rating)

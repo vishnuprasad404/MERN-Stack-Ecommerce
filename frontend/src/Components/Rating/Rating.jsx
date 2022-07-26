@@ -8,54 +8,41 @@ import "./Rating.css";
 
 function Rating(props) {
   const [rating, setRating] = useState();
-  const [review, setReview] = useState();
-  const { id, reviewDisplay, eachUser, width, height, margin, fontSize } =
-    props;
+  const [reviews, setReviews] = useState();
+  const { id, style ,reviewDisplay,eachUser} = props;
 
   useEffect(() => {
-    if (!eachUser) {
-      axios
-        .get(`${process.env.REACT_APP_BASE_URL}/get-all-reviews/${id}`)
-        .then((res) => {
-          let star = res.data.total_ratings;
-          setRating(Math.round(star).toFixed(1));
-          setReview(res.data.total_reviews);
-        });
-    } else {
-      axios
-        .get(`${process.env.REACT_APP_BASE_URL}/get-all-reviews/${id}`)
-        .then((res) => {
-          // console.log();
-          let star = res.data.total_ratings;
-          setRating(Math.round(star).toFixed(1));
-          setReview(res.data.total_reviews);
-        });
+    if(!eachUser){
+    axios
+      .get(`${process.env.REACT_APP_BASE_URL}/get-all-reviews/${id}`)
+      .then((res) => {
+        let rate = res.data.total_ratings;
+        setRating(rate.toFixed(1));
+        setReviews(res.data.total_reviews);
+      });
+    }else{
+      setRating(`${eachUser.rate}.0`)
     }
-  }, [id, eachUser]);
+  },[eachUser,id]); 
 
   return (
-    <div className="rating" style={{margin : margin}}>
+    <div className="rating" >
       <div
-        className="rating-stars"
+        className="rating-box"
         style={{
-          backgroundColor: `${
-            rating <= 1
-              ? "rgb(255, 60, 60)"
-              : rating <= 2
-              ? "rgb(250, 179, 121)"
-              : "rgb(148, 194, 255)"
-          }`,
-          width: width,
-          height: height,
-          fontSize: fontSize,
+          ...style,
+          backgroundColor:
+            rating >= 3
+              ? "rgba(106, 183, 255, 0.719)"
+              : rating < 3 && rating > 1
+              ? "rgba(255, 136, 106, 0.719)"
+              : "rgba(255, 0, 0, 0.719)",
         }}
       >
-        <span>{rating < 1 ? rating : '0'}</span>
-        <FontAwesomeIcon icon={faStar} className="rating-icon" />
+        <span>{rating ? rating : "0"}</span>
+        <FontAwesomeIcon icon={faStar} className="rating-star" />
       </div>
-      <span style={{ display: reviewDisplay }} className="total-review">
-        ({review ? review : '0'} Reviews)
-      </span>
+      <span className="rating-review" style={{display : reviewDisplay ? 'flex' : 'none'}}>({reviews ? reviews : "0"}) Reviews</span>
     </div>
   );
 }
