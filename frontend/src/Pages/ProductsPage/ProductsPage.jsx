@@ -186,7 +186,6 @@ function ProductsPage() {
               }
             >
               {products.map((itm) => {
-                console.log(itm);
                 return (
                   <div
                     className="products-item-container"

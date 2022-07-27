@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import axios from "axios";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
 import { useForm } from "react-hook-form";
+import Rating from "../../Components/Rating/Rating";
 
 function OrdersItemDetailPage() {
   const {
@@ -15,10 +16,9 @@ function OrdersItemDetailPage() {
   } = useForm();
   const [rating, setRating] = useState();
   const [ratingHover, setRatingHover] = useState();
-  const [starPersentageRounded, setStarPersentageRounded] = useState("");
-  const [totalReviews, setTotalReviews] = useState(0);
   const { id } = useParams();
   const [product, setProduct] = useState();
+  const [isReview, setIsReview] = useState();
 
   useEffect(() => {
     axios
@@ -28,19 +28,12 @@ function OrdersItemDetailPage() {
           return data.item === id;
         });
         setProduct(getItem);
-      });
-
-    axios
-      .get(`${process.env.REACT_APP_BASE_URL}/get-all-reviews/${id}`)
-      .then((res) => {
-        let star = res.data.total_ratings;
-        let starTotal = 5;
-        const starPersentage = (star / starTotal) * 100;
-        const starPersentageRoundedTemp = `${
-          Math.round(starPersentage / 10) * 10
-        }%`;
-        setStarPersentageRounded(starPersentageRoundedTemp);
-        setTotalReviews(res.data.total_reviews ? res.data.total_reviews : 0);
+        axios
+          .get(`${process.env.REACT_APP_BASE_URL}/user/review/${getItem.product._id}`)
+          .then((res) => {
+            setIsReview(res.data);
+            setRating(res.data.rating)
+          });
       });
   }, [id]);
 
@@ -66,15 +59,27 @@ function OrdersItemDetailPage() {
                     <span className="progress-count"></span>
                     <span className="progress-label">Placed</span>
                   </li>
-                  <li className={`step-wizard-item ${product.status === "placed" ? "current-item" : null }`}>
+                  <li
+                    className={`step-wizard-item ${
+                      product.status === "placed" ? "current-item" : null
+                    }`}
+                  >
                     <span className="progress-count"></span>
                     <span className="progress-label">Processing</span>
                   </li>
-                  <li className={`step-wizard-item ${product.status === "dispatched" ? "current-item" : null }`}>
+                  <li
+                    className={`step-wizard-item ${
+                      product.status === "dispatched" ? "current-item" : null
+                    }`}
+                  >
                     <span className="progress-count"></span>
                     <span className="progress-label">Shipped</span>
                   </li>
-                  <li className={`step-wizard-item ${product.status === "completed" ? "current-item" : null }`}>
+                  <li
+                    className={`step-wizard-item ${
+                      product.status === "completed" ? "current-item" : null
+                    }`}
+                  >
                     <span className="progress-count"></span>
                     <span className="progress-label">Deliverd</span>
                   </li>
@@ -88,18 +93,11 @@ function OrdersItemDetailPage() {
                   </div>
                   <div className="purchased-item-title-and-rating">
                     <p>{product.product.title}</p>
-                    {starPersentageRounded ? (
-                      <div className="stars-outer">
-                        <div
-                          className="stars-inner"
-                          style={{ width: starPersentageRounded }}
-                        ></div>
-                        <span className="total-review">
-                          ({totalReviews} Reviews)
-                        </span>
-                      </div>
-                    ) : null}
-                    <br />
+                    <Rating
+                      id={id}
+                      style={{ marginBottom: "10px" }}
+                      displayReview={true}
+                    />
                     <p>
                       $ {product.prise} (quantity : {product.quantity})
                     </p>
@@ -121,7 +119,7 @@ function OrdersItemDetailPage() {
                     <form onSubmit={handleSubmit(addReview)}>
                       <div className="order-rating-stars">
                         {[...Array(5)].map((star, i) => {
-                          const ratingValue = i + 1;
+                          let ratingValue = i + 1;
                           return (
                             <label>
                               <input
@@ -155,6 +153,7 @@ function OrdersItemDetailPage() {
                       <textarea
                         rows="5"
                         placeholder="Write a review"
+                        defaultValue={isReview ? isReview.feedback : null}
                         {...register("feedback", { required: true })}
                       ></textarea>
                       <error className="err">
@@ -162,7 +161,7 @@ function OrdersItemDetailPage() {
                           "Please add your feedback"}
                       </error>
                       <button type="submit" className="review-btn">
-                        Submit Review
+                        {isReview ? "Update Review" : "Submit Review"}
                       </button>
                     </form>
                   </div>
