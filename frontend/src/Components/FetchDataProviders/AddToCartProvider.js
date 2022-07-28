@@ -1,20 +1,17 @@
 import axios from "axios";
-import "react-notifications-component/dist/theme.css";
 
-export async function AddToCartProvider(pid, prise) {
-  axios
-    .post(`${process.env.REACT_APP_BASE_URL}/addtocart`, {
-      pid: pid,
-      prise: parseInt(prise),
-    })
-    .then((res) => {
-      console.log(res.data);
-      if (res.data.inCart) {
+export const AddToCartProvider = async (pid, prise) => {
+  let res = await axios.post(`${process.env.REACT_APP_BASE_URL}/addtocart`, {
+    pid: pid,
+    prise: parseInt(prise),
+  });
+  return res.data;
+};
 
-      }
-      if (res.data.itemAdded) {
-      
-      }
-    });
-
-}
+export const AddToFavoritesProvider = async (pid) => {
+  let res = await axios.post(
+    `${process.env.REACT_APP_BASE_URL}/addtofavorites`,
+    { item: pid }
+  );
+  return res.data
+};

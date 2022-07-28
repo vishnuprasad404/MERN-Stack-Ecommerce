@@ -1,14 +1,19 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart, faCartPlus } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import "./Product.css";
 import axios from "axios";
 import { EContextData as GlobalData } from "../../EContextData";
-import { AddToCartProvider } from "../FetchDataProviders/AddToCartProvider";
+import {
+  AddToCartProvider,
+  AddToFavoritesProvider,
+} from "../FetchDataProviders/AddToCartProvider";
+import Notification from "../Notification/Notification";
 
 function Product(props) {
   const { user } = useContext(GlobalData);
+  const [notify, setNotify] = useState({ display: "none" });
   const nav = useNavigate();
   const {
     className,
@@ -42,21 +47,57 @@ function Product(props) {
     }
   };
 
-  const addToCart = () => {
-    AddToCartProvider(pid,disPrise)
+  const addToCart = async () => {
+    if (user) {
+      let result = await AddToCartProvider(pid, disPrise);
+      if (result.itemAdded) {
+        setNotify({
+          display: "flex",
+          text: "Item added to cart",
+          type: "SUCCESS",
+        });
+        setTimeout(() => {
+          setNotify({ display: "none" });
+        }, 2000);
+      }
+      if (result.inCart) {
+        setNotify({
+          display: "flex",
+          text: "Item already in cart",
+          type: "WARNING",
+        });
+        setTimeout(() => {
+          setNotify({ display: "none" });
+        }, 2000);
+      }
+    } else {
+      nav("/signin");
+    }
   };
 
-  const addToFavorites = () => {
+  const addToFavorites = async () => {
     if (user) {
-      axios
-        .post(`${process.env.REACT_APP_BASE_URL}/addtofavorites`, { item: pid })
-        .then((res) => {
-          if (res.data.itemAdded) {
-            alert("Item Added to Favorites");
-          } else if (res.data.itemExist) {
-            alert("Item Alredy in Favorites");
-          }
+      let res = await AddToFavoritesProvider(pid);
+      if (res.itemAdded) {
+        setNotify({
+          display: "flex",
+          text: "Item added to your wishlist",
+          type: "SUCCESS",
         });
+        setTimeout(() => {
+          setNotify({ display: "none" });
+        }, 2000);
+      }
+      if (res.itemExist) {
+        setNotify({
+          display: "flex",
+          text: "Item already in your wishlist",
+          type: "WARNING",
+        });
+        setTimeout(() => {
+          setNotify({ display: "none" });
+        }, 2000);
+      }
     } else {
       nav("/signin");
     }
@@ -123,6 +164,14 @@ function Product(props) {
           </div>
         </div>
       </div>
+      <Notification
+        status={notify}
+        parentStyle={{
+          top: "50px",
+          alignItems: "center",
+          justifyContent: "flex-end",
+        }}
+      />
     </>
   );
 }

@@ -11,7 +11,9 @@ function Review(props) {
     axios
       .get(`${process.env.REACT_APP_BASE_URL}/get-all-reviews/${id}`)
       .then((res) => {
-        setReviews(res.data.userRatings);
+        if(res.data){
+          setReviews(res.data.userRatings)
+        }
       });
   }, [id]);
 
