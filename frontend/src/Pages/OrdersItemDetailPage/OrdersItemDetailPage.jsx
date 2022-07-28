@@ -29,10 +29,12 @@ function OrdersItemDetailPage() {
         });
         setProduct(getItem);
         axios
-          .get(`${process.env.REACT_APP_BASE_URL}/user/review/${getItem.product._id}`)
+          .get(
+            `${process.env.REACT_APP_BASE_URL}/user/review/${getItem.product._id}`
+          )
           .then((res) => {
             setIsReview(res.data);
-            setRating(res.data.rating)
+            setRating(res.data.rating);
           });
       });
   }, [id]);
@@ -126,7 +128,9 @@ function OrdersItemDetailPage() {
                                 type="radio"
                                 name="rating"
                                 value={ratingValue}
-                                {...register("rating", { required: true })}
+                                {...register("rating", {
+                                  required: isReview ? false : true,
+                                })}
                                 onClick={() => setRating(ratingValue)}
                               />
                               <FontAwesomeIcon
@@ -154,7 +158,9 @@ function OrdersItemDetailPage() {
                         rows="5"
                         placeholder="Write a review"
                         defaultValue={isReview ? isReview.feedback : null}
-                        {...register("feedback", { required: true })}
+                        {...register("feedback", {
+                          required: isReview ? false : true,
+                        })}
                       ></textarea>
                       <error className="err">
                         {errors.feedback?.type === "required" &&
