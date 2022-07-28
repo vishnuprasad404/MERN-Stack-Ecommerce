@@ -1,45 +1,53 @@
 import React from "react";
 import "./Notification.css";
-import { ReactNotifications } from "react-notifications-component";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faCheckCircle,
+  faCircleInfo,
   faExclamationCircle,
-  faInfo,
+  faWarning,
 } from "@fortawesome/free-solid-svg-icons";
 
-function Notification() {
+function Notification(props) {
+  let { style, status ,parentStyle} = props;
   return (
-    <div className="notification">
-      <ReactNotifications />
-    </div>
-  );
-}
-
-export function Notify(text, type) {
-  return (
-    <div
-      className="notify"
-      style={{
-        color: `${
-          type === "SUCCESS"
-            ? "rgb(81, 255, 0)"
-            : type === "INFO"
-            ? "rgb(81, 185, 255)"
-            : "rgb(255, 30, 0)"
-        }`,
-      }}
-    >
-      <FontAwesomeIcon
-        icon={
-          type === "SUCCESS"
-            ? faCheckCircle
-            : type === "INFO"
-            ? faInfo
-            : faExclamationCircle
-        }
-      />
-      <span>{text}</span>
+    <div className="notification-container position-fixed" style={parentStyle}>
+      <div
+        className={`alert notification ${
+          status.type === "SUCCESS"
+            ? "alert-success"
+            : status.type === "WARNING"
+            ? "alert-warning"
+            : status.type === "INFO"
+            ? "alert-primary"
+            : status.type === "DANGER"
+            ? "alert-danger"
+            : "alert-info"
+        } alert-dismissible fade show`}
+        role="alert"
+        style={{ ...style, display: status.display }}
+      >
+        <FontAwesomeIcon
+          icon={
+            status.type === "SUCCESS"
+              ? faCheckCircle
+              : status.type === "WARNING"
+              ? faWarning
+              : status.type === "INFO"
+              ? faCircleInfo
+              : status.type === "DANGER"
+              ? faExclamationCircle
+              : faCheckCircle
+          }
+          className="notification-icon"
+        />
+        {status.text}
+        <button
+          type="button"
+          class="btn-close"
+          data-bs-dismiss="alert"
+        ></button>
+      </div>
     </div>
   );
 }

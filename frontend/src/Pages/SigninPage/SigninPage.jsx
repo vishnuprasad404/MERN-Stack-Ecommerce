@@ -5,11 +5,12 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { EContextData as GlobalData } from "../../EContextData";
 import { Loading } from "../../Components/Loading/Loading";
-
+import Notification from "../../Components/Notification/Notification";
 
 function SigninPage() {
   const [loading, setLoading] = useState(false);
   const { setUser } = useContext(GlobalData);
+  const [notify, setNotify] = useState({ display: "none" });
   const nav = useNavigate();
   const {
     register,
@@ -18,21 +19,48 @@ function SigninPage() {
   } = useForm();
 
   const onSubmit = (data) => {
-    setLoading(true)
+    setLoading(true);
     axios
       .post(`${process.env.REACT_APP_BASE_URL}/user/signin`, data)
       .then((res) => {
-        setLoading(false)
-        if(!res.data){
-          alert("User not found on this email");
+        console.log(res.data);
+        if (res.data) {
+          setLoading(false);
         }
-        if (res.data.userFound === false) {
-          alert("Email or Password is incorrect. User not Found");
+        if (res.data.userFound !== true) {
+          setNotify({
+            display: "flex",
+            text: "User not found on this email",
+            type: "WARNING",
+          });
+          setTimeout(() => {
+            setNotify({ display: "none" });
+          }, 2000);
         }
-        if (res.data.isLoggedIn) {
-          alert("loggin succes");
-          setUser(res.data);
-          nav(window.location.pathname !== "/signin" ? window.location.pathname : '/');
+        if (res.data.isLoggedIn === true) {
+          setNotify({
+            display: "flex",
+            text: "Loggin successfully",
+            type: "SUCCESS",
+          });
+          setTimeout(() => {
+            setNotify({ display: "none" });
+            setUser(res.data);
+            nav(
+              window.location.pathname !== "/signin"
+                ? window.location.pathname
+                : "/"
+            );
+          }, 1000);
+        } else if (res.data.isLoggedIn === false) {
+          setNotify({
+            display: "flex",
+            text: "Email or password is incorrect,user not found",
+            type: "DANGER",
+          });
+          setTimeout(() => {
+            setNotify({ display: "none" });
+          }, 2000);
         }
       });
   };
@@ -69,11 +97,7 @@ function SigninPage() {
           </error>
 
           <button className="form-btn" type="submit">
-          {!loading ? (
-              "SignIn"
-            ) : (
-              <Loading iconSize="1.5rem" color="white" />
-            )}
+            {!loading ? "SignIn" : <Loading iconSize="1.5rem" color="white" />}
           </button>
 
           <p style={{ fontSize: "12px" }}>
@@ -84,6 +108,14 @@ function SigninPage() {
           </p>
         </form>
       </div>
+      <Notification
+        status={notify}
+        parentStyle={{
+          top: "20px",
+          alignItems: "flex-end",
+          justifyContent: "center",
+        }}
+      />
     </div>
   );
 }

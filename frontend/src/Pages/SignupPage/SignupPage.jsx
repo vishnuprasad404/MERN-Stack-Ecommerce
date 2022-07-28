@@ -5,10 +5,12 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { EContextData } from "../../EContextData";
 import { Loading } from "../../Components/Loading/Loading";
+import Notification from "../../Components/Notification/Notification";
 
 function SignupPage() {
   const [loading, setLoading] = useState(false);
   const { setUser } = useContext(EContextData);
+  let [notify, setNotify] = useState({ display: "none" });
   const nav = useNavigate();
   const {
     register,
@@ -25,12 +27,27 @@ function SignupPage() {
           setLoading(false);
         }
         if (res.data.userExist) {
-          alert("User Alredy Exist");
+          // alert("User Alredy Exist");
+          setNotify({
+            display: "flex",
+            text: "User alredy exist on this email",
+            type: "WARNING",
+          });
+          setTimeout(() => {
+            setNotify({ display: "none" });
+          }, 2000);
         }
         if (res.data.isUserAdded) {
-          setUser(res.data.user);
-          alert("Account Created Successfully");
-          nav("/");
+          setNotify({
+            display: "flex",
+            text: "Account Created Successfully",
+            type: "SUCCESS",
+          });
+          setTimeout(() => {
+            setNotify({ display: "none" });
+            setUser(res.data.user);
+            nav("/");
+          }, 1000);
         }
       });
   };
@@ -107,6 +124,14 @@ function SignupPage() {
           </p>
         </form>
       </div>
+      <Notification
+        status={notify}
+        parentStyle={{
+          top: "20px",
+          alignItems: "flex-end",
+          justifyContent: "center",
+        }}
+      />
     </div>
   );
 }

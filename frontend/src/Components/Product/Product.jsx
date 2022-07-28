@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 import "./Product.css";
 import axios from "axios";
 import { EContextData as GlobalData } from "../../EContextData";
-import Notification from "../Notification/Notification";
 import { AddToCartProvider } from "../FetchDataProviders/AddToCartProvider";
 
 function Product(props) {
@@ -124,7 +123,6 @@ function Product(props) {
           </div>
         </div>
       </div>
-      <Notification />
     </>
   );
 }
