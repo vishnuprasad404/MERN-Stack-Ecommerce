@@ -9,12 +9,15 @@ import { faBolt, faCartPlus } from "@fortawesome/free-solid-svg-icons";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { EContextData } from "../../EContextData";
+import Notification from "../../Components/Notification/Notification";
+import { AddToCartProvider } from "../../FetchDataProviders";
 
 function ViewProductPage() {
-  const {user} = useContext(EContextData)
+  const { user } = useContext(EContextData);
   const { id } = useParams();
   const nav = useNavigate();
   const [product, setProduct] = useState();
+  const [notify, setNotify] = useState({ display: "none" });
 
   useEffect(() => {
     axios.get(`${process.env.REACT_APP_BASE_URL}/products`).then((res) => {
@@ -24,22 +27,33 @@ function ViewProductPage() {
       setProduct(proObj);
     });
   });
-
   const [productImage, setProductImage] = useState();
-  const addToCart = (pid, prise) => {
-    axios
-      .post(`${process.env.REACT_APP_BASE_URL}/addtocart`, {
-        pid: pid,
-        prise: parseInt(prise),
-      })
-      .then((res) => {
-        if (res.data.inCart) {
-          alert("Item Alredy In Cart");
-        }
-        if (res.data.itemAdded) {
-          alert("item Added Successfully");
-        }
-      });
+  const addToCart = async (pid, prise) => {
+    if (user) {
+      let result = await AddToCartProvider(pid, prise);
+      if (result.itemAdded) {
+        setNotify({
+          display: "flex",
+          text: "Item added to cart",
+          type: "SUCCESS",
+        });
+        setTimeout(() => {
+          setNotify({ display: "none" });
+        }, 2000);
+      }
+      if (result.inCart) {
+        setNotify({
+          display: "flex",
+          text: "Item already in cart",
+          type: "WARNING",
+        });
+        setTimeout(() => {
+          setNotify({ display: "none" });
+        }, 2000);
+      }
+    } else {
+      nav("/signin");
+    }
   };
   const onPurchase = () => {
     if (user) {
@@ -56,7 +70,7 @@ function ViewProductPage() {
           }
         });
     } else {
-      nav("/signin"); 
+      nav("/signin");
     }
   };
 
@@ -108,7 +122,7 @@ function ViewProductPage() {
                   }}
                 >
                   <img width="90%" src={product.image4} alt="" />
-                </div> 
+                </div>
               </div>
             </div>
             <div className="view-product-btns">
@@ -130,8 +144,8 @@ function ViewProductPage() {
 
           <div className="view-product-page-right-container">
             <h4>{product.title}</h4>
-            <Rating id={id} reviewDisplay={true}/>
-     
+            <Rating id={id} reviewDisplay={true} />
+
             <div className="prise">
               <p className="dis-prise">$ {product.discountPrise}</p>
               <del className="cut-prise">{product.orginalPrise}</del>
@@ -145,6 +159,14 @@ function ViewProductPage() {
           </div>
         </>
       ) : null}
+      <Notification
+        status={notify}
+        parentStyle={{
+          top: "50px",
+          alignItems: "center",
+          justifyContent: "flex-end",
+        }}
+      />
     </div>
   );
 }

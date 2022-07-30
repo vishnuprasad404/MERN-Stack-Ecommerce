@@ -71,7 +71,7 @@ function ProductsPage() {
   };
 
   return (
-    <div className="products-page">
+    <div className="products-page" id="allproducts">
       <Navbar />
       <CategorySubItem />
       <div className="products-page-container-wrapper">

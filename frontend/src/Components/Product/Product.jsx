@@ -3,12 +3,12 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart, faCartPlus } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import "./Product.css";
-import axios from "axios";
 import { EContextData as GlobalData } from "../../EContextData";
 import {
   AddToCartProvider,
   AddToFavoritesProvider,
-} from "../FetchDataProviders/AddToCartProvider";
+  CreateOrderProvider,
+} from "../../FetchDataProviders";
 import Notification from "../Notification/Notification";
 
 function Product(props) {
@@ -28,20 +28,13 @@ function Product(props) {
     goCart,
   } = props;
 
-  const onPurchase = () => {
+  const onPurchase = async () => {
     if (user) {
-      let orderObj = {
-        item: pid,
-        quantity: 1,
-        prise: parseInt(disPrise),
-      };
-      axios
-        .post(`${process.env.REACT_APP_BASE_URL}/create-order`, [orderObj])
-        .then((res) => {
-          if (res.data) {
-            nav(`/checkout/${res.data.OrderId}`);
-          }
-        });
+      let res = await CreateOrderProvider(pid, disPrise);
+      console.log(res);
+      if (res) {
+        nav(`/checkout/${res.OrderId}`);
+      }
     } else {
       nav("/signin");
     }
@@ -114,7 +107,6 @@ function Product(props) {
         </div>
         <div className="product-info">
           <p className="title">{title}</p>
-          {/* <Rating size="14px" id={pid} reviewDisplay="none" /> */}
           <div className="product-prise">
             <p className="discount-prise">$ {disPrise}</p>
             <del className="cut-prise">{cutPrise}</del>

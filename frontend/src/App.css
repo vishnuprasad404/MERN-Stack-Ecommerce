@@ -21,3 +21,8 @@ button {
 button:disabled {
   cursor: not-allowed;
 }
+
+ul {
+  list-style: none;
+  padding: 0;
+}

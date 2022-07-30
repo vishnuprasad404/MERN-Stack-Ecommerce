@@ -11,8 +11,8 @@ function Review(props) {
     axios
       .get(`${process.env.REACT_APP_BASE_URL}/get-all-reviews/${id}`)
       .then((res) => {
-        if(res.data){
-          setReviews(res.data.userRatings)
+        if (res.data) {
+          setReviews(res.data.userRatings);
         }
       });
   }, [id]);
@@ -23,13 +23,18 @@ function Review(props) {
         return (
           <div className="review-container">
             <div className="review-rating-and-username">
-              <Rating id={id} eachUser={{rate : itm.rating}} style={{width : '45px',height : '22px'}} />
+              <Rating
+                id={id}
+                eachUser={{ rate: itm.rating }}
+                style={{ width: "45px", height: "22px" }}
+              />
               <h6 className="review-username">{itm.user}</h6>
             </div>
             <p className="review-feedback">{itm.feedback}</p>
           </div>
         );
       })}
+      { reviews.length < 1 ? <span style={{color: 'grey'}}>No reviews available</span> : null}
     </div>
   );
 }

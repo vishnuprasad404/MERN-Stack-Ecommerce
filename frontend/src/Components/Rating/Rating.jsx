@@ -17,12 +17,14 @@ function Rating(props) {
         .get(`${process.env.REACT_APP_BASE_URL}/get-all-reviews/${id}`)
         .then((res) => {
           let rate = res.data.total_ratings;
-          setRating(rate.toFixed(1));
+          if (rate) {
+            setRating(rate.toFixed(1));
+          }
           setReviews(res.data.total_reviews);
         });
     } else {
       setRating(`${eachUser.rate}.0`);
-    }
+    } 
   }, [eachUser, id]);
 
   return (

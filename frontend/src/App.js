@@ -24,6 +24,7 @@ import { EContextData as GlobalData } from "./EContextData";
 import axios from "axios";
 import OrderPlacedNotifyPage from "./Pages/OrderPlacedNotifyPage/OrderPlacedNotifyPage";
 import OrdersItemDetailPage from "./Pages/OrdersItemDetailPage/OrdersItemDetailPage";
+import Footer from "./Components/Footer/Footer";
 
 function App() {
   const [user, setUser] = useState(false);
@@ -98,6 +99,7 @@ function App() {
           />
           <Route path="*" element={<ErrorPage />} />
         </Routes>
+        <Footer/>
       </GlobalData.Provider>
     </div>
   );

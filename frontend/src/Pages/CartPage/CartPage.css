@@ -1,5 +1,6 @@
 .cart-page{
     width: 100%;
+    height: max-content;
     display: flex;
     flex-wrap: wrap;
 }

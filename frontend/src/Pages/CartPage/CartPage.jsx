@@ -87,7 +87,7 @@ function CartPage() {
     <>
       <Navbar />
       {cartItems.length >= 1 ? (
-        <div className="cart-page">
+        <div className="cart-page" id="myCart">
           <div className="cart-item-container-wrapper">
             {cartItems.map((itm, key) => {
               return (
