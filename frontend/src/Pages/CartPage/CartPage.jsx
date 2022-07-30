@@ -9,27 +9,29 @@ import axios from "axios";
 import EmptyItemsPage from "../../Components/EmptyItemsPage/EmptyItemsPage";
 import empty_cart from "../../Assets/empty-cart.webp";
 import { EContextData as GlobalData } from "../../EContextData";
-
+import { Loading } from "../../Components/Loading/Loading";
 function CartPage() {
   const { user } = useContext(GlobalData);
 
   const nav = useNavigate();
   const [cartItems, setCartItems] = useState([]);
   const [totalPrise, setTotalPrise] = useState("");
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
     axios
       .get(`${process.env.REACT_APP_BASE_URL}/getcartproducts`)
       .then((res) => {
         setCartItems(res.data);
+        setLoading(false);
+        if (res.data.length >= 1) {
+          axios
+            .get(`${process.env.REACT_APP_BASE_URL}/getcarttotal`)
+            .then((res) => {
+              setTotalPrise(res.data.total);
+            });
+        }
       });
-    if (cartItems.length >= 1) {
-      axios
-        .get(`${process.env.REACT_APP_BASE_URL}/getcarttotal`)
-        .then((res) => {
-          setTotalPrise(res.data.total);
-        });
-    }
-  }, [cartItems]);
+  }, []);
 
   const manageQuantity = (cart, key, action) => {
     let temp = cartItems;
@@ -86,7 +88,7 @@ function CartPage() {
   return (
     <>
       <Navbar />
-      {cartItems.length >= 1 ? (
+      {!loading && cartItems.length >= 1 ? (
         <div className="cart-page" id="myCart">
           <div className="cart-item-container-wrapper">
             {cartItems.map((itm, key) => {
@@ -102,9 +104,12 @@ function CartPage() {
                     <h4>{itm.product.title}</h4>
                     <Rating
                       id={itm.item}
-                      width="40px"
-                      height="20px"
-                      margin="10px 0px"
+                      style={{
+                        marginTop: "5px",
+                        marginBottom: "5px",
+                        width: "50px",
+                        height: "25px",
+                      }}
                     />
                     <p>$ {itm.prise}</p>
                     <p style={{ color: "grey" }}>Quantity</p>
@@ -156,8 +161,10 @@ function CartPage() {
             </div>
           </div>
         </div>
-      ) : (
+      ) : !loading && cartItems.length < 1 ? (
         <EmptyItemsPage image={empty_cart} text="YOUR CART IS EMPTY" />
+      ) : (
+        <Loading height="400px" />
       )}
     </>
   );

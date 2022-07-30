@@ -98,10 +98,9 @@ function OrderProductPage() {
             },
           };
           var rzp1 = new window.Razorpay(options);
-          let opened = rzp1.open();
-
-          if (opened) {
-            setLoading(false);
+          let isOpend = rzp1.open();
+          if(isOpend){
+            setLoading(false)
           }
           //=======================razorpay ui end==================//
         }
@@ -109,6 +108,7 @@ function OrderProductPage() {
   };
 
   const verifyOnlinePayment = (payment, order) => {
+    setLoading(true)
     axios
       .post(`${process.env.REACT_APP_BASE_URL}/verify-online-payment`, {
         payment,
@@ -218,7 +218,7 @@ function OrderProductPage() {
                 {!loading ? (
                   "Check Out"
                 ) : (
-                  <Loading color="grey" iconSize="1.5rem" />
+                  <Loading iconSize="10px" style={{height: 'auto'}} />
                 )}
               </button>
             </div>

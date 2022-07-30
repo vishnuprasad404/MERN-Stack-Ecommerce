@@ -11,7 +11,7 @@ function SignupPage() {
   const [loading, setLoading] = useState(false);
   const { setUser } = useContext(EContextData);
   let [notify, setNotify] = useState({ display: "none" });
-  const nav = useNavigate();
+  const nav = useNavigate(); 
   const {
     register,
     formState: { errors },
@@ -109,11 +109,19 @@ function SignupPage() {
               "*Password much contain atlest 8 character"}
           </error>
 
-          <button className="form-btn" type="submit">
+          <button
+            className="form-btn"
+            type="submit"
+            style={{ background: loading ? "rgb(241, 241, 241)" : null }}
+          >
             {!loading ? (
               "Create Account"
             ) : (
-              <Loading iconSize="1.5rem" color="white" />
+              <Loading
+                iconSize="8px"
+                color="red"
+                style={{ height: "10px", width: "100%", position: "static" }}
+              />
             )}
           </button>
           <p style={{ fontSize: "12px" }}>

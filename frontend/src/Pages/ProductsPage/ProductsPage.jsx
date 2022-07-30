@@ -194,7 +194,12 @@ function ProductsPage() {
                     <div className="products-item-image-container">
                       <img width="130px" src={itm.image1} alt="" />
                     </div>
-                    <Rating id={itm._id} width='40px' height='20px' fontSize='10px' />
+                    <Rating
+                      id={itm._id}
+                      width="40px"
+                      height="20px"
+                      fontSize="10px"
+                    />
 
                     <p className="products-item-title">{itm.title}</p>
                     <p>
@@ -208,7 +213,6 @@ function ProductsPage() {
                         {itm.inStock >= 1 ? "inStock" : "outofStock"}
                       </span>
                     </p>
-                    {/* <Rating id={itm._id} width='40px' height='20px' fontSize='10px' /> */}
                     <br />
                   </div>
                 );
@@ -224,7 +228,7 @@ function ProductsPage() {
             </div>
           )
         ) : (
-          <Loading width="100%" height="600px" />
+          <Loading style={{ width: "100%", position: "absolute" }} />
         )}
       </div>
     </div>

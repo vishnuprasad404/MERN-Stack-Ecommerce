@@ -26,3 +26,6 @@ ul {
   list-style: none;
   padding: 0;
 }
+.App{
+ height: 100vh;
+}

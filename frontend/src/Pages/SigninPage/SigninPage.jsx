@@ -96,8 +96,20 @@ function SigninPage() {
               "*Password much contain atlest 8 character"}
           </error>
 
-          <button className="form-btn" type="submit">
-            {!loading ? "SignIn" : <Loading iconSize="1.5rem" color="white" />}
+          <button
+            className="form-btn"
+            type="submit"
+            style={{ background: loading ? "rgb(241, 241, 241)" : null }}
+          >
+            {!loading ? (
+              "SignIn"
+            ) : (
+              <Loading
+                iconSize="8px"
+                color="red"
+                style={{ height: "10px", width: "100%" }}
+              />
+            )}
           </button>
 
           <p style={{ fontSize: "12px" }}>

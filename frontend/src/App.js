@@ -99,7 +99,7 @@ function App() {
           />
           <Route path="*" element={<ErrorPage />} />
         </Routes>
-        <Footer/>
+        <Footer />
       </GlobalData.Provider>
     </div>
   );

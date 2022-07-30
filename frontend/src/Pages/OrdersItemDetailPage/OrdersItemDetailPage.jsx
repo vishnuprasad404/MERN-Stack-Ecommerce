@@ -7,6 +7,7 @@ import axios from "axios";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
 import { useForm } from "react-hook-form";
 import Rating from "../../Components/Rating/Rating";
+import {Loading} from '../../Components/Loading/Loading'
 
 function OrdersItemDetailPage() {
   const {
@@ -19,11 +20,13 @@ function OrdersItemDetailPage() {
   const { id } = useParams();
   const [product, setProduct] = useState();
   const [isReview, setIsReview] = useState();
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     axios
       .get(`${process.env.REACT_APP_BASE_URL}/user/get-orders`)
       .then((res) => {
+        setLoading(false)
         let getItem = res.data.find((data) => {
           return data.item === id;
         });
@@ -51,7 +54,7 @@ function OrdersItemDetailPage() {
   return (
     <>
       <Navbar />
-      {product ? (
+      {product && !loading ? (
         <div className="view-orders-item-details">
           <section className="view-orders-product-detail-section">
             <div className="view-orders-item-details-container">
@@ -176,7 +179,7 @@ function OrdersItemDetailPage() {
             </div>
           </section>
         </div>
-      ) : null}
+      ) : <Loading/>}
     </>
   );
 }
