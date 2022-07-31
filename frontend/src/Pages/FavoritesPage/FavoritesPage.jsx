@@ -11,9 +11,11 @@ import empty_wishlist from "../../Assets/empty-wishlist.png";
 
 function FavoritesPage() {
   const [favoriteProducts, setFavoriteProducts] = useState([]);
+  const [skelton, setSkelton] = useState(true)
   useEffect(() => {
     axios.get(`${process.env.REACT_APP_BASE_URL}/getfavorites`).then((res) => {
       setFavoriteProducts(res.data);
+      setSkelton(false)
     });
   }, []);
 
@@ -45,6 +47,7 @@ function FavoritesPage() {
                   <FontAwesomeIcon
                     icon={faTrash}
                     className="fav-btn"
+                    style={{display: skelton ? "none" : null}}
                     onClick={() => removeFavoriteItem(itm.item, key)}
                   />
                   <Product
@@ -57,6 +60,7 @@ function FavoritesPage() {
                     btnText="Add to cart"
                     pid={itm.item}
                     goCart="true"
+                    visible={!skelton}
                   />
                 </div>
               );

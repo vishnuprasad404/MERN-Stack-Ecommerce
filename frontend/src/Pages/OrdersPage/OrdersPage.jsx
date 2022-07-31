@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from "react";
 import "./OrdersPage.css";
 import Navbar from "../../Components/Navbar/Navbar";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import Rating from "../../Components/Rating/Rating";
 import { useNavigate } from "react-router-dom";
 import emptyOrder from "../../Assets/empty-orders.png";
 import EmptyItemsPage from "../../Components/EmptyItemsPage/EmptyItemsPage";
 import { Loading } from "../../Components/Loading/Loading";
+import FilterOrders from "../../Components/FilterOrders/FilterOrders";
 
 function OrdersPage() {
   const nav = useNavigate();
@@ -16,39 +15,21 @@ function OrdersPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios
-      .get(`${process.env.REACT_APP_BASE_URL}/user/get-orders`)
-      .then((res) => {
-        setOrders(res.data.reverse());
-        setLoading(false); 
-      });
-  });
+    GetAllOrders()
+  }, []);
+
+  const GetAllOrders = async () => {
+    let res = await axios.get(`${process.env.REACT_APP_BASE_URL}/user/get-orders`);
+    setOrders(res.data)
+    setLoading(false)
+  };
 
   return (
     <>
       <Navbar />
       {!loading && orders.length >= 1 ? (
         <div className="view-orders-page">
-          <section className="order-filter-section">
-            <h5>Filter Orders</h5>
-            <div className="filter-order-by-search">
-              <FontAwesomeIcon icon={faSearch} />
-              <input type="text" placeholder="Search order" />
-            </div>
-            <div className="sort-orders">
-              <p className="orders-sort-heading">Order Status</p>
-              <OrderSortOption opt="Pending" />
-              <OrderSortOption opt="Placed" />
-              <OrderSortOption opt="Deliverd" />
-              <OrderSortOption opt="Cancelled" />
-              <p className="orders-sort-heading">Order Time</p>
-              <OrderSortOption opt="Last 30 Days" />
-              <OrderSortOption opt="2022" />
-              <OrderSortOption opt="2021" />
-              <OrderSortOption opt="2019" />
-              <OrderSortOption opt="Older" />
-            </div>
-          </section>
+          <FilterOrders orders={orders} setOrders={setOrders} />
           <section className="orders-section">
             <div className="order-container-wrapper">
               {orders.map((itm, k) => {
@@ -84,6 +65,9 @@ function OrdersPage() {
                           </p>
                         </div>
                       </section>
+                      {itm.status === "pending" ? (
+                        <span className="pending-bnr">Pending</span>
+                      ) : null}
                       {itm.status === "placed" ? (
                         <span className="placed-bnr">Active</span>
                       ) : null}
@@ -110,18 +94,10 @@ function OrdersPage() {
           imageSize="200px"
         />
       ) : (
-        <Loading height='400px'/>
+        <Loading height="400px" />
       )}
     </>
   );
 }
 
-const OrderSortOption = (props) => {
-  return (
-    <div className="sort-order-option">
-      <input type="checkbox" />
-      {props.opt}
-    </div>
-  );
-};
 export default OrdersPage;

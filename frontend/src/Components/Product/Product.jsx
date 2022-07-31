@@ -117,7 +117,7 @@ function Product(props) {
           }`}
           onClick={() => nav(`/product/${pid}`)}
         >
-          <img width="50%" src={image} alt="" />
+          {visible ? <img width="50%" src={image} alt="" /> : null}
         </div>
         <div className="product-info">
           <p className={`${visible ? "title" : "skelton-title"}`}>
@@ -125,7 +125,7 @@ function Product(props) {
           </p>
           <div className={`${visible ? "product-prise" : "skelton-prise"}`}>
             <p className="discount-prise">{visible ? `$ ${disPrise}` : ""}</p>
-            <del className="cut-prise">{cutPrise}</del>
+            <del className="cut-prise">{visible ? cutPrise : ""}</del>
           </div>
           {inStock ? (
             <p
