@@ -172,15 +172,15 @@ router.get("/get-order/:order_id", async (req, res) => {
 });
 
 router.post("/create-order", async (req, res) => {
-  let today = new Date();
-  const yyyy = today.getFullYear();
-  let mm = today.getMonth() + 1;
-  let dd = today.getDate();
+  // let today = new Date();
+  // const yyyy = today.getFullYear();
+  // let mm = today.getMonth() + 1;
+  // let dd = today.getDate();
 
-  if (dd < 10) dd = "0" + dd;
-  if (mm < 10) mm = "0" + mm;
+  // if (dd < 10) dd = "0" + dd;
+  // if (mm < 10) mm = "0" + mm;
 
-  today = dd + "/" + mm + "/" + yyyy;
+  // today = dd + "/" + mm + "/" + yyyy;
 
   if (req.session.user) {
     const orderID = crypto.randomBytes(16).toString("hex");
@@ -193,7 +193,7 @@ router.post("/create-order", async (req, res) => {
       user: ObjectId(req.session.user._id),
       username: req.session.user.username,
       order_id: orderID,
-      created_at: today,
+      created_at: new Date(),
       status: "pending",
       address: address,
       products: req.body,

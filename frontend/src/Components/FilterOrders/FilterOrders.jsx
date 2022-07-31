@@ -5,16 +5,12 @@ import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 
 function FilterOrders(props) {
-  const { orders, setOrders } = props;
+  const { setSearchQuery } = props;
   const [filterActive, setFilterActive] = useState("");
 
   const filterOrders = async (query) => {
     setFilterActive(query);
-    let filterdData=orders.filter((data)=>{
-        return data.status == query
-    })
-    console.log(filterdData);
-    setOrders(filterdData)
+    setSearchQuery(query);
   };
 
   return (
