@@ -1,6 +1,10 @@
 import React, { useContext, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHeart, faCartPlus } from "@fortawesome/free-solid-svg-icons";
+import {
+  faHeart,
+  faCartPlus,
+  faBars,
+} from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import "./Product.css";
 import { EContextData as GlobalData } from "../../EContextData";
@@ -26,6 +30,7 @@ function Product(props) {
     pid,
     btnText,
     goCart,
+    visible,
   } = props;
 
   const onPurchase = async () => {
@@ -98,17 +103,28 @@ function Product(props) {
 
   return (
     <>
-      <div className={`product ${className}`} style={{ width: width }}>
+      <div
+        className={`product ${className}`}
+        style={{
+          width: width,
+          display: visible ? "flex" : "block",
+          height: !visible ? "320px" : null,
+        }}
+      >
         <div
-          className="product-image-container"
+          className={`${
+            visible ? "product-image-container" : "skelton-image-container"
+          }`}
           onClick={() => nav(`/product/${pid}`)}
         >
           <img width="50%" src={image} alt="" />
         </div>
         <div className="product-info">
-          <p className="title">{title}</p>
-          <div className="product-prise">
-            <p className="discount-prise">$ {disPrise}</p>
+          <p className={`${visible ? "title" : "skelton-title"}`}>
+            {visible ? title : ""}
+          </p>
+          <div className={`${visible ? "product-prise" : "skelton-prise"}`}>
+            <p className="discount-prise">{visible ? `$ ${disPrise}` : ""}</p>
             <del className="cut-prise">{cutPrise}</del>
           </div>
           {inStock ? (
@@ -122,7 +138,13 @@ function Product(props) {
               {inStock < 1 ? "Out of stock" : "inStock"}
             </p>
           ) : null}
-          <div className="product-actions">
+          <div
+            className="product-actions"
+            style={{
+              marginTop: !visible ? "10px" : null,
+              width: !visible ? "70%" : null,
+            }}
+          >
             <button
               style={{
                 width: `${goCart ? "100%" : ""}`,
@@ -132,7 +154,7 @@ function Product(props) {
               onClick={() => {
                 goCart === "true" ? addToCart() : onPurchase();
               }}
-              className="buy"
+              className={`${visible ? "buy" : "skelton-btn"}`}
             >
               {btnText ? btnText : inStock < 1 ? "Out of Stock" : "BUY NOW"}
             </button>
@@ -141,14 +163,16 @@ function Product(props) {
               style={{ display: `${goCart ? "none" : "flex"}` }}
             >
               <FontAwesomeIcon
-                className="action-icon addcart"
-                icon={faCartPlus}
+                className={`${
+                  visible ? "action-icon addcart" : "skelton-icon"
+                }`}
+                icon={visible ? faCartPlus : faBars}
                 style={{ display: `${inStock < 1 ? "none" : null}` }}
                 onClick={addToCart}
               />
               <FontAwesomeIcon
-                className="action-icon addfav"
-                icon={faHeart}
+                className={`${visible ? "action-icon addfav" : "skelton-icon"}`}
+                icon={visible ? faHeart : faBars}
                 onClick={addToFavorites}
                 style={{ display: `${inStock < 1 ? "none" : null}` }}
               />

@@ -14,13 +14,15 @@ import { Link } from "react-router-dom";
 import CategoryBannerItem from "../CategoryBannerItem/CategoryBannerItem";
 
 function HomeSection() {
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState([1,1,1,1,1]);
+  const [skelton, setSkelton] = useState(true)
   useEffect(() => {
     axios.get(`${process.env.REACT_APP_BASE_URL}/products`).then((res) => {
       let data = res.data.filter((item) => {
         return item.inStock >= 1;
       });
       setProducts(data);
+      setSkelton(false)
     });
   },[products]);
 
@@ -49,6 +51,7 @@ function HomeSection() {
               cutPrise={itm.orginalPrise}
               pid={itm._id}
               inStock={itm.inStock}
+              visible={!skelton}
             />
           );
         })}

@@ -6,13 +6,17 @@ const ObjectId = require('mongodb').ObjectId
 //get products start
 
 router.get("/products", async (req, res) => {
-  let products = await db
+  try {
+    let products = await db
     .get()
     .collection(process.env.PRODUCTS_COLLECTION)
     .find()
     .toArray();
   if (products) {
     res.json(products);
+  }
+  } catch (error) {
+    res.send("Network issue")
   }
 });
 
