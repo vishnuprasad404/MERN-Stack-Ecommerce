@@ -91,8 +91,10 @@ function ProductsPage() {
             }`}
           >
             <p className="fiter-heading">Filter by Category</p>
-            <select onChange={filterByCategory}>
-              <option value="">All Products</option>
+            <select
+              onChange={(e)=>filterByCategory(e.target.value)}
+            >
+              <option value="all">All Products</option>
               <option value="mobiles">Mobiles</option>
               <option value="electronics">Elactronics</option>
               <option value="appliences">Appliences</option>
@@ -185,38 +187,39 @@ function ProductsPage() {
                 loading ? "products-list-loading" : "products-list-container"
               }
             >
-              {products.map((itm) => {
-                return (
-                  <div
-                    className="products-item-container"
-                    onClick={() => nav(`/product/${itm._id}`)}
-                  >
-                    <div className="products-item-image-container">
-                      <img width="130px" src={itm.image1} alt="" />
-                    </div>
-                    <Rating
-                      id={itm._id}
-                      width="40px"
-                      height="20px"
-                      fontSize="10px"
-                    />
+              {products
+                .map((itm) => {
+                  return (
+                    <div
+                      className="products-item-container"
+                      onClick={() => nav(`/product/${itm._id}`)}
+                    >
+                      <div className="products-item-image-container">
+                        <img width="130px" src={itm.image1} alt="" />
+                      </div>
+                      <Rating
+                        id={itm._id}
+                        width="40px"
+                        height="20px"
+                        fontSize="10px"
+                      />
 
-                    <p className="products-item-title">{itm.title}</p>
-                    <p>
-                      $ {itm.discountPrise} <del>{itm.orginalPrise}</del>{" "}
-                      <span
-                        style={{
-                          fontSize: "9px",
-                          color: `${itm.inStock >= 1 ? "green" : "red"}`,
-                        }}
-                      >
-                        {itm.inStock >= 1 ? "inStock" : "outofStock"}
-                      </span>
-                    </p>
-                    <br />
-                  </div>
-                );
-              })}
+                      <p className="products-item-title">{itm.title}</p>
+                      <p>
+                        $ {itm.discountPrise} <del>{itm.orginalPrise}</del>{" "}
+                        <span
+                          style={{
+                            fontSize: "9px",
+                            color: `${itm.inStock >= 1 ? "green" : "red"}`,
+                          }}
+                        >
+                          {itm.inStock >= 1 ? "inStock" : "outofStock"}
+                        </span>
+                      </p>
+                      <br />
+                    </div>
+                  );
+                })}
             </div>
           ) : (
             <div className="no-product-container">

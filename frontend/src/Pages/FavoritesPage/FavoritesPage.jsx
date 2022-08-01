@@ -11,11 +11,9 @@ import empty_wishlist from "../../Assets/empty-wishlist.png";
 
 function FavoritesPage() {
   const [favoriteProducts, setFavoriteProducts] = useState([]);
-  const [skelton, setSkelton] = useState(true)
   useEffect(() => {
     axios.get(`${process.env.REACT_APP_BASE_URL}/getfavorites`).then((res) => {
       setFavoriteProducts(res.data);
-      setSkelton(false)
     });
   }, []);
 
@@ -29,7 +27,7 @@ function FavoritesPage() {
       .delete(`${process.env.REACT_APP_BASE_URL}/removefavoriteitem/${id}`)
       .then((res) => {
         if (res.data) {
-          alert("Item Removed"); 
+          alert("Item Removed");
         }
       });
   };
@@ -40,31 +38,21 @@ function FavoritesPage() {
       <CategorySubItems />
       {favoriteProducts.length >= 1 ? (
         <>
-          <div className="favorites-page container">
-            {favoriteProducts.map((itm, key) => {
-              return (
-                <div className="fav-product-container">
-                  <FontAwesomeIcon
-                    icon={faTrash}
-                    className="fav-btn"
-                    style={{display: skelton ? "none" : null}}
-                    onClick={() => removeFavoriteItem(itm.item, key)}
-                  />
+          <div className="favorites-page container-fluid">
+            <div className="row gy-5">
+              {favoriteProducts.map((itm, key) => {
+                return (
                   <Product
-                    className="fav-product"
-                    width="auto"
                     title={itm.product[0].title}
                     image={itm.product[0].image1}
                     disPrise={itm.product[0].discountPrise}
                     cutPrise={itm.product[0].orginalPrise}
-                    btnText="Add to cart"
                     pid={itm.item}
-                    goCart="true"
-                    visible={!skelton}
+                    favorites
                   />
-                </div>
-              );
-            })}
+                );
+              })}
+            </div>
           </div>
         </>
       ) : (

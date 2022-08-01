@@ -16,8 +16,8 @@ function Footer() {
           <FontAwesomeIcon icon={faGift} className="footer-icon" />
         </div>
       </div>
-      <div className="container-fluid p-5">
-        <div className="row">
+      <div className="container-fluid p-5 ">
+        <div className="row" >
           <div className="col-md-3 footer-content">
             <h5>Ecart</h5>
             <p>

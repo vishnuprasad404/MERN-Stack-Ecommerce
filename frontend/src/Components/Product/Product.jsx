@@ -1,10 +1,6 @@
 import React, { useContext, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faHeart,
-  faCartPlus,
-  faBars,
-} from "@fortawesome/free-solid-svg-icons";
+import { faHeart, faCartPlus, faBars, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import "./Product.css";
 import { EContextData as GlobalData } from "../../EContextData";
@@ -19,19 +15,7 @@ function Product(props) {
   const { user } = useContext(GlobalData);
   const [notify, setNotify] = useState({ display: "none" });
   const nav = useNavigate();
-  const {
-    className,
-    width,
-    title,
-    image,
-    disPrise,
-    cutPrise,
-    inStock,
-    pid,
-    btnText,
-    goCart,
-    visible,
-  } = props;
+  const { title, image, disPrise, cutPrise, inStock, pid, favorites } = props;
 
   const onPurchase = async () => {
     if (user) {
@@ -103,78 +87,38 @@ function Product(props) {
 
   return (
     <>
-      <div
-        className={`product ${className}`}
-        style={{
-          width: width,
-          display: visible ? "flex" : "block",
-          height: !visible ? "320px" : null,
-        }}
-      >
-        <div
-          className={`${
-            visible ? "product-image-container" : "skelton-image-container"
-          }`}
-          onClick={() => nav(`/product/${pid}`)}
-        >
-          {visible ? <img width="50%" src={image} alt="" /> : null}
-        </div>
-        <div className="product-info">
-          <p className={`${visible ? "title" : "skelton-title"}`}>
-            {visible ? title : ""}
-          </p>
-          <div className={`${visible ? "product-prise" : "skelton-prise"}`}>
-            <p className="discount-prise">{visible ? `$ ${disPrise}` : ""}</p>
-            <del className="cut-prise">{visible ? cutPrise : ""}</del>
+      <div className="col-6 col-sm-4 col-md-3 col-lg-2 product-column">
+        <div className="card product-card">
+          <div className="product-image-container">
+            <img src={image} alt="img" />
           </div>
-          {inStock ? (
-            <p
-              className="product-stock"
-              style={{
-                fontSize: "11px",
-                color: `${inStock < 1 ? "red" : "green"}`,
-              }}
-            >
-              {inStock < 1 ? "Out of stock" : "inStock"}
+          <div className="card-body">
+            <h6 className="card-title product-card-title">{title}</h6>
+            <p className="card-text mb-0">
+              ${disPrise}
+              <del>{cutPrise}</del>
             </p>
-          ) : null}
-          <div
-            className="product-actions"
-            style={{
-              marginTop: !visible ? "10px" : null,
-              width: !visible ? "70%" : null,
-            }}
-          >
-            <button
-              style={{
-                width: `${goCart ? "100%" : ""}`,
-                backgroundColor: `${inStock < 1 ? "#b9d6ff" : null}`,
-              }}
-              disabled={inStock < 1 ? true : false}
-              onClick={() => {
-                goCart === "true" ? addToCart() : onPurchase();
-              }}
-              className={`${visible ? "buy" : "skelton-btn"}`}
-            >
-              {btnText ? btnText : inStock < 1 ? "Out of Stock" : "BUY NOW"}
-            </button>
-            <div
-              className="action-icons"
-              style={{ display: `${goCart ? "none" : "flex"}` }}
-            >
+            {inStock ? (
+              <span
+                className="instock"
+                style={{ color: inStock >= 1 ? "green" : "red" }}
+              >
+                {inStock >= 1 ? "inStock" : "outofStock"}
+              </span>
+            ) : null}
+            <div className="product-action-btns mt-3">
+              <button className="buy" onClick={onPurchase}>
+                Buy Now
+              </button>
               <FontAwesomeIcon
-                className={`${
-                  visible ? "action-icon addcart" : "skelton-icon"
-                }`}
-                icon={visible ? faCartPlus : faBars}
-                style={{ display: `${inStock < 1 ? "none" : null}` }}
-                onClick={addToCart}
+                icon={favorites ? faTrash : faHeart}
+                className="fav-icon"
+                onClick={addToFavorites}
               />
               <FontAwesomeIcon
-                className={`${visible ? "action-icon addfav" : "skelton-icon"}`}
-                icon={visible ? faHeart : faBars}
-                onClick={addToFavorites}
-                style={{ display: `${inStock < 1 ? "none" : null}` }}
+                icon={faCartPlus}
+                className="cart-icon"
+                onClick={addToCart}
               />
             </div>
           </div>

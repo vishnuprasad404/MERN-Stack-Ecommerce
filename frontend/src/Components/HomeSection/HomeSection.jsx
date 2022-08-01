@@ -12,23 +12,26 @@ import banner3 from "../../Assets/gaming.webp";
 
 import { Link } from "react-router-dom";
 import CategoryBannerItem from "../CategoryBannerItem/CategoryBannerItem";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCartPlus, faHeart } from "@fortawesome/free-solid-svg-icons";
 
 function HomeSection() {
-  const [products, setProducts] = useState([1,1,1,1,1]);
-  const [skelton, setSkelton] = useState(true)
+  const [products, setProducts] = useState([1, 1, 1, 1, 1]);
+  const [skelton, setSkelton] = useState(true);
   useEffect(() => {
     axios.get(`${process.env.REACT_APP_BASE_URL}/products`).then((res) => {
-      let data = res.data.filter((item) => {
+      let items = res.data;
+      let data = items.filter((item) => {
         return item.inStock >= 1;
       });
       setProducts(data);
-      setSkelton(false)
+      setSkelton(false);
     });
-  },[products]);
+  }, []);
 
   return (
     <div className="home-section">
-      <CategorySubItem /> 
+      <CategorySubItem />
       <Carousel
         enableAutoPlay={true}
         autoPlaySpeed={3000}
@@ -36,25 +39,26 @@ function HomeSection() {
         enableTilt={true}
       >
         <Banner image={window.screen.width <= "500" ? banner1small : banner1} />
-        <Banner image={banner2}/>
+        <Banner image={banner2} />
         <Banner image={banner3} />
         <Banner image={banner1} />
         <Banner image={banner2} />
       </Carousel>
-      <div className="products-container">
-        {products.slice(0, 5).map((itm) => {
-          return (
-            <Product
+      <div className="products-container container-fluid ">
+        <div className="row gy-5">
+          {products.slice(0, 6).map((itm) => {
+            return (
+              <Product
+              pid={itm._id}
               title={itm.title}
               image={itm.image1}
               disPrise={itm.discountPrise}
               cutPrise={itm.orginalPrise}
-              pid={itm._id}
               inStock={itm.inStock}
-              visible={!skelton}
-            />
-          );
-        })}
+              />
+            );
+          })}
+        </div>
       </div>
       <center>
         <Link className="see-more" to="/products">

@@ -30,9 +30,6 @@ function Navbar() {
     }
   };
 
-  // const onSerchChange=(event)=>{
-  //   nav(`/products?item=${event.target.value}`)
-  // }
 
   useEffect(() => {
     axios

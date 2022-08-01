@@ -64,7 +64,10 @@ function OrdersPage() {
                           </div>
                           <div className="orders-item-title-and-prise">
                             <h6>{itm.product.title}</h6>
-                            <Rating id={itm.item} />
+                            <Rating
+                              id={itm.item}
+                              style={{ width: "45px", height: "25px" }}
+                            />
 
                             <br />
                             <p>

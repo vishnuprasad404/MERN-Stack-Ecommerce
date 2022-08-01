@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import "./CategorySubItem.css";
 import { useNavigate } from "react-router-dom";
 
 function CategorySubItem() {
-  const [categoryMockData] = useState([
+  const categoryMockData = [
     {
       title: "Top Offers",
       image:
@@ -45,7 +45,7 @@ function CategorySubItem() {
         "https://static.acer.com/up/Resource/Acer/Desktop/Aspire-C24/images/20201014/Acer-Aspire_C24-1651_modelpreview.png",
       category: "desktop",
     },
-  ]);
+  ];
   const nav = useNavigate();
   return (
     <div className="category-list-container">

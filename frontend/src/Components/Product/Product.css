@@ -10,238 +10,113 @@
   --skelton-size: 50% 100%;
   --seklton-position: 0 0;
 }
-.product {
-  width: 280px;
-  height: 350px;
-  background-color: rgba(255, 255, 255, 0.171);
-  border-radius: 10px;
-  box-shadow: 10px 10px 18px 10px rgba(100, 100, 100, 0.13);
-  padding: 10px;
-  margin: 10px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  transition: 0.5s;
-  cursor: pointer;
-  position: relative;
+
+
+.product-card{
+  border: none;
+  box-shadow: 0px 0px 10px 10px rgb(240, 240, 240);
 }
-.product-image-container {
+.product-image-container{
   width: 100%;
-  height: 150px;
+  height: 130px;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+.product-image-container img{
+  width: 45%;
+}
+.product-card-title{
+  max-width: 90%;
+  height: 34px;
+  display: flex;
   overflow: hidden;
 }
-.skelton-image-container {
-  width: 100%;
-  height: 150px;
-  background: var(--skelton-background);
-  background-repeat: var(--skelton-repeat);
-  background-size: var(--skelton-size);
-  background-position: var(--seklton-position);
-  animation: skelton 2s ease infinite;
+.card-text{
+  color: rgb(80, 80, 80);
+  font-weight: 600;
 }
-
-.title {
-  margin-top: 10px;
-  font-size: 16px;
-  max-width: 80%;
-  max-height: 48px;
-  overflow: hidden;
-  letter-spacing: 0.6px;
+.card-text del{
+  font-size: 11px;
+  margin-left: 5px;
+  color: red;
+  font-weight: normal;
 }
-.skelton-title {
-  width: 80%;
-  height: 15px;
-  margin-top: 10px;
-  background: var(--skelton-background);
-  background-repeat: var(--skelton-repeat);
-  background-size: var(--skelton-size);
-  background-position: var(--seklton-position);
-  animation: skelton 2s ease infinite;
-}
-
-p {
-  margin-bottom: 10px;
-}
-.product-prise {
+.product-action-btns{
   display: flex;
-}
-.skelton-prise {
-  display: flex;
-  background: var(--skelton-background);
-  background-repeat: var(--skelton-repeat);
-  background-size: var(--skelton-size);
-  background-position: var(--seklton-position);
-  animation: skelton 2s ease infinite;
-}
-
-.discount-prise {
-  margin-right: 5px;
-  font-size: 16px;
-  color: rgba(8, 172, 8, 0.808);
-  letter-spacing: 0.4px;
-}
-.cut-prise {
-  font-size: 12px;
-  margin-top: 5px;
-  color: grey;
-}
-
-.product-actions {
-  width: 100% !important;
-  display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: space-between;
+  padding-top: 20px;
+}
+.instock{
+  font-size: 10px;
+  margin: 0;
+}
+.fav-icon{
   position: absolute;
-  bottom: 20px;
-  padding: 0 10px;
-  left: 0;
-}
-
-.buy {
-  width: 150px;
-  height: 40px;
-  border: none;
-  border-radius: 2px;
-  color: white;
-  background-color: rgb(131, 205, 255);
-  letter-spacing: 0.8px;
-}
-.skelton-btn{
-  width: 150px;
-  height: 40px;
-  border: none;
-  border-radius: 0;
-  color: transparent;
-  background: var(--skelton-background);
-  background-repeat: var(--skelton-repeat);
-  background-size: var(--skelton-size);
-  background-position: var(--seklton-position);
-  animation: skelton 2s ease infinite;
-}
-
-.buy:hover {
-  background-color: black;
-  transition: 1s;
-}
-/*  */
-.action-icon {
-  background-color: #e6e6e6e0;
-  margin-right: 7px;
-  padding: 10px;
-  color: rgb(0, 0, 0);
+  top: 10px;
+  right: 10px;
+  color: rgb(201, 201, 201);
   cursor: pointer;
 }
-.skelton-icon{
-  border-radius: 100%;
-  padding: 8px 9px;
-  margin: 0 5px;
-  color: transparent;
-  background: var(--skelton-background);
-  background-repeat: var(--skelton-repeat);
-  background-size: var(--skelton-size);
-  background-position: var(--seklton-position);
-  animation: skelton 2s ease infinite;
+.cart-icon{
+  padding: 10px;
+  background-color: rgba(0, 0, 0, 0.034);
+  cursor: pointer;
 }
-
-
-@media (max-width: 1000px) {
-  .product {
-    width: 200px;
-    height: fit-content;
-  }
-  .product-image-container {
-    height: 150px;
-  }
-  .product-image-container img {
-    width: 60%;
-  }
-  .title {
-    font-size: 12px;
-    margin-left: 10px;
-  }
-  .discount-prise {
-    font-size: 10px;
-    margin-left: 10px;
-  }
-  .cut-prise {
-    margin: 0;
-    font-size: 9px;
-  }
-  .buy {
-    width: 55%;
-    height: 30px;
-  }
-  .action-icon {
-    padding: 4px;
-    font-size: 13px;
-    margin-right: 10px;
-  }
+.buy{
+  width: 75%;
+  height: 40px;
+  background-color: rgb(162, 204, 253);
 }
-
-@media (max-width: 440px) {
-  .product {
-    width: 150px;
-    position: relative;
+@media (max-width: 450px) {
+  .product-card{
+    height: auto !important;
+    min-height: max-content;
   }
-  .product-image-container {
-    height: 80px;
+  .product-image-container{
+    height: 110px !important;
   }
-  .product-image-container img {
-    width: 60%;
+  .product-card-title{
+    max-width: 95%;
+    font-size: 14.3px;
   }
-  .title {
-    font-size: 11px;
-    margin-left: 5px;
-    max-height: 30px;
-  }
-  .discount-prise {
-    margin-left: 5px;
-  }
-  .buy {
-    width: 100%;
-    height: 30px;
-  }
-  .addfav {
+  .fav-icon{
     display: none;
   }
-  .addcart {
+  .cart-icon{
     position: absolute;
-    top: 0px;
-    left: 81%;
-    border-radius: 0;
-    padding: 7px;
-    border-top-right-radius: 10px;
-    background-color: rgb(131, 205, 255);
-    color: white;
+    top: 10px;
+    right: 10px;
+    padding: 0;
+    background: none;
+    color: rgb(104, 104, 104);
+  }
+  .buy{
+    width: 100%;
   }
 }
 
-@media (max-width: 340px) {
-  .product {
-    width: 220px;
-    /* height: 240px; */
+@media (max-width: 400px) {
+   .product-image-container img{
+    width: 60%;
+   }
+}
+
+@media (max-width: 350px) {
+  .product-column{
+    width: 100%;
   }
-  .product-image-container {
-    height: 160px;
+  .product-image-container{
+    height: max-content;
+
   }
-  .product-image-container img {
+  .product-image-container img{
     width: 40%;
   }
 }
-@media (max-width: 250px) {
-  .product {
-    width: 160px;
-  }
-  .product-image-container {
-    height: 90px;
-  }
-  .product-image-container img {
-    width: 50%;
-  }
-}
+
+
 
 /* ---------------sekelton animation------- */
 @keyframes skelton {
