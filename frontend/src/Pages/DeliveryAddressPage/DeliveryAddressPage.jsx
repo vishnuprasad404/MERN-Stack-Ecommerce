@@ -3,17 +3,19 @@ import "./DeliveryAddressPage.css";
 import Navbar from "../../Components/Navbar/Navbar";
 import DeliveryAddressForm from "../../Components/DeliveryAddressForm/DeliveryAddressForm";
 import DeliveryAddressContainer from "../../Components/DeliveryAddressContainer/DeliveryAddressContainer";
-import axios from "axios";
+import {GetDeliveryAddressProvider} from '../../ApiRenderController'
 
 function DeliveryAddressPage() {
   const [shippingAddress, setShippingAddress] = useState({});
   useEffect(() => {
-    axios
-      .get(`${process.env.REACT_APP_BASE_URL}/getshippingaddress`)
-      .then((res) => {
-        setShippingAddress(res.data);
-      });
+    getShippingAddress()
   });
+
+  const getShippingAddress=async()=>{
+    let res = await GetDeliveryAddressProvider()
+    setShippingAddress(res)
+  }
+
   return (
     <>
       <Navbar />

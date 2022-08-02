@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import "./OrdersPage.css";
 import Navbar from "../../Components/Navbar/Navbar";
-import axios from "axios";
 import Rating from "../../Components/Rating/Rating";
 import { useNavigate } from "react-router-dom";
 import emptyOrder from "../../Assets/empty-orders.png";
 import EmptyItemsPage from "../../Components/EmptyItemsPage/EmptyItemsPage";
 import { Loading } from "../../Components/Loading/Loading";
 import FilterOrders from "../../Components/FilterOrders/FilterOrders";
+import { GetAllOrdersProvider } from "../../ApiRenderController";
 
 function OrdersPage() {
   const nav = useNavigate();
@@ -16,16 +16,13 @@ function OrdersPage() {
   const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
+    const GetAllOrders = async () => {
+      let res = await GetAllOrdersProvider();
+      setOrders(res);
+      setLoading(false); 
+    };
     GetAllOrders();
-  }, []);
-
-  const GetAllOrders = async () => {
-    let res = await axios.get(
-      `${process.env.REACT_APP_BASE_URL}/user/get-orders`
-    );
-    setOrders(res.data);
-    setLoading(false);
-  };
+  },[]);
 
   return (
     <>
@@ -52,7 +49,7 @@ function OrdersPage() {
                   if (mm < 10) mm = "0" + mm;
                   date = dd + "/" + mm + "/" + yyyy;
                   return (
-                    <>
+                    <div key={k}>
                       <p className="order-date">{date}</p>
                       <div
                         className="orders-container"
@@ -91,7 +88,7 @@ function OrdersPage() {
                           <span className="cancelled-bnr">Cancelled</span>
                         ) : null}
                       </div>
-                    </>
+                    </div>
                   );
                 })}
             </div>

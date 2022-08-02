@@ -3,11 +3,15 @@ import "./OrdersItemDetailPage.css";
 import Navbar from "../../Components/Navbar/Navbar";
 import { useParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import axios from "axios";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
 import { useForm } from "react-hook-form";
 import Rating from "../../Components/Rating/Rating";
-import {Loading} from '../../Components/Loading/Loading'
+import { Loading } from "../../Components/Loading/Loading";
+import {
+  GetAllOrdersProvider,
+  GetUserOwnReviewProvider,
+  AddProductReviewProvider,
+} from "../../ApiRenderController";
 
 function OrdersItemDetailPage() {
   const {
@@ -20,35 +24,31 @@ function OrdersItemDetailPage() {
   const { id } = useParams();
   const [product, setProduct] = useState();
   const [isReview, setIsReview] = useState();
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    axios
-      .get(`${process.env.REACT_APP_BASE_URL}/user/get-orders`)
-      .then((res) => {
-        setLoading(false)
-        let getItem = res.data.find((data) => {
+    const GetAllOrders = async () => {
+      let res = await GetAllOrdersProvider();
+      if (res) {
+        setLoading(false);
+        let getItem = res.find((data) => {
           return data.item === id;
         });
         setProduct(getItem);
-        axios
-          .get(
-            `${process.env.REACT_APP_BASE_URL}/user/review/${getItem.product._id}`
-          )
-          .then((res) => {
-            setIsReview(res.data);
-            setRating(res.data.rating);
-          });
-      });
+        let review = await GetUserOwnReviewProvider(getItem.product._id);
+        if (review) {
+          setIsReview(review);
+          setRating(review.rating);
+        }
+      }
+    };
+    GetAllOrders();
   }, [id]);
 
-  const addReview = (data) => {
+  const addReview = async (data) => {
     data.id = id;
-    axios
-      .post(`${process.env.REACT_APP_BASE_URL}/add-review`, data)
-      .then((res) => {
-        console.log(res.data);
-      });
+    let res = await AddProductReviewProvider(data);
+    console.log(res);
   };
 
   return (
@@ -126,7 +126,7 @@ function OrdersItemDetailPage() {
                         {[...Array(5)].map((star, i) => {
                           let ratingValue = i + 1;
                           return (
-                            <label>
+                            <label key={i}>
                               <input
                                 type="radio"
                                 name="rating"
@@ -153,10 +153,10 @@ function OrdersItemDetailPage() {
                           );
                         })}
                       </div>
-                      <error className="err">
+                      <span className="err">
                         {errors.rating?.type === "required" &&
                           "Please add a rating"}
-                      </error>
+                      </span>
                       <textarea
                         rows="5"
                         placeholder="Write a review"
@@ -165,10 +165,10 @@ function OrdersItemDetailPage() {
                           required: isReview ? false : true,
                         })}
                       ></textarea>
-                      <error className="err">
+                      <span className="err">
                         {errors.feedback?.type === "required" &&
                           "Please add your feedback"}
-                      </error>
+                      </span>
                       <button type="submit" className="review-btn">
                         {isReview ? "Update Review" : "Submit Review"}
                       </button>
@@ -179,7 +179,9 @@ function OrdersItemDetailPage() {
             </div>
           </section>
         </div>
-      ) : <Loading/>}
+      ) : (
+        <Loading />
+      )}
     </>
   );
 }

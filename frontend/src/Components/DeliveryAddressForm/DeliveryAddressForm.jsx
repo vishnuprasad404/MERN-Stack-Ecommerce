@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import "./DeliveryAddressForm.css";
 import DeliveryAddressInputBox from "../../Components/DeliveryAddressInputBox/DeliveryAddressInputBox";
-import axios from "axios";
+import {AddDeliverAddressProvider, GetDeliveryAddressProvider} from '../../ApiRenderController'
+
 
 function DeliveryAddressForm() {
   const [shippingAddress, setShippingAddress] = useState({});
@@ -13,17 +14,18 @@ function DeliveryAddressForm() {
   } = useForm();
 
   useEffect(() => {
-    axios
-      .get(`${process.env.REACT_APP_BASE_URL}/getshippingaddress`)
-      .then((res) => {
-        setShippingAddress(res.data);
-      });
+    getShippingAddress()
   });
-
+  const getShippingAddress=async()=>{
+    let res = await GetDeliveryAddressProvider()
+    setShippingAddress(res)
+  }
   const onSaveAddress = (data) => {
-    axios
-      .post(`${process.env.REACT_APP_BASE_URL}/addshippingaddress`, data)
-      .then((res) => {});
+    let res = AddDeliverAddressProvider(data)
+    console.log(res);
+    if(res){
+
+    }
   };
 
   return (
@@ -39,9 +41,9 @@ function DeliveryAddressForm() {
               required={true}
               label="Full Name"
             />
-            <error className="err">
+            <span className="err">
               {errors.name?.type === "required" && `* Full Name is required`}
-            </error>
+            </span>
           </div>
 
           <div className="inp-container">
@@ -54,10 +56,10 @@ function DeliveryAddressForm() {
               required={true}
               label="Mobile Number"
             />
-            <error className="err">
+            <span className="err">
               {errors.mobile?.type === "required" &&
                 `* Mobile number is required`}
-            </error>
+            </span>
           </div>
         </div>
         <div className="inp-pair">
@@ -71,9 +73,9 @@ function DeliveryAddressForm() {
               required={true}
               label="Pincode"
             />
-            <error className="err">
+            <span className="err">
               {errors.pincode?.type === "required" && `* Pin Code is required`}
-            </error>
+            </span>
           </div>
           <div className="inp-container">
             <DeliveryAddressInputBox
@@ -85,10 +87,10 @@ function DeliveryAddressForm() {
               }
               label="Locality"
             />
-            <error className="err">
+            <span className="err">
               {errors.locality?.type === "required" &&
                 `* Locality number is required`}
-            </error>
+            </span>
           </div>
         </div>
         <div className="inp-container">
@@ -102,10 +104,10 @@ function DeliveryAddressForm() {
           ></textarea>
           <br />
 
-          <error className="err">
+          <span className="err">
             {errors.address?.type === "required" &&
               "* Address number is required"}
-          </error>
+          </span>
         </div>
 
         <div className="inp-pair">
@@ -122,10 +124,10 @@ function DeliveryAddressForm() {
               label="District"
             />
 
-            <error className="err">
+            <span className="err">
               {errors.district?.type === "required" &&
                 `* This Field is required`}
-            </error>
+            </span>
           </div>
           <div className="inp-container">
             <select
@@ -176,9 +178,9 @@ function DeliveryAddressForm() {
             </select>
             <br />
             {/* <div className="pt-"> */}
-            <error className="err">
+            <span className="err">
               {errors.state?.type === "required" && `* This Field is required`}
-            </error>
+            </span>
             {/* </div> */}
           </div>
         </div>

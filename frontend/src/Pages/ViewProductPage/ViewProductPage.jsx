@@ -10,7 +10,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import { EContextData } from "../../EContextData";
 import Notification from "../../Components/Notification/Notification";
-import { AddToCartProvider } from "../../FetchDataProviders";
+import { AddToCartProvider } from "../../ApiRenderController";
 
 function ViewProductPage() {
   const { user } = useContext(EContextData);

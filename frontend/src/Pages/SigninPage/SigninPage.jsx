@@ -2,10 +2,10 @@ import React, { useContext, useState } from "react";
 import "./SigninPage.css";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
 import { EContextData as GlobalData } from "../../EContextData";
 import { Loading } from "../../Components/Loading/Loading";
 import Notification from "../../Components/Notification/Notification";
+import { LoginUserProvider } from "../../ApiRenderController";
 
 function SigninPage() {
   const [loading, setLoading] = useState(false);
@@ -18,51 +18,47 @@ function SigninPage() {
     handleSubmit,
   } = useForm();
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     setLoading(true);
-    axios
-      .post(`${process.env.REACT_APP_BASE_URL}/user/signin`, data)
-      .then((res) => {
-        console.log(res.data);
-        if (res.data) {
-          setLoading(false);
-        }
-        if (res.data.userFound !== true) {
-          setNotify({
-            display: "flex",
-            text: "User not found on this email",
-            type: "WARNING",
-          });
-          setTimeout(() => {
-            setNotify({ display: "none" });
-          }, 2000);
-        }
-        if (res.data.isLoggedIn === true) {
-          setNotify({
-            display: "flex",
-            text: "Loggin successfully",
-            type: "SUCCESS",
-          });
-          setTimeout(() => {
-            setNotify({ display: "none" });
-            setUser(res.data);
-            nav(
-              window.location.pathname !== "/signin"
-                ? window.location.pathname
-                : "/"
-            );
-          }, 1000);
-        } else if (res.data.isLoggedIn === false) {
-          setNotify({
-            display: "flex",
-            text: "Email or password is incorrect,user not found",
-            type: "DANGER",
-          });
-          setTimeout(() => {
-            setNotify({ display: "none" });
-          }, 2000);
-        }
-      });
+    let res = await LoginUserProvider(data);
+    if (res) {
+      setLoading(false);
+      if (res.userFound !== true) {
+        setNotify({
+          display: "flex",
+          text: "User not found on this email",
+          type: "WARNING",
+        });
+        setTimeout(() => {
+          setNotify({ display: "none" });
+        }, 2000);
+      }
+      if (res.isLoggedIn === true) {
+        setNotify({
+          display: "flex",
+          text: "Loggin successfully",
+          type: "SUCCESS",
+        });
+        setTimeout(() => {
+          setNotify({ display: "none" });
+          setUser(res);
+          nav(
+            window.location.pathname !== "/signin"
+              ? window.location.pathname
+              : "/"
+          );
+        }, 500);
+      } else if (res.isLoggedIn === false) {
+        setNotify({
+          display: "flex",
+          text: "Email or password is incorrect,user not found",
+          type: "DANGER",
+        });
+        setTimeout(() => {
+          setNotify({ display: "none" });
+        }, 2000);
+      }
+    }
   };
 
   return (
@@ -79,10 +75,10 @@ function SigninPage() {
               pattern: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/i,
             })}
           />
-          <error className="err">
+          <span className="err">
             {errors.email?.type === "required" && "*Email is required"}
             {errors.email?.type === "pattern" && "*Email is invalid !"}
-          </error>
+          </span>
 
           <input
             className="signin-input"
@@ -90,11 +86,11 @@ function SigninPage() {
             placeholder="Password"
             {...register("password", { required: true, minLength: "8" })}
           />
-          <error className="err">
+          <span className="err">
             {errors.password?.type === "required" && "*Password is required"}
             {errors.password?.type === "minLength" &&
               "*Password much contain atlest 8 character"}
-          </error>
+          </span>
 
           <button
             className="form-btn"

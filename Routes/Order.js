@@ -4,7 +4,6 @@ const router = express.Router();
 const db = require("../database_config");
 const crypto = require("crypto");
 const Razorpay = require("razorpay");
-const { pid } = require("process");
 
 let instance = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID,
@@ -172,16 +171,6 @@ router.get("/get-order/:order_id", async (req, res) => {
 });
 
 router.post("/create-order", async (req, res) => {
-  // let today = new Date();
-  // const yyyy = today.getFullYear();
-  // let mm = today.getMonth() + 1;
-  // let dd = today.getDate();
-
-  // if (dd < 10) dd = "0" + dd;
-  // if (mm < 10) mm = "0" + mm;
-
-  // today = dd + "/" + mm + "/" + yyyy;
-
   if (req.session.user) {
     const orderID = crypto.randomBytes(16).toString("hex");
     let address = await db

@@ -58,6 +58,7 @@ router.get("/get-all-reviews/:id", async (req, res) => {
 });
 
 router.post("/add-review", async (req, res) => {
+  console.log(req.body);
   if (req.session.user) {
     let isReview = await db
       .get()
@@ -79,7 +80,10 @@ router.post("/add-review", async (req, res) => {
                 "reviews.$.rating": parseInt(req.body.rating),
               },
             }
-          );
+          )
+          .then((result) => {
+            console.log(result);
+          });
       }
     } else {
       let reviewObj = {
@@ -99,7 +103,12 @@ router.post("/add-review", async (req, res) => {
               reviews: reviewObj,
             },
           }
-        );
+        )
+        .then(() => {
+          res.json({
+            reviewUpdated: true,
+          });
+        });
     }
   }
 });

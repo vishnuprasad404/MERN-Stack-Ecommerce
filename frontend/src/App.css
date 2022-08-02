@@ -8,6 +8,9 @@
   scrollbar-color: white white;
   transition: .1s;
 }
+*::-webkit-scrollbar{
+  display: none;
+}
 button,
 i {
   cursor: pointer;

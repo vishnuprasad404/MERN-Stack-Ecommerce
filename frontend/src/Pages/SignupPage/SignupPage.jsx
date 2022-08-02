@@ -2,54 +2,50 @@ import React, { useContext, useState } from "react";
 import "./SignupPage.css";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
 import { EContextData } from "../../EContextData";
 import { Loading } from "../../Components/Loading/Loading";
 import Notification from "../../Components/Notification/Notification";
+import { RegisterUserProvider } from "../../ApiRenderController";
 
 function SignupPage() {
   const [loading, setLoading] = useState(false);
   const { setUser } = useContext(EContextData);
   let [notify, setNotify] = useState({ display: "none" });
-  const nav = useNavigate(); 
+  const nav = useNavigate();
   const {
     register,
     formState: { errors },
     handleSubmit,
   } = useForm();
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     setLoading(true);
-    axios
-      .post(`${process.env.REACT_APP_BASE_URL}/user/signup`, data)
-      .then((res) => {
-        if (res.data) {
-          setLoading(false);
-        }
-        if (res.data.userExist) {
-          // alert("User Alredy Exist");
-          setNotify({
-            display: "flex",
-            text: "User alredy exist on this email",
-            type: "WARNING",
-          });
-          setTimeout(() => {
-            setNotify({ display: "none" });
-          }, 2000);
-        }
-        if (res.data.isUserAdded) {
-          setNotify({
-            display: "flex",
-            text: "Account Created Successfully",
-            type: "SUCCESS",
-          });
-          setTimeout(() => {
-            setNotify({ display: "none" });
-            setUser(res.data.user);
-            nav("/");
-          }, 1000);
-        }
-      });
+    let res = await RegisterUserProvider(data);
+    if (res) {
+      setLoading(false);
+      if (res.userExist) {
+        setNotify({
+          display: "flex",
+          text: "User alredy exist on this email",
+          type: "WARNING",
+        });
+        setTimeout(() => {
+          setNotify({ display: "none" });
+        }, 2000);
+      }
+      if (res.isUserAdded) {
+        setNotify({
+          display: "flex",
+          text: "Account Created Successfully",
+          type: "SUCCESS",
+        });
+        setTimeout(() => {
+          setNotify({ display: "none" });
+          setUser(res.data.user);
+          nav("/");
+        }, 1000);
+      }
+    }
   };
 
   return (
@@ -63,9 +59,9 @@ function SignupPage() {
             className="signup-input"
             {...register("username", { required: true })}
           />
-          <error className="err">
+          <span className="err">
             {errors.username?.type === "required" && "*Username is required"}
-          </error>
+          </span>
 
           <input
             type="text"
@@ -76,10 +72,10 @@ function SignupPage() {
               pattern: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/i,
             })}
           />
-          <error className="err">
+          <span className="err">
             {errors.email?.type === "required" && "*Email is required"}
             {errors.email?.type === "pattern" && "*Email is invalid !"}
-          </error>
+          </span>
 
           <input
             type="text"
@@ -91,11 +87,11 @@ function SignupPage() {
               maxLength: 10,
             })}
           />
-          <error className="err">
+          <span className="err">
             {errors.phone?.type === "required" && "*Phone is required"}
             {errors.phone?.type === "minLength" && "*Phone number is invalid !"}
             {errors.phone?.type === "maxLength" && "*Phone number is invalid !"}
-          </error>
+          </span>
 
           <input
             type="password"
@@ -103,11 +99,11 @@ function SignupPage() {
             className="signup-input"
             {...register("password", { required: true, minLength: "8" })}
           />
-          <error className="err">
+          <span className="err">
             {errors.password?.type === "required" && "*Password is required"}
             {errors.password?.type === "minLength" &&
               "*Password much contain atlest 8 character"}
-          </error>
+          </span>
 
           <button
             className="form-btn"
@@ -119,7 +115,6 @@ function SignupPage() {
             ) : (
               <Loading
                 iconSize="8px"
-                color="red"
                 style={{ height: "10px", width: "100%", position: "static" }}
               />
             )}

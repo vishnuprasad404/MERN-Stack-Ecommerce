@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHeart, faCartPlus, faBars, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faHeart, faCartPlus } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import "./Product.css";
 import { EContextData as GlobalData } from "../../EContextData";
@@ -8,20 +8,28 @@ import {
   AddToCartProvider,
   AddToFavoritesProvider,
   CreateOrderProvider,
-} from "../../FetchDataProviders";
+} from "../../ApiRenderController";
 import Notification from "../Notification/Notification";
+import Rating from "../../Components/Rating/Rating";
+import { Loading } from "../../Components/Loading/Loading";
 
 function Product(props) {
   const { user } = useContext(GlobalData);
   const [notify, setNotify] = useState({ display: "none" });
   const nav = useNavigate();
-  const { title, image, disPrise, cutPrise, inStock, pid, favorites } = props;
-
-  const onPurchase = async () => {
+  const [loading1, setLoading1] = useState(new Set());
+  const { title, image, disPrise, cutPrise, inStock, pid, key } = props;
+  
+  const onPurchase = async (selectedIndex) => {
+    setLoading1((prev) => new Set([...prev, selectedIndex]));
     if (user) {
       let res = await CreateOrderProvider(pid, disPrise);
-      console.log(res);
       if (res) {
+        setLoading1((prev) => {
+          const updated = new Set(prev);
+          updated.delete(selectedIndex);
+          return updated;
+        });
         nav(`/checkout/${res.OrderId}`);
       }
     } else {
@@ -87,12 +95,19 @@ function Product(props) {
 
   return (
     <>
-      <div className="col-6 col-sm-4 col-md-3 col-lg-2 product-column">
+      <div
+        key={key}
+        className="col-6 col-sm-4 col-md-3 col-lg-2 product-column"
+      >
         <div className="card product-card">
           <div className="product-image-container">
             <img src={image} alt="img" />
           </div>
           <div className="card-body">
+            <Rating
+              id={pid}
+              style={{ marginBottom: "10px", width: "45px", height: "25px" }}
+            />
             <h6 className="card-title product-card-title">{title}</h6>
             <p className="card-text mb-0">
               ${disPrise}
@@ -107,11 +122,26 @@ function Product(props) {
               </span>
             ) : null}
             <div className="product-action-btns mt-3">
-              <button className="buy" onClick={onPurchase}>
-                Buy Now
+              <button
+                className="buy"
+                onClick={() => onPurchase(key)}
+              >
+                {!loading1.has(key) ? (
+                  "Buy Now"
+                ) : (
+                  <Loading
+                    iconSize="5px"
+                    style={{
+                      height: "5px",
+                      width: "100%",
+                      position: "static",
+                    }}
+                    iconSpace="5px"
+                  />
+                )}
               </button>
               <FontAwesomeIcon
-                icon={favorites ? faTrash : faHeart}
+                icon={faHeart}
                 className="fav-icon"
                 onClick={addToFavorites}
               />
@@ -128,6 +158,7 @@ function Product(props) {
         status={notify}
         parentStyle={{
           top: "50px",
+          paddingRight: "100px",
           alignItems: "center",
           justifyContent: "flex-end",
         }}

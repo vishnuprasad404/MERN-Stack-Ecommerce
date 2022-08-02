@@ -12,12 +12,6 @@ function DeliveryAddressContainer(props) {
       <p>
         {address},{state}-{pincode}
       </p>
-      <select className="delivery-address-list-action fas fa-bars">
-        <option value=""></option>
-        <option value="default">Set as default</option>
-        <option value="remove">Remove</option>
-        <option value="edit">Eidt</option>
-      </select>
     </div>
   );
 }

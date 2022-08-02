@@ -66,8 +66,8 @@ function FilterOrders(props) {
 const OrderSortOption = (props) => {
   const { onClick, opt, checked } = props;
   return (
-    <div className="sort-order-option" onClick={onClick}>
-      <input type="checkbox" checked={checked} />
+    <div className="sort-order-option" onClick={onClick} >
+      <input type="checkbox" checked={checked} onChange={onClick}/>
       {opt}
     </div>
   );

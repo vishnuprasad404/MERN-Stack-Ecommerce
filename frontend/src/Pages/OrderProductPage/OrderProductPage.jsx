@@ -7,6 +7,12 @@ import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { Loading } from "../../Components/Loading/Loading";
+import {
+  GetOrderProvider,
+  GetDeliveryAddressProvider,
+  ChangeOrderQuantityProvider,
+  RemoveCheckoutItemProvider,
+} from "../../ApiRenderController";
 
 function OrderProductPage() {
   const nav = useNavigate();
@@ -18,50 +24,43 @@ function OrderProductPage() {
   const { OrderId } = useParams();
 
   useEffect(() => {
-    axios
-      .get(`${process.env.REACT_APP_BASE_URL}/get-order/${OrderId}`)
-      .then((res) => {
-        if (res.data.length >= 1) {
-          setCheckOutProducts(res.data);
+    const GetOrderDetails = async () => {
+      let order = await GetOrderProvider(OrderId);
+      if (order) {
+        if (order.length >= 1) {
+          setCheckOutProducts(order);
           setProductTotal(
-            res.data[0].order_total >= 1
-              ? res.data[0].order_total
-              : res.data[0].prise
+            order[0].order_total >= 1 ? order[0].order_total : order[0].prise
           );
         } else {
           nav("*");
         }
-      });
-    axios 
-      .get(`${process.env.REACT_APP_BASE_URL}/getshippingaddress`)
-      .then((res) => {
-        setAddress(res.data);
-      });
+      }
+      let deliveryDetails = GetDeliveryAddressProvider();
+      if (deliveryDetails) {
+        setAddress(deliveryDetails);
+      }
+    };
+    GetOrderDetails();
   });
 
   const changeOrderItemQuantity = (itm, action) => {
     if (action === "increese") {
       let new_prise = parseInt(itm.prise) + parseInt(itm.product.discountPrise);
       let new_quantity = itm.quantity + 1;
-      axios.put(
-        `${process.env.REACT_APP_BASE_URL}/change-order-item-quantity/${itm._id}/${itm.item}/${new_prise}/${new_quantity}`
-      );
+      ChangeOrderQuantityProvider(itm._id, itm.item, new_prise, new_quantity);
     } else {
       let new_prise = parseInt(itm.prise) - parseInt(itm.product.discountPrise);
       let new_quantity = itm.quantity - 1;
-      axios.put(
-        `${process.env.REACT_APP_BASE_URL}/change-order-item-quantity/${itm._id}/${itm.item}/${new_prise}/${new_quantity}`
-      );
+      ChangeOrderQuantityProvider(itm._id, itm.item, new_prise, new_quantity);
     }
   };
 
   const removeCheckoutItem = (OrderId, ItemId) => {
-    axios.delete(
-      `${process.env.REACT_APP_BASE_URL}/remove-checkout-item/${OrderId}/${ItemId}`
-    );
+    RemoveCheckoutItemProvider(OrderId, ItemId);
   };
 
-  const onCheckOut = () => {
+  const onCheckOut = async () => {
     setLoading(true);
     axios
       .put(
@@ -70,7 +69,6 @@ function OrderProductPage() {
       .then((res) => {
         if (res.data.status === "placed") {
           setLoading(false);
-
           nav(`/order-placed-successfully/${checkOutProducts[0]._id}`);
         } else if (res.data.status === "pending") {
           //=======================razorpay ui start================//
@@ -78,7 +76,7 @@ function OrderProductPage() {
             key: process.env.REACT_APP_RAZORPAY_KEY_ID,
             amount: parseInt(productTotal),
             currency: "INR",
-            name: "Acme Corp",
+            name: "Ecart Online",
             description: "Test Transaction",
             image: "https://example.com/your_logo",
             order_id: res.data.order.id,
@@ -86,12 +84,12 @@ function OrderProductPage() {
               verifyOnlinePayment(response, res.data.order);
             },
             prefill: {
-              name: "Gaurav Kumar",
-              email: "gaurav.kumar@example.com",
-              contact: "9999999999",
+              name: "Vishnu Prasad N",
+              email: "ecart@online.com",
+              contact: "9999222255",
             },
             notes: {
-              address: "Razorpay Corporate Office",
+              address: "Ecart Corporate Office",
             },
             theme: {
               color: "#3399cc",
@@ -99,16 +97,16 @@ function OrderProductPage() {
           };
           var rzp1 = new window.Razorpay(options);
           let isOpend = rzp1.open();
-          if(isOpend){
-            setLoading(false)
+          if (isOpend) {
+            setLoading(false);
           }
           //=======================razorpay ui end==================//
         }
       });
   };
 
-  const verifyOnlinePayment = (payment, order) => {
-    setLoading(true)
+  const verifyOnlinePayment = async (payment, order) => {
+    setLoading(true);
     axios
       .post(`${process.env.REACT_APP_BASE_URL}/verify-online-payment`, {
         payment,
@@ -218,7 +216,7 @@ function OrderProductPage() {
                 {!loading ? (
                   "Check Out"
                 ) : (
-                  <Loading iconSize="10px" style={{height: 'auto'}} />
+                  <Loading iconSize="10px" style={{ height: "auto" }} />
                 )}
               </button>
             </div>

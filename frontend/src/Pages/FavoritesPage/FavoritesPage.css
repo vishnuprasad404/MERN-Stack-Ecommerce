@@ -1,11 +1,48 @@
 .favorites-page{
-  padding: 40px 80px;
+  min-height: 50vh;
+  padding: 40px 80px; 
 }
+.card-img-top{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-top: 15px;
+}
+.fav-remove-btn{
+  position: absolute;
+}
+.fav-title{
+  height: 40px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+.fav-prise{
+  font-weight: 600;
+}
+.fav-prise del{
+  font-size: 11px;
+  color: red;
+  margin-left: 5px;
+  font-weight: normal;
+}
+.favorite-card{
+  position: relative;
+}
+
+.favorite-remove-btn{
+  position: absolute;
+  top: 10px;
+  right: 25px;
+  color: rgb(156, 152, 152);
+  cursor: pointer;
+}
+
 @media (max-width: 1500px) {
   .favorites-page{
     padding: 20px;
   }
 }
-.fav-remove-btn{
-  position: absolute;
+
+@media (max-width : 400px) {
+  
 }
