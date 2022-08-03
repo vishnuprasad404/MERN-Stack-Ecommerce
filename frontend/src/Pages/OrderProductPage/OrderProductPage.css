@@ -13,7 +13,6 @@
   text-decoration: none;
   letter-spacing: 0.2px;
 }
-
 .order-product-item-container-wrapper {
   width: 50%;
   height: 100%;
@@ -52,6 +51,13 @@
   width: 200px;
   margin-left: 20px;
 }
+.order-product-title {
+  font-size: 12px;
+  max-width: 90%;
+  max-height: 35px;
+  overflow: auto;
+  margin-top: 14px;
+}
 
 .order-item-prise-container {
   display: flex;
@@ -62,7 +68,7 @@
 .order-item-prise-container del {
   font-size: 11px;
   margin: 1px 5px;
-  color: grey;
+  color: red;
 }
 
 .order-item-quantity {

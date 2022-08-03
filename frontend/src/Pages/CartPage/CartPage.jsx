@@ -56,6 +56,9 @@ function CartPage() {
         temp[key].prise
       );
       setCartItems([...temp]);
+      setTimeout(() => {
+        getCart();
+      }, 100);
     } else {
       temp[key].quantity -= 1;
       temp[key].prise =
@@ -67,6 +70,9 @@ function CartPage() {
         temp[key].prise
       );
       setCartItems([...temp]);
+      setTimeout(() => {
+        getCart();
+      }, 100);
     }
   };
 
@@ -149,7 +155,7 @@ function CartPage() {
                         >
                           -
                         </button>
-                        <p className="quantity">{itm.quantity}</p>
+                        <span className="quantity">{itm.quantity}</span>
                         <button
                           disabled={
                             itm.quantity >= itm.product.inStock ? true : false
@@ -176,17 +182,19 @@ function CartPage() {
                   </div>
                 );
               })}
-            <Paginate
-              previousLabel={"Previous"}
-              nextLabel={"Next"}
-              pageCount={pageCount}
-              onPageChange={changePage}
-              containerClassName={"pagination-container"}
-              previousLinkClassName={"previous-btn"}
-              nextLinkClassName={"next-btn"}
-              disabledClassName={"pagination-disabled-btn"}
-              activeClassName={"pagination-active"}
-            />
+            {cartItems.length > 3 ? (
+              <Paginate
+                previousLabel={"Previous"}
+                nextLabel={"Next"}
+                pageCount={pageCount}
+                onPageChange={changePage}
+                containerClassName={"pagination-container"}
+                previousLinkClassName={"previous-btn"}
+                nextLinkClassName={"next-btn"}
+                disabledClassName={"pagination-disabled-btn"}
+                activeClassName={"pagination-active"}
+              />
+            ) : null}
           </div>
           <div className="cart-total-container-wrapper">
             <div className="cart-total-container">

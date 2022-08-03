@@ -23,7 +23,12 @@ router.post("/addshippingaddress", async (req, res) => {
 
     if (!addressExist) {
       req.body.user = ObjectId(req.session.user._id);
-      db.get().collection(process.env.ADDRESS_COLLECTION).insertOne(req.body);
+      db.get()
+        .collection(process.env.ADDRESS_COLLECTION)
+        .insertOne(req.body)
+        .then(() => {
+          res.send(true);
+        });
     } else {
       db.get()
         .collection(process.env.ADDRESS_COLLECTION)
@@ -34,7 +39,10 @@ router.post("/addshippingaddress", async (req, res) => {
           {
             $set: req.body,
           }
-        );
+        )
+        .then(() => {
+          res.send(true);
+        });
     }
   }
 });

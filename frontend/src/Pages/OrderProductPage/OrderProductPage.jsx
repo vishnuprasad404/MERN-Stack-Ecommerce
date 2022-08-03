@@ -108,7 +108,7 @@ function OrderProductPage() {
       setNotify({
         display: "flex",
         type: "WARNING",
-        text: "Please add a deliver address!",
+        text: "Please add a delivery address!",
       });
       setTimeout(() => {
         setNotify({ display: "none" });
@@ -151,7 +151,7 @@ function OrderProductPage() {
                       />
                     </div>
                     <div className="order-item-details">
-                      <p className="title">{itm.product.title}</p>
+                      <p className="order-product-title">{itm.product.title}</p>
                       <div className="order-item-prise-container">
                         <p className="dis-prise">$ {itm.prise}</p>
                         <del className="org-prise">

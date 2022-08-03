@@ -3,18 +3,21 @@ import "./DeliveryAddressPage.css";
 import Navbar from "../../Components/Navbar/Navbar";
 import DeliveryAddressForm from "../../Components/DeliveryAddressForm/DeliveryAddressForm";
 import DeliveryAddressContainer from "../../Components/DeliveryAddressContainer/DeliveryAddressContainer";
-import {GetDeliveryAddressProvider} from '../../ApiRenderController'
+import { GetDeliveryAddressProvider } from "../../ApiRenderController";
+import { SmallLoading } from "../../Components/Loading/Loading";
 
 function DeliveryAddressPage() {
   const [shippingAddress, setShippingAddress] = useState({});
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
-    getShippingAddress()
+    getShippingAddress();
   });
 
-  const getShippingAddress=async()=>{
-    let res = await GetDeliveryAddressProvider()
-    setShippingAddress(res)
-  }
+  const getShippingAddress = async () => {
+    let res = await GetDeliveryAddressProvider();
+    setShippingAddress(res);
+    setLoading(false);
+  };
 
   return (
     <>
@@ -24,13 +27,18 @@ function DeliveryAddressPage() {
           <DeliveryAddressForm />
         </div>
         <div className="delivery-address-list-container">
-          {shippingAddress ? <DeliveryAddressContainer
-            name={shippingAddress.name}
-            phone={shippingAddress.mobile}
-            address={shippingAddress.address}
-            state={shippingAddress.state}
-            pincode={shippingAddress.pincode}
-          /> : null}
+          <h3>Delivery Address</h3>
+          {loading ? (
+            <SmallLoading smallLoadingStyle={{ marginTop: "20px" }} />
+          ) : shippingAddress ? (
+            <DeliveryAddressContainer
+              name={shippingAddress.name}
+              phone={shippingAddress.mobile}
+              address={shippingAddress.address}
+              state={shippingAddress.state}
+              pincode={shippingAddress.pincode}
+            />
+          ) : null}
         </div>
       </div>
     </>

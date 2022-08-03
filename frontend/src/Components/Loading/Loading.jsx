@@ -1,8 +1,7 @@
 import React from "react";
 import "./Loading.css";
 
-export function Loading(props) {
-  const { style, iconSize, color, iconSpace } = props;
+export function Loading({ style, iconSize, color, iconSpace, }) {
   return (
     <div className="loading" style={style}>
       <div class="dots-container">
@@ -40,9 +39,9 @@ export function Loading(props) {
   );
 }
 
-export function SmallLoading() {
+export function SmallLoading({smallLoadingStyle}) {
   return (
-    <div class="spinner-container">
+    <div class="spinner-container" style={smallLoadingStyle}>
       <div class="spinner"></div>
     </div>
   );

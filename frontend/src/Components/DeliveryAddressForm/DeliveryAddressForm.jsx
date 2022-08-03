@@ -2,11 +2,15 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import "./DeliveryAddressForm.css";
 import DeliveryAddressInputBox from "../../Components/DeliveryAddressInputBox/DeliveryAddressInputBox";
-import {AddDeliverAddressProvider, GetDeliveryAddressProvider} from '../../ApiRenderController'
-
+import {
+  AddDeliverAddressProvider,
+  GetDeliveryAddressProvider,
+} from "../../ApiRenderController";
+import { Loading } from "../../Components/Loading/Loading";
 
 function DeliveryAddressForm() {
   const [shippingAddress, setShippingAddress] = useState({});
+  const [loading, setLoading] = useState(false);
   const {
     register,
     formState: { errors },
@@ -14,24 +18,24 @@ function DeliveryAddressForm() {
   } = useForm();
 
   useEffect(() => {
-    getShippingAddress()
+    getShippingAddress();
   });
-  const getShippingAddress=async()=>{
-    let res = await GetDeliveryAddressProvider()
-    setShippingAddress(res)
-  }
+  const getShippingAddress = async () => {
+    let res = await GetDeliveryAddressProvider();
+    setShippingAddress(res);
+  };
   const onSaveAddress = (data) => {
-    let res = AddDeliverAddressProvider(data)
-    console.log(res);
-    if(res){
-
-    }
+    setLoading(true);
+      let res = AddDeliverAddressProvider(data);
+      if (res) {
+        setLoading(false);
+        getShippingAddress();
+      }
   };
 
   return (
     <div className="delivery-address-form">
       <form onSubmit={handleSubmit(onSaveAddress)}>
-        <h2>Delivery Address</h2>
         <div className="inp-pair">
           <div className="inp-container">
             <DeliveryAddressInputBox
@@ -214,8 +218,17 @@ function DeliveryAddressForm() {
           </div>
         </div>
 
-        <button type="submit">
-          {shippingAddress ? "Update Address" : "Add Address"}
+        <button
+          type="submit"
+          style={{ backgroundColor: loading ? "rgb(233, 233, 233)" : null }}
+        >
+          {loading ? (
+            <Loading style={{ height: "0px" }} iconSpace="5px" iconSize="5px" />
+          ) : shippingAddress ? (
+            "Update Address"
+          ) : (
+            "Add Address"
+          )}
         </button>
       </form>
     </div>
