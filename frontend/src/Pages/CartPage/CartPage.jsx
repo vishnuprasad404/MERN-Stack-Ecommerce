@@ -34,11 +34,13 @@ function CartPage() {
   const getCart = async () => {
     let res = await GetAllCartProductProvider();
     setCartItems(res);
-    if (res.length >= 1) {
-      let total = await GetCartTotalProvider();
-      if (total) {
-        setTotalPrise(total.total);
-        setLoading(false);
+    if (res) {
+      setLoading(false);
+      if (res.length >= 1) {
+        let total = await GetCartTotalProvider();
+        if (total) {
+          setTotalPrise(total.total);
+        }
       }
     }
   };
