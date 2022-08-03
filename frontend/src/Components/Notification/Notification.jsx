@@ -8,8 +8,7 @@ import {
   faWarning,
 } from "@fortawesome/free-solid-svg-icons";
 
-function Notification(props) {
-  let { style, status ,parentStyle} = props;
+function Notification({ style, status ,parentStyle}) {
   return (
     <div className="notification-container position-fixed" style={parentStyle}>
       <div

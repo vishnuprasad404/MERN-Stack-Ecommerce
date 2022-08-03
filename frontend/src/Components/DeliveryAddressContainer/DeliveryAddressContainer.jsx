@@ -1,8 +1,7 @@
 import React from "react";
 import "./DeliveryAddressContainer.css";
 
-function DeliveryAddressContainer(props) {
-  const { name, number, pincode, address, state } = props;
+function DeliveryAddressContainer({ name, number, pincode, address, state }) {
   return (
     <div className="delivery-address-list">
       <p>Details :</p>

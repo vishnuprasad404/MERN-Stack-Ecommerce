@@ -13,15 +13,17 @@ import {
   ChangeOrderQuantityProvider,
   RemoveCheckoutItemProvider,
 } from "../../ApiRenderController";
+import Notification from "../../Components/Notification/Notification";
 
 function OrderProductPage() {
   const nav = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [address, setAddress] = useState({});
+  const [address, setAddress] = useState();
   const [checkOutProducts, setCheckOutProducts] = useState([]);
   const [productTotal, setProductTotal] = useState(0);
   const [paymentMethord, setPaymentMethord] = useState("online");
   const { OrderId } = useParams();
+  const [notify, setNotify] = useState({ display: "none" });
 
   useEffect(() => {
     const GetOrderDetails = async () => {
@@ -36,7 +38,7 @@ function OrderProductPage() {
           nav("*");
         }
       }
-      let deliveryDetails = GetDeliveryAddressProvider();
+      let deliveryDetails = await GetDeliveryAddressProvider();
       if (deliveryDetails) {
         setAddress(deliveryDetails);
       }
@@ -61,48 +63,57 @@ function OrderProductPage() {
   };
 
   const onCheckOut = async () => {
-    setLoading(true);
-    axios
-      .put(
-        `${process.env.REACT_APP_BASE_URL}/place-order/${checkOutProducts[0]._id}/${productTotal}/${paymentMethord} `
-      )
-      .then((res) => {
-        if (res.data.status === "placed") {
-          setLoading(false);
-          nav(`/order-placed-successfully/${checkOutProducts[0]._id}`);
-        } else if (res.data.status === "pending") {
-          //=======================razorpay ui start================//
-          var options = {
-            key: process.env.REACT_APP_RAZORPAY_KEY_ID,
-            amount: parseInt(productTotal),
-            currency: "INR",
-            name: "Ecart Online",
-            description: "Test Transaction",
-            image: "https://example.com/your_logo",
-            order_id: res.data.order.id,
-            handler: function (response) {
-              verifyOnlinePayment(response, res.data.order);
-            },
-            prefill: {
-              name: "Vishnu Prasad N",
-              email: "ecart@online.com",
-              contact: "9999222255",
-            },
-            notes: {
-              address: "Ecart Corporate Office",
-            },
-            theme: {
-              color: "#3399cc",
-            },
-          };
-          var rzp1 = new window.Razorpay(options);
-          let isOpend = rzp1.open();
-          if (isOpend) {
+    if (address) {
+      setLoading(true);
+      axios
+        .put(
+          `${process.env.REACT_APP_BASE_URL}/place-order/${checkOutProducts[0]._id}/${productTotal}/${paymentMethord} `
+        )
+        .then((res) => {
+          if (res.data.status === "placed") {
             setLoading(false);
+            nav(`/order-placed-successfully/${checkOutProducts[0]._id}`);
+          } else if (res.data.status === "pending") {
+            var options = {
+              key: process.env.REACT_APP_RAZORPAY_KEY_ID,
+              amount: parseInt(productTotal),
+              currency: "INR",
+              name: "Ecart Online",
+              description: "Test Transaction",
+              image: "https://example.com/your_logo",
+              order_id: res.data.order.id,
+              handler: function (response) {
+                verifyOnlinePayment(response, res.data.order);
+              },
+              prefill: {
+                name: "Vishnu Prasad N",
+                email: "ecart@online.com",
+                contact: "9999222255",
+              },
+              notes: {
+                address: "Ecart Corporate Office",
+              },
+              theme: {
+                color: "#3399cc",
+              },
+            };
+            var rzp1 = new window.Razorpay(options);
+            let isOpend = rzp1.open();
+            if (isOpend) {
+              setLoading(false);
+            }
           }
-          //=======================razorpay ui end==================//
-        }
+        });
+    } else {
+      setNotify({
+        display: "flex",
+        type: "WARNING",
+        text: "Please add a deliver address!",
       });
+      setTimeout(() => {
+        setNotify({ display: "none" });
+      }, 3000);
+    }
   };
 
   const verifyOnlinePayment = async (payment, order) => {
@@ -238,6 +249,10 @@ function OrderProductPage() {
           </div>
         </div>
       </>
+      <Notification
+        status={notify}
+        parentStyle={{ top: "60px", justifyContent: "flex-end" }}
+      />
     </div>
   );
 }

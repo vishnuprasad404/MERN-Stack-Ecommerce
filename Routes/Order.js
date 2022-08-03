@@ -77,7 +77,7 @@ router.put("/admin/change-order-status/:id/:status", (req, res) => {
       }
     )
     .then(() => {
-      res.status(200).json({status : req.params.status});
+      res.status(200).json({ status: req.params.status });
     });
 });
 
