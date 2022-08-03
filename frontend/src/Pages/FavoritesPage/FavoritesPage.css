@@ -1,35 +1,36 @@
-.favorites-page{
+.favorites-page {
   min-height: 50vh;
-  padding: 40px 80px; 
+  padding: 40px 80px;
 }
-.card-img-top{
+.favorite-card {
+  position: relative;
+}
+
+.card-img-top {
   display: flex;
   justify-content: center;
   align-items: center;
   padding-top: 15px;
 }
-.fav-remove-btn{
+.fav-remove-btn {
   position: absolute;
 }
-.fav-title{
+.fav-title {
   height: 40px;
   text-overflow: ellipsis;
   overflow: hidden;
 }
-.fav-prise{
+.fav-prise {
   font-weight: 600;
 }
-.fav-prise del{
+.fav-prise del {
   font-size: 11px;
   color: red;
   margin-left: 5px;
   font-weight: normal;
 }
-.favorite-card{
-  position: relative;
-}
 
-.favorite-remove-btn{
+.favorite-remove-btn {
   position: absolute;
   top: 10px;
   right: 25px;
@@ -38,11 +39,27 @@
 }
 
 @media (max-width: 1500px) {
-  .favorites-page{
+  .favorites-page {
     padding: 20px;
   }
 }
 
-@media (max-width : 400px) {
-  
+@media (max-width: 400px) {
+  .fav-to-cart-btn {
+    margin: 0 !important;
+    font-size: 12px;
+  }
+  .fav-title {
+    height: 28px;
+    font-size: 13px;
+  }
+  .fav-prise {
+    font-size: 11px;
+  }
+}
+
+@media (max-width : 320px) {
+  .favorite-card{
+    width : 100%
+  }
 }

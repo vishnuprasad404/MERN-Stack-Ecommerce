@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext } from "react";
 import "./AccountPage.css";
 import Navbar from "../../Components/Navbar/Navbar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";

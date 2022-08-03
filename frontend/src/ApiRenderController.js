@@ -1,15 +1,11 @@
 import axios from "axios";
 
 //------------create a order from user start------------//
-export const CreateOrderProvider = async (pid, prise) => {
-  let orderObj = {
-    item: pid,
-    quantity: 1,
-    prise: parseInt(prise),
-  };
-  let res = await axios.post(`${process.env.REACT_APP_BASE_URL}/create-order`, [
-    orderObj,
-  ]);
+export const CreateOrderProvider = async (orderProduct) => {
+  let res = await axios.post(
+    `${process.env.REACT_APP_BASE_URL}/create-order`,
+    orderProduct
+  );
   return res.data;
 };
 //------------create a order from user end------------//
@@ -63,7 +59,7 @@ export const AddDeliverAddressProvider = async (data) => {
     `${process.env.REACT_APP_BASE_URL}/addshippingaddress`,
     data
   );
-  return res.data
+  return res.data;
 };
 
 // add delivery address end //
@@ -148,6 +144,15 @@ export const LoginUserProvider = async (data) => {
 
 // login user or sign in user end
 
+// logout user start //
+
+export const LogoutUserProvider = async () => {
+  let res = await axios.get(`${process.env.REACT_APP_BASE_URL}/signout`);
+  return res.data;
+};
+
+//logout user end
+
 // checkout products start //
 
 export const CheckoutProductsProvider = async (
@@ -180,3 +185,49 @@ export const RemoveFavoritesProvider = async (id) => {
 };
 
 // remove favorites item end //
+
+//remove cart item start //
+
+export const RemoveCartItemProvider = async (cid, pid) => {
+  let res = await axios.delete(
+    `${process.env.REACT_APP_BASE_URL}/deletecartitem/${cid}/${pid}`
+  );
+  return res.data;
+};
+
+//remove cart item end //
+
+// manage cart quantity start //
+
+export const ManageCartItemQuantityProvider = async (
+  cid,
+  pid,
+  quantity,
+  prise
+) => {
+  await axios.put(
+    `${process.env.REACT_APP_BASE_URL}/managequantity/${cid}/${pid}/${quantity}/${prise}`
+  );
+};
+
+// manage cart quantity end //
+
+// get users cart product start //
+
+export const GetAllCartProductProvider = async () => {
+  let res = await axios.get(
+    `${process.env.REACT_APP_BASE_URL}/getcartproducts`
+  );
+  return res.data;
+};
+
+// get users cart product end //
+
+//get users cart total start //
+
+export const GetCartTotalProvider = async () => {
+  let res = await axios.get(`${process.env.REACT_APP_BASE_URL}/getcarttotal`);
+  return res.data;
+};
+
+//get users cart total end //

@@ -9,14 +9,11 @@ import banner1small from "../../Assets/1656769214608.jpg";
 import banner1 from "../../Assets/infinix.webp";
 import banner2 from "../../Assets/realme.webp";
 import banner3 from "../../Assets/gaming.webp";
-
 import { Link } from "react-router-dom";
 import CategoryBannerItem from "../CategoryBannerItem/CategoryBannerItem";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCartPlus, faHeart } from "@fortawesome/free-solid-svg-icons";
 
 function HomeSection() {
-  const [products, setProducts] = useState([1, 1, 1, 1, 1]);
+  const [products, setProducts] = useState([1, 1, 1, 1, 1, 1]);
   const [skelton, setSkelton] = useState(true);
   useEffect(() => {
     axios.get(`${process.env.REACT_APP_BASE_URL}/products`).then((res) => {
@@ -49,12 +46,13 @@ function HomeSection() {
           {products.slice(0, 6).map((itm) => {
             return (
               <Product
-              pid={itm._id}
-              title={itm.title}
-              image={itm.image1}
-              disPrise={itm.discountPrise}
-              cutPrise={itm.orginalPrise}
-              inStock={itm.inStock}
+                pid={itm._id}
+                title={itm.title}
+                image={itm.image1}
+                disPrise={itm.discountPrise}
+                cutPrise={itm.orginalPrise}
+                inStock={itm.inStock}
+                skelton={skelton}
               />
             );
           })}

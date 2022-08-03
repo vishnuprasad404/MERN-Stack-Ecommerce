@@ -81,13 +81,13 @@ function FavoritesPage() {
                     key={key}
                   >
                     <div className="card">
-                      <div className="card-img-top">
+                      <div className="card-img-top" onClick={()=>nav(`/product/${itm.item}`)}>
                         <img width="40%" src={itm.product[0].image1} alt="" />
                       </div>
                       <div className="card-body">
                         <Rating
                           id={itm.item}
-                          style={{ marginBottom: "10px" }}
+                          style={{ marginBottom: "10px",width: '45px',height: "22px" }}
                         />
                         <h6 className="fav-title card-title">
                           {itm.product[0].title}
@@ -97,7 +97,7 @@ function FavoritesPage() {
                           <del>{itm.product[0].orginalPrise}</del>
                         </p>
                         <button
-                          className="w-100 mt-3 p-2"
+                          className="w-100 mt-3 p-2 fav-to-cart-btn"
                           onClick={() =>
                             addToCart(itm.item, itm.product[0].discountPrise)
                           }

@@ -1,16 +1,15 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../../Components/Navbar/Navbar";
 import "./ProductsPage.css";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import {useSearchParams } from "react-router-dom";
 import axios from "axios";
-import Rating from "../../Components/Rating/Rating";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
 import CategorySubItem from "../../Components/CategorySubItem/CategorySubItem";
 import { Loading } from "../../Components/Loading/Loading";
+import Product from "../../Components/Product/Product";
 
 function ProductsPage() {
-  const nav = useNavigate();
   const [loading, setLoading] = useState(true);
   const [filterToggler, setFilterToggler] = useState(false);
   const [products, setProducts] = useState([]);
@@ -91,9 +90,7 @@ function ProductsPage() {
             }`}
           >
             <p className="fiter-heading">Filter by Category</p>
-            <select
-              onChange={(e)=>filterByCategory(e.target.value)}
-            >
+            <select onChange={(e) => filterByCategory(e.target.value)}>
               <option value="all">All Products</option>
               <option value="mobiles">Mobiles</option>
               <option value="electronics">Elactronics</option>
@@ -181,57 +178,38 @@ function ProductsPage() {
           </div>
         </div>
         {!loading ? (
-          products.length >= 1 ? (
-            <div
-              className={
-                loading ? "products-list-loading" : "products-list-container"
-              }
-            >
-              {products
-                .map((itm) => {
-                  return (
-                    <div
-                      className="products-item-container"
-                      onClick={() => nav(`/product/${itm._id}`)}
-                    >
-                      <div className="products-item-image-container">
-                        <img width="130px" src={itm.image1} alt="" />
-                      </div>
-                      <Rating
-                        id={itm._id}
-                        width="40px"
-                        height="20px"
-                        fontSize="10px"
-                      />
-
-                      <p className="products-item-title">{itm.title}</p>
-                      <p>
-                        $ {itm.discountPrise} <del>{itm.orginalPrise}</del>{" "}
-                        <span
-                          style={{
-                            fontSize: "9px",
-                            color: `${itm.inStock >= 1 ? "green" : "red"}`,
-                          }}
-                        >
-                          {itm.inStock >= 1 ? "inStock" : "outofStock"}
-                        </span>
-                      </p>
-                      <br />
-                    </div>
-                  );
-                })}
+          <div className="container-fluid p-3">
+            <div className="row gy-4">
+              {products.map((itm, key) => {
+                return (
+                  <Product
+                    pid={itm._id}
+                    title={itm.title}
+                    image={itm.image1}
+                    skelton={false}
+                    cutPrise={itm.orginalPrise}
+                    disPrise={itm.discountPrise}
+                    inStock={itm.inStock}
+                    cardStyle={{
+                      border: "1px solid rgb(223, 223, 223)",
+                      boxShadow: "none",
+                      height: "max-content",
+                    }}
+                    buttonStyle={{ display: "none" }}
+                    cartIconStyle={{
+                      position: "absolute",
+                      top: "40px",
+                      right: "10px",
+                      padding: "0",
+                      color: "grey",
+                    }}
+                  />
+                );
+              })}
             </div>
-          ) : (
-            <div className="no-product-container">
-              <img
-                width="400px"
-                src="https://tradebharat.in/assets/catalogue/img/no-product-found.png"
-                alt="no products"
-              />
-            </div>
-          )
+          </div>
         ) : (
-          <Loading style={{ width: "100%", position: "absolute" }} />
+          <Loading />
         )}
       </div>
     </div>

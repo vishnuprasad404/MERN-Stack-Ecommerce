@@ -14,6 +14,7 @@
 
 .product-card{
   border: none;
+  overflow: hidden;
   box-shadow: 0px 0px 10px 10px rgb(240, 240, 240);
 }
 .product-image-container{
@@ -23,15 +24,41 @@
   align-items: center;
   justify-content: center;
 }
+.skelton-image-container{
+  width: 100%;
+  height: 130px;
+  background: var(--skelton-background);
+  background-repeat: var(--skelton-repeat);
+  background-size: var(--skelton-size);
+  background-position: var(--seklton-position);
+  animation: skelton 3s infinite;
+} 
 .product-image-container img{
   width: 45%;
 }
 .product-card-title{
   max-width: 90%;
-  height: 34px;
+  max-height: 34px;
   display: flex;
   overflow: hidden;
 }
+.skelton-product-title{
+  min-height: 10px ;
+  background: var(--skelton-background);
+  background-repeat: var(--skelton-repeat);
+  background-size: var(--skelton-size);
+  background-position: var(--seklton-position);
+  animation: skelton 3s infinite;
+}
+.skelton-prise{
+  max-height: 10px;
+  background: var(--skelton-background);
+  background-repeat: var(--skelton-repeat);
+  background-size: var(--skelton-size);
+  background-position: var(--seklton-position);
+  animation: skelton 3s infinite;
+}
+
 .card-text{
   color: rgb(80, 80, 80);
   font-weight: 600;
@@ -47,6 +74,17 @@
   align-items: center;
   justify-content: space-between;
   padding-top: 20px;
+}
+.skelton-btn{
+  width: 70%;
+  height: 30px;
+  background: var(--skelton-background);
+  background-repeat: var(--skelton-repeat);
+  background-size: var(--skelton-size);
+  background-position: var(--seklton-position);
+  animation: skelton 3s infinite;
+  color: transparent;
+  border-radius: 0;
 }
 .instock{
   font-size: 10px;

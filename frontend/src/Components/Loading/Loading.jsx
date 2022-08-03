@@ -39,3 +39,11 @@ export function Loading(props) {
     </div>
   );
 }
+
+export function SmallLoading() {
+  return (
+    <div class="spinner-container">
+      <div class="spinner"></div>
+    </div>
+  );
+}

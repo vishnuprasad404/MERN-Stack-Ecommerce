@@ -13,17 +13,36 @@ import Notification from "../Notification/Notification";
 import Rating from "../../Components/Rating/Rating";
 import { Loading } from "../../Components/Loading/Loading";
 
-function Product(props) {
+function Product({
+  title,
+  image,
+  disPrise,
+  cutPrise,
+  inStock,
+  pid,
+  key,
+  skelton,
+  border,
+  buttonStyle,
+  cartIconStyle,
+  favIconStyle,
+  cardStyle,
+  notificationStyle,
+}) {
   const { user } = useContext(GlobalData);
   const [notify, setNotify] = useState({ display: "none" });
   const nav = useNavigate();
   const [loading1, setLoading1] = useState(new Set());
-  const { title, image, disPrise, cutPrise, inStock, pid, key } = props;
-  
+
   const onPurchase = async (selectedIndex) => {
     setLoading1((prev) => new Set([...prev, selectedIndex]));
     if (user) {
-      let res = await CreateOrderProvider(pid, disPrise);
+      let orderObj = {
+        item: pid,
+        quantity: 1,
+        prise: parseInt(disPrise),
+      };
+      let res = await CreateOrderProvider([orderObj]);
       if (res) {
         setLoading1((prev) => {
           const updated = new Set(prev);
@@ -99,21 +118,37 @@ function Product(props) {
         key={key}
         className="col-6 col-sm-4 col-md-3 col-lg-2 product-column"
       >
-        <div className="card product-card">
-          <div className="product-image-container">
-            <img src={image} alt="img" />
+        <div className="card product-card" style={cardStyle}>
+          <div
+            className={`${
+              !skelton ? "product-image-container" : "skelton-image-container"
+            }`}
+            onClick={() => nav(`/product/${pid}`)}
+          >
+            {!skelton ? <img src={image} alt="img" /> : null}
           </div>
           <div className="card-body">
-            <Rating
-              id={pid}
-              style={{ marginBottom: "10px", width: "45px", height: "25px" }}
-            />
-            <h6 className="card-title product-card-title">{title}</h6>
-            <p className="card-text mb-0">
-              ${disPrise}
+            {!skelton ? (
+              <Rating
+                id={pid}
+                style={{ marginBottom: "10px", width: "45px", height: "25px" }}
+              />
+            ) : null}
+            <h6
+              className={`card-title product-card-title ${
+                skelton ? "skelton-product-title" : null
+              }`}
+            >
+              {title}
+            </h6>
+            <p
+              className={`card-text mb-0 ${skelton ? "skelton-prise" : null} `}
+            >
+              {!skelton ? "$" : null}
+              {disPrise}
               <del>{cutPrise}</del>
             </p>
-            {inStock ? (
+            {!skelton ? (
               <span
                 className="instock"
                 style={{ color: inStock >= 1 ? "green" : "red" }}
@@ -121,9 +156,10 @@ function Product(props) {
                 {inStock >= 1 ? "inStock" : "outofStock"}
               </span>
             ) : null}
-            <div className="product-action-btns mt-3">
+            <div className="product-action-btns">
               <button
-                className="buy"
+                style={buttonStyle}
+                className={`${skelton ? "skelton-btn" : "buy"}`}
                 onClick={() => onPurchase(key)}
               >
                 {!loading1.has(key) ? (
@@ -140,16 +176,22 @@ function Product(props) {
                   />
                 )}
               </button>
-              <FontAwesomeIcon
-                icon={faHeart}
-                className="fav-icon"
-                onClick={addToFavorites}
-              />
-              <FontAwesomeIcon
-                icon={faCartPlus}
-                className="cart-icon"
-                onClick={addToCart}
-              />
+              {!skelton ? (
+                <>
+                  <FontAwesomeIcon
+                    style={favIconStyle}
+                    icon={faHeart}
+                    className="fav-icon"
+                    onClick={addToFavorites}
+                  />
+                  <FontAwesomeIcon
+                    style={cartIconStyle}
+                    icon={faCartPlus}
+                    className="cart-icon"
+                    onClick={addToCart}
+                  />
+                </>
+              ) : null}
             </div>
           </div>
         </div>
@@ -157,8 +199,9 @@ function Product(props) {
       <Notification
         status={notify}
         parentStyle={{
-          top: "50px",
-          paddingRight: "100px",
+          ...notificationStyle,
+          top: "30px",
+          right: "20px",
           alignItems: "center",
           justifyContent: "flex-end",
         }}
