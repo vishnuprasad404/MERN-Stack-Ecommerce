@@ -2,7 +2,6 @@
   width: 100%;
   height: 70px;
   background-color: rgb(255, 255, 255);
-
   display: flex;
   align-items: center;
   justify-content: space-evenly;
@@ -182,12 +181,14 @@
     height: 40px;
     border-radius: 5px;
     margin-top: 30px;
+    overflow: hidden;
   }
   .nav-search input {
     border: none;
     padding-left: 5px;
     outline: none;
     width: 100%;
+    height: 100%;
   }
 }
 

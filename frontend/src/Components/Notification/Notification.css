@@ -1,13 +1,13 @@
-.notification-container{
-    width: 100%;
-    display: flex;
-    padding: 30px;
-    z-index: 111;
-
+.notification-container {
+  width: 100%;
+  display: flex;
+  padding: 30px;
+  z-index: 111;
 }
-.notification{
-    width: 350px;
+.notification {
+  width: 350px;
+  z-index: 111;
 }
-.notification-icon{
-    margin-right: 10px;
+.notification-icon {
+  margin-right: 10px;
 }

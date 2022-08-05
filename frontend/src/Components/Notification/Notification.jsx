@@ -8,9 +8,12 @@ import {
   faWarning,
 } from "@fortawesome/free-solid-svg-icons";
 
-function Notification({ style, status ,parentStyle}) {
+function Notification({ style, status, parentStyle }) {
   return (
-    <div className="notification-container position-fixed" style={parentStyle}>
+    <div
+      className="notification-container position-fixed"
+      style={{ ...parentStyle, display: status.display }}
+    >
       <div
         className={`alert notification ${
           status.type === "SUCCESS"

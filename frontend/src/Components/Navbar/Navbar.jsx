@@ -87,7 +87,7 @@ function Navbar() {
             <input
               onKeyDown={onSearch}
               type="text"
-              placeholder="Search Products"
+              placeholder="Search Products"              
             />
           </div>
           <FontAwesomeIcon

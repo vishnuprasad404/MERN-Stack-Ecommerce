@@ -58,38 +58,6 @@ function OrdersItemDetailPage() {
         <div className="view-orders-item-details">
           <section className="view-orders-product-detail-section">
             <div className="view-orders-item-details-container">
-              <section className="step-wizard">
-                <ul className="step-wizard-list">
-                  <li className={`step-wizard-item `}>
-                    <span className="progress-count"></span>
-                    <span className="progress-label">Placed</span>
-                  </li>
-                  <li
-                    className={`step-wizard-item ${
-                      product.status === "placed" ? "current-item" : null
-                    }`}
-                  >
-                    <span className="progress-count"></span>
-                    <span className="progress-label">Processing</span>
-                  </li>
-                  <li
-                    className={`step-wizard-item ${
-                      product.status === "dispatched" ? "current-item" : null
-                    }`}
-                  >
-                    <span className="progress-count"></span>
-                    <span className="progress-label">Shipped</span>
-                  </li>
-                  <li
-                    className={`step-wizard-item ${
-                      product.status === "completed" ? "current-item" : null
-                    }`}
-                  >
-                    <span className="progress-count"></span>
-                    <span className="progress-label">Deliverd</span>
-                  </li>
-                </ul>
-              </section>
               <span className="orders-devider"></span>
               <section className="view-orders-product-detail-content-section">
                 <div className="purshased-item-image-container">
@@ -109,7 +77,7 @@ function OrdersItemDetailPage() {
                   </div>
                 </div>
                 <div className="purchased-item-action">
-                  <button>Buy again</button>
+                  <button className="buy-again-btn">Buy again</button>
                   {product.status === "placed" ? (
                     <button> Cancel Order</button>
                   ) : null}

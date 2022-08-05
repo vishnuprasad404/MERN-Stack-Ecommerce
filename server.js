@@ -25,7 +25,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
-    origin: ["http://localhost:3000","https://electrocarts.herokuapp.com/"],
+    origin: ["http://localhost:3000","https://ecartonline.herokuapp.com"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
@@ -41,7 +41,6 @@ app.use(
   })
 );
 
-app.use(express.static(path.join(__dirname, "./frontend/build")))
 app.use(express.static("public"));
 app.use("/api", Admin);
 app.use("/api", Users);
@@ -77,6 +76,7 @@ app.get("/api/user", (req, res) => {
 
 // serve react app page //
 
+// app.use(express.static(path.join(__dirname, "./frontend/build")))
 // app.get("*",(req,res)=>{
 //   res.sendFile(path.join(__dirname, "./frontend/build","index.html"))
 // })
