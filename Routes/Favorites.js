@@ -96,7 +96,12 @@ router.delete("/removefavoriteitem/:id", (req, res) => {
         {
           $pull: { products: { item: ObjectId(req.params.id) } },
         }
-      );
+      )
+      .then((result) => {
+        if (result) {
+          res.send(true);
+        }
+      });
   }
 });
 

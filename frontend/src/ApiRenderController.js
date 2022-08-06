@@ -179,9 +179,10 @@ export const GetAllWishlistProvider = async () => {
 // remove favorites item start //
 
 export const RemoveFavoritesProvider = async (id) => {
-  await axios.delete(
+  let res = await axios.delete(
     `${process.env.REACT_APP_BASE_URL}/removefavoriteitem/${id}`
   );
+  return res.data
 };
 
 // remove favorites item end //

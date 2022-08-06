@@ -1,13 +1,13 @@
 const express = require("express");
 const app = express();
-const PORT = process.env.PORT || 3001
+const PORT = process.env.PORT || 3001;
 require("dotenv").config();
-const path = require('path')
+const path = require("path");
 const cors = require("cors");
 const fileUpload = require("express-fileupload");
 const database = require("./database_config");
 //database connection
-database.connect() 
+database.connect();
 //
 const cookieParser = require("cookie-parser");
 const session = require("express-session");
@@ -18,14 +18,13 @@ const Cart = require("./Routes/Cart");
 const Order = require("./Routes/Order");
 const Favorites = require("./Routes/Favorites");
 const Address = require("./Routes/Address");
-const Reviews = require('./Routes/Reviews')
-
+const Reviews = require("./Routes/Reviews");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(
   cors({
-    origin: ["http://localhost:3000","https://ecartonline.herokuapp.com"],
+    origin: ["http://localhost:3000", "https://ecartonline.herokuapp.com"],
     methods: ["GET", "POST", "PUT", "DELETE"],
     credentials: true,
   })
@@ -50,8 +49,6 @@ app.use("/api", Cart);
 app.use("/api", Order);
 app.use("/api", Address);
 app.use("/api", Reviews);
-
-
 
 //get admin
 app.get("/api/admin", (req, res) => {
@@ -82,6 +79,5 @@ app.get("/api/user", (req, res) => {
 // })
 
 // serve react app page //
-
 
 app.listen(PORT);
