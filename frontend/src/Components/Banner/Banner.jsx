@@ -3,8 +3,11 @@ import "./Banner.css";
 
 function Banner(props) {
   return (
-    <div className="banner" style={{backgroundImage : `url(${props.image})`}} onClick={props.action}>
-    </div>
+    <div
+      className="banner"
+      style={{ backgroundImage: `url(${props.image})` }}
+      onClick={props.action}
+    ></div>
   );
 }
 

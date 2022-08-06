@@ -153,7 +153,7 @@ function OrderProductPage() {
                     <div className="order-item-details">
                       <p className="order-product-title">{itm.product.title}</p>
                       <div className="order-item-prise-container">
-                        <p className="dis-prise">$ {itm.prise}</p>
+                        <p className="dis-prise">₹ {itm.prise}</p>
                         <del className="org-prise">
                           {itm.product.orginalPrise}
                         </del>
@@ -204,7 +204,7 @@ function OrderProductPage() {
               </div>
               <div className="total-check-out-prise">
                 <p>Total Prise</p>
-                <p>$ {productTotal}</p>
+                <p>₹ {productTotal}</p>
               </div>
               <p className="check-out-heading">Payment Methord</p>
               <div className="check-out-select-payment">

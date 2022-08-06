@@ -18,7 +18,7 @@ function OrdersPage() {
   useEffect(() => {
     const GetAllOrders = async () => {
       let res = await GetAllOrdersProvider();
-      setOrders(res);
+      setOrders(res.reverse());
       setLoading(false); 
     };
     GetAllOrders();
@@ -68,7 +68,7 @@ function OrdersPage() {
 
                             <br />
                             <p>
-                              $ {itm.prise} Quantity : {itm.quantity}{" "}
+                            ₹ {itm.prise} Quantity : {itm.quantity}{" "}
                             </p>
                           </div>
                         </section>

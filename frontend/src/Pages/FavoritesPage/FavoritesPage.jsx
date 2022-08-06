@@ -16,12 +16,14 @@ import Notification from "../../Components/Notification/Notification";
 import { useContext } from "react";
 import { EContextData } from "../../EContextData";
 import { useNavigate } from "react-router-dom";
+import {Loading} from '../../Components/Loading/Loading'
 
 function FavoritesPage() {
   const {user } = useContext(EContextData)
   const nav = useNavigate()
   const [favoriteProducts, setFavoriteProducts] = useState([]);
   const [notify, setNotify] = useState({display : 'none'})
+  const [loading, setLoading] = useState(false)
   useEffect(() => {
     getAllWishlist();
   }, []);
@@ -93,7 +95,7 @@ function FavoritesPage() {
                           {itm.product[0].title}
                         </h6>
                         <p className="fav-prise">
-                          $ {itm.product[0].discountPrise}
+                        ₹ {itm.product[0].discountPrise}
                           <del>{itm.product[0].orginalPrise}</del>
                         </p>
                         <button

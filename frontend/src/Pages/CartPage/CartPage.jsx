@@ -147,7 +147,7 @@ function CartPage() {
                             height: "25px",
                           }}
                         />
-                        <span>$ {itm.prise}</span>
+                        <span>₹ {itm.prise}</span>
                       </div>
                       <div className="cart-item-action">
                         <button
@@ -207,7 +207,7 @@ function CartPage() {
               </div>
               <div className="total-amount">
                 <p>Total Amount</p>
-                <p>$ {totalPrise}</p>
+                <p>₹ {totalPrise}</p>
               </div>
               <button className="buy-cart" onClick={orderProduct}>
                 BUY NOW

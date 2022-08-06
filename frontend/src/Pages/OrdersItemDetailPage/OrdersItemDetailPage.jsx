@@ -72,7 +72,7 @@ function OrdersItemDetailPage() {
                       displayReview={true}
                     />
                     <p>
-                      $ {product.prise} (quantity : {product.quantity})
+                      ₹ {product.prise} (quantity : {product.quantity})
                     </p>
                   </div>
                 </div>
@@ -84,7 +84,6 @@ function OrdersItemDetailPage() {
                   {product.status === "pending" ? (
                     <button> Complete Order</button>
                   ) : null}
-                  {/* <FontAwesomeIcon icon={faRoadCircleCheck}/> */}
                 </div>
                 {product.status === "completed" ? (
                   <div className="add-review">

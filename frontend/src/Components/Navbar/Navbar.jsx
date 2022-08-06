@@ -9,6 +9,7 @@ import {
   faUser,
   faSearch,
   faBars,
+  faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import { EContextData as GlobalData } from "../../EContextData";
 import { Link } from "react-router-dom";
@@ -39,7 +40,7 @@ function Navbar() {
       setCartCount(res);
     };
     getCart();
-  },[]);
+  }, []);
 
   return (
     <>
@@ -47,7 +48,7 @@ function Navbar() {
         <div className="nav-title">
           <FontAwesomeIcon
             onClick={openDrawer}
-            icon={faBars}
+            icon={!drawer ? faBars : faXmark}
             className="navbar-bar"
           />
           ECART
@@ -83,11 +84,11 @@ function Navbar() {
         </div>
         <div className="nav-icons">
           <div className="nav-search">
-            <FontAwesomeIcon icon={faSearch} />
+            <FontAwesomeIcon icon={faSearch} className="nav-search-icon" />
             <input
               onKeyDown={onSearch}
               type="text"
-              placeholder="Search Products"              
+              placeholder="Search Products"
             />
           </div>
           <FontAwesomeIcon

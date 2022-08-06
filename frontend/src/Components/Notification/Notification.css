@@ -11,3 +11,13 @@
 .notification-icon {
   margin-right: 10px;
 }
+
+@media (max-width: 600px) {
+  .notification-container {
+    padding: 5px;
+    right: 0 !important;
+  }
+  .notification{
+    width: 85%;
+  }
+}

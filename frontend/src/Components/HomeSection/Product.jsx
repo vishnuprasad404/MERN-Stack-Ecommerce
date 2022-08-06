@@ -22,6 +22,7 @@ function Product({
   pid,
   key,
   skelton,
+  border,
   buttonStyle,
   cartIconStyle,
   favIconStyle,
@@ -201,6 +202,7 @@ function Product({
           ...notificationStyle,
           top: "30px",
           right: "20px",
+          alignItems: "center",
           justifyContent: "flex-end",
         }}
       />
