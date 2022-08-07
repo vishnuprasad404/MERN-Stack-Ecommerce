@@ -18,7 +18,11 @@ function FilterOrders(props) {
       <h5>Filter Orders</h5>
       <div className="filter-order-by-search">
         <FontAwesomeIcon icon={faSearch} />
-        <input type="text" placeholder="Search order" />
+        <input
+          type="text"
+          placeholder="Search order"
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
       </div>
       <div className="sort-orders">
         <p className="orders-sort-heading">Order Status</p>
@@ -66,8 +70,8 @@ function FilterOrders(props) {
 const OrderSortOption = (props) => {
   const { onClick, opt, checked } = props;
   return (
-    <div className="sort-order-option" onClick={onClick} >
-      <input type="checkbox" checked={checked} onChange={onClick}/>
+    <div className="sort-order-option" onClick={onClick}>
+      <input type="checkbox" checked={checked} onChange={onClick} />
       {opt}
     </div>
   );

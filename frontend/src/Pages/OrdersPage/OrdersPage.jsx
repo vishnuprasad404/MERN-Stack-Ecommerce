@@ -24,10 +24,10 @@ function OrdersPage() {
     const GetAllOrders = async () => {
       let res = await GetAllOrdersProvider();
       setOrders(res.reverse());
-      setLoading(false); 
+      setLoading(false);
     };
     GetAllOrders();
-  },[]);
+  }, []);
 
   return (
     <>
@@ -40,12 +40,20 @@ function OrdersPage() {
               {orders
                 .filter((data) => {
                   if (searchQuery !== "") {
-                    return data.status === searchQuery;
+                    return (
+                      data.status === searchQuery ||
+                      data.product.title
+                        .toString()
+                        .toLowerCase()
+                        .includes(searchQuery)
+                    );
                   } else {
                     return data;
                   }
                 })
                 .map((itm, k) => {
+                  console.log(searchQuery);
+                  console.log(itm);
                   let date = new Date(itm.created_at);
                   const yyyy = date.getFullYear();
                   let mm = date.getMonth() + 1;
@@ -73,7 +81,7 @@ function OrdersPage() {
 
                             <br />
                             <p>
-                            ₹ {itm.prise} Quantity : {itm.quantity}{" "}
+                              ₹ {itm.prise} Quantity : {itm.quantity}{" "}
                             </p>
                           </div>
                         </section>

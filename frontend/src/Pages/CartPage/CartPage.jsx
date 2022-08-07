@@ -9,7 +9,6 @@ import EmptyItemsPage from "../../Components/EmptyItemsPage/EmptyItemsPage";
 import empty_cart from "../../Assets/empty-cart.webp";
 import { EContextData as GlobalData } from "../../EContextData";
 import { Loading, SmallLoading } from "../../Components/Loading/Loading";
-import Paginate from "react-paginate";
 import {
   RemoveCartItemProvider,
   CreateOrderProvider,
@@ -24,8 +23,9 @@ function CartPage() {
   const [cartItems, setCartItems] = useState([]);
   const [totalPrise, setTotalPrise] = useState("");
   const [loading, setLoading] = useState(true);
+  const [changeQuantityLoading, setChangeQuantityLoading] = useState(new Set());
   const [removeCartLoading, setRemoveCartLoading] = useState(new Set());
-  const [pageNumber, setPageNumber] = useState(0);
+  const [orderLoading, setOrderLoading] = useState(false);
 
   useEffect(() => {
     window.scroll({
@@ -51,6 +51,7 @@ function CartPage() {
   };
 
   const manageQuantity = (cart, key, action) => {
+    setChangeQuantityLoading((prev) => new Set([...prev, key]));
     let temp = cartItems;
     if (action === "inc") {
       temp[key].quantity += 1;
@@ -64,6 +65,11 @@ function CartPage() {
       );
       setCartItems([...temp]);
       setTimeout(() => {
+        setChangeQuantityLoading((prev) => {
+          const updated = new Set(prev);
+          updated.delete(key);
+          return updated;
+        });
         getCart();
       }, 100);
     } else {
@@ -78,6 +84,11 @@ function CartPage() {
       );
       setCartItems([...temp]);
       setTimeout(() => {
+        setChangeQuantityLoading((prev) => {
+          const updated = new Set(prev);
+          updated.delete(key);
+          return updated;
+        });
         getCart();
       }, 100);
     }
@@ -101,6 +112,7 @@ function CartPage() {
   };
 
   const orderProduct = async () => {
+    setOrderLoading(true);
     if (user) {
       let OrderDetails = cartItems.map((itm) => {
         return {
@@ -111,12 +123,10 @@ function CartPage() {
       });
       let res = await CreateOrderProvider(OrderDetails);
       if (res) {
+        setOrderLoading(false);
         nav(`/checkout/${res.OrderId}`);
       }
     }
-  };
-  const changePage = ({ selected }) => {
-    setPageNumber(selected);
   };
 
   return (
@@ -150,7 +160,11 @@ function CartPage() {
                     </div>
                     <div className="cart-item-action">
                       <button
-                        disabled={itm.quantity <= 1 ? true : false}
+                        disabled={
+                          itm.quantity <= 1 || changeQuantityLoading.has(key)
+                            ? true
+                            : false
+                        }
                         className="quantity-btn"
                         onClick={() => manageQuantity(itm, key, "dec")}
                       >
@@ -159,7 +173,10 @@ function CartPage() {
                       <span className="quantity">{itm.quantity}</span>
                       <button
                         disabled={
-                          itm.quantity >= itm.product.inStock ? true : false
+                          itm.quantity >= itm.product.inStock ||
+                          changeQuantityLoading.has(key)
+                            ? true
+                            : false
                         }
                         className="quantity-btn"
                         onClick={() => manageQuantity(itm, key, "inc")}
@@ -195,8 +212,18 @@ function CartPage() {
                 <p>Total Amount</p>
                 <p>₹ {totalPrise}</p>
               </div>
-              <button className="buy-cart" onClick={orderProduct}>
-                BUY NOW
+              <button
+                className="buy-cart"
+                onClick={orderProduct}
+                style={{
+                  backgroundColor: orderLoading ? "rgb(218, 218, 218)" : null,
+                }}
+              >
+                {!orderLoading ? (
+                  "BUY NOW"
+                ) : (
+                  <Loading style={{ height: "auto" }} />
+                )}
               </button>
             </div>
           </div>
