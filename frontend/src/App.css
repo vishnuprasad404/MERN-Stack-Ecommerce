@@ -6,6 +6,7 @@
   font-family: poppins;
   scrollbar-width: none;
   scrollbar-color: white white;
+  scroll-behavior: smooth;
   transition: .1s;
 }
 *::-webkit-scrollbar{

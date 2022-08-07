@@ -7,23 +7,27 @@ const { ObjectId } = require("mongodb");
 // get all users//
 
 router.get("/admin/get-all-user", async (req, res) => {
-  let user = await db
-    .get()
-    .collection(process.env.USERS_COLLECTION)
-    .aggregate([
-      {
-        $project: {
-          username: "$username",
-          email: "$email",
-          phone: "$phone",
-          created_at: "$created_at",
+  try {
+    let user = await db
+      .get()
+      .collection(process.env.USERS_COLLECTION)
+      .aggregate([
+        {
+          $project: {
+            username: "$username",
+            email: "$email",
+            phone: "$phone",
+            created_at: "$created_at",
+          },
         },
-      },
-    ])
-    .toArray();
+      ])
+      .toArray();
 
-  if (user) {
-    res.json(user);
+    if (user) {
+      res.json(user);
+    }
+  } catch (error) {
+    console.log(error);
   }
 });
 
@@ -32,42 +36,46 @@ router.get("/admin/get-all-user", async (req, res) => {
 // add user to database start
 
 router.post("/user/signup", async (req, res) => {
-  if (req.body) {
-    let userExist = await db
-      .get()
-      .collection(process.env.USERS_COLLECTION)
-      .findOne({ email: req.body.email });
-    if (!userExist) {
-      const hasedPassword = await bcrypt.hash(req.body.password, 10);
-      db.get()
+  try {
+    if (req.body) {
+      let userExist = await db
+        .get()
         .collection(process.env.USERS_COLLECTION)
-        .insertOne({
-          username: req.body.username,
-          email: req.body.email,
-          phone: req.body.phone,
-          password: hasedPassword,
-        })
-        .then(async (response) => {
-          if (response) {
-            let Reguser = await db
-              .get()
-              .collection(process.env.USERS_COLLECTION)
-              .findOne({ email: req.body.email });
-            req.session.user = Reguser;
-            req.session.isLoggedIn = true;
-            res.send({
-              isUserAdded: true,
-              user: req.session.user,
-            });
-          } else {
-            res.send({
-              isUserAdded: false,
-            });
-          }
-        });
-    } else {
-      res.send({ userExist: true });
+        .findOne({ email: req.body.email });
+      if (!userExist) {
+        const hasedPassword = await bcrypt.hash(req.body.password, 10);
+        db.get()
+          .collection(process.env.USERS_COLLECTION)
+          .insertOne({
+            username: req.body.username,
+            email: req.body.email,
+            phone: req.body.phone,
+            password: hasedPassword,
+          })
+          .then(async (response) => {
+            if (response) {
+              let Reguser = await db
+                .get()
+                .collection(process.env.USERS_COLLECTION)
+                .findOne({ email: req.body.email });
+              req.session.user = Reguser;
+              req.session.isLoggedIn = true;
+              res.send({
+                isUserAdded: true,
+                user: req.session.user,
+              });
+            } else {
+              res.send({
+                isUserAdded: false,
+              });
+            }
+          });
+      } else {
+        res.send({ userExist: true });
+      }
     }
+  } catch (error) {
+    console.log(error);
   }
 });
 
@@ -76,61 +84,40 @@ router.post("/user/signup", async (req, res) => {
 // login as user start
 
 router.post("/user/signin", async (req, res) => {
-  if (req.body) {
-    let user = await db
-      .get()
-      .collection(process.env.USERS_COLLECTION)
-      .findOne({ email: req.body.email });
-    if (user) {
-      bcrypt.compare(req.body.password, user.password).then((result) => {
-        if (result) {
-          req.session.user = user;
-          req.session.isLoggedIn = true;
-          res.send({
-            isLoggedIn: true,
-            userDetails: req.session.user,
-          });
-        } else {
-          res.send({ isLoggedIn: false });
-        }
-      });
-    } else {
-      res.send({ userFound: false });
+  try {
+    if (req.body) {
+      let user = await db
+        .get()
+        .collection(process.env.USERS_COLLECTION)
+        .findOne({ email: req.body.email });
+      if (user) {
+        bcrypt.compare(req.body.password, user.password).then((result) => {
+          if (result) {
+            req.session.user = user;
+            req.session.isLoggedIn = true;
+            res.send({
+              isLoggedIn: true,
+              userDetails: req.session.user,
+            });
+          } else {
+            res.send({ isLoggedIn: false });
+          }
+        });
+      } else {
+        res.send({ userFound: false });
+      }
     }
+  } catch (error) {
+    console.log(error);
   }
 });
 
 // login as user end
 
 router.post("/updateaccount", async (req, res) => {
-  if (req.session.user) {
-    if (!req.body.current_password) {
-      db.get()
-        .collection(process.env.USERS_COLLECTION)
-        .updateOne(
-          {
-            _id: ObjectId(req.session.user._id),
-          },
-          {
-            $set: req.body,
-          }
-        )
-        .then((result) => {
-          if (result) {
-            res.send({ updated: true });
-            req.session.destroy();
-          } else {
-            res.send({ updated: false });
-          }
-        });
-    } else {
-      let matchCurrentPass = await bcrypt.compare(
-        req.body.current_password,
-        req.session.user.password
-      );
-
-      if (matchCurrentPass === true) {
-        let hashedPasswd = await bcrypt.hash(req.body.new_password, 10);
+  try {
+    if (req.session.user) {
+      if (!req.body.current_password) {
         db.get()
           .collection(process.env.USERS_COLLECTION)
           .updateOne(
@@ -138,12 +125,7 @@ router.post("/updateaccount", async (req, res) => {
               _id: ObjectId(req.session.user._id),
             },
             {
-              $set: {
-                username: req.body.username,
-                phone: req.body.phone,
-                email: req.body.email,
-                password: hashedPasswd,
-              },
+              $set: req.body,
             }
           )
           .then((result) => {
@@ -155,35 +137,78 @@ router.post("/updateaccount", async (req, res) => {
             }
           });
       } else {
-        res.send({ passMatched: false });
+        let matchCurrentPass = await bcrypt.compare(
+          req.body.current_password,
+          req.session.user.password
+        );
+
+        if (matchCurrentPass === true) {
+          let hashedPasswd = await bcrypt.hash(req.body.new_password, 10);
+          db.get()
+            .collection(process.env.USERS_COLLECTION)
+            .updateOne(
+              {
+                _id: ObjectId(req.session.user._id),
+              },
+              {
+                $set: {
+                  username: req.body.username,
+                  phone: req.body.phone,
+                  email: req.body.email,
+                  password: hashedPasswd,
+                },
+              }
+            )
+            .then((result) => {
+              if (result) {
+                res.send({ updated: true });
+                req.session.destroy();
+              } else {
+                res.send({ updated: false });
+              }
+            });
+        } else {
+          res.send({ passMatched: false });
+        }
       }
     }
+  } catch (error) {
+    console.log(error);
   }
 });
 
 // user sign out start
 
 router.get("/signout", (req, res) => {
-  req.session.destroy();
-  if (!req.session) {
-    res.send(true);
-  } else {
-    res.send(false);
+  try {
+    req.session.destroy();
+    if (!req.session) {
+      res.send(true);
+    } else {
+      res.send(false);
+    }
+  } catch (error) {
+    console.log(error);
   }
 });
 
 // user sign out end
 
 router.delete("/admin/delete-user/:id", (req, res) => {
-  db.get()
-    .collection(process.env.USERS_COLLECTION)
-    .deleteOne({ _id: ObjectId(req.params.id) }).then((result)=>{
-      if(result.deletedCount === 1){
-        res.send(true)
-      }else{
-        res.send(false)
-      }
-    })
+  try {
+    db.get()
+      .collection(process.env.USERS_COLLECTION)
+      .deleteOne({ _id: ObjectId(req.params.id) })
+      .then((result) => {
+        if (result.deletedCount === 1) {
+          res.send(true);
+        } else {
+          res.send(false);
+        }
+      });
+  } catch (error) {
+    console.log(error);
+  }
 });
 
 module.exports = router;

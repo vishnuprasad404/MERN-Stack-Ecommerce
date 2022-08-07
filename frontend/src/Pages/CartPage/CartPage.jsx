@@ -63,7 +63,7 @@ function CartPage() {
         temp[key].quantity,
         temp[key].prise
       );
-      setCartItems([...temp]);
+      // setCartItems([...temp]);
       setTimeout(() => {
         setChangeQuantityLoading((prev) => {
           const updated = new Set(prev);
@@ -82,7 +82,7 @@ function CartPage() {
         temp[key].quantity,
         temp[key].prise
       );
-      setCartItems([...temp]);
+      // setCartItems([...temp]);
       setTimeout(() => {
         setChangeQuantityLoading((prev) => {
           const updated = new Set(prev);

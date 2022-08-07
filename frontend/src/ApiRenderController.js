@@ -83,9 +83,10 @@ export const ChangeOrderQuantityProvider = async (
   prise,
   quantity
 ) => {
-  axios.put(
+  let res = await axios.put(
     `${process.env.REACT_APP_BASE_URL}/change-order-item-quantity/${id}/${item}/${prise}/${quantity}`
   );
+  return res.data
 };
 
 // change order products item quantity end //

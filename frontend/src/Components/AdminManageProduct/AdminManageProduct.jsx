@@ -8,7 +8,7 @@ import { useEffect } from "react";
 import { Loading } from "../Loading/Loading";
 
 function AdminManageProduct() {
-  const [loading, setLoading] = useState(false);
+  const [loading] = useState(false);
   const { action } = useParams();
   const [searchParams] = useSearchParams();
   let id = searchParams.get("id");

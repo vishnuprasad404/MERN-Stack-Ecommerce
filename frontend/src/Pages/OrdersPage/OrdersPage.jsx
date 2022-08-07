@@ -45,7 +45,7 @@ function OrdersPage() {
                       data.product.title
                         .toString()
                         .toLowerCase()
-                        .includes(searchQuery)
+                        .includes(searchQuery.toLowerCase())
                     );
                   } else {
                     return data;

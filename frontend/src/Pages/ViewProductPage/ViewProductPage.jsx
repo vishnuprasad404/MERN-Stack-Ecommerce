@@ -28,13 +28,14 @@ function ViewProductPage() {
       behavior: "smooth",
     });
     axios.get(`${process.env.REACT_APP_BASE_URL}/products`).then((res) => {
-      setloading(false)
+      setloading(false);
       let proObj = res.data.find((itm) => {
         return itm._id === id;
       });
       setProduct(proObj);
     });
   }, [id]);
+
   const [productImage, setProductImage] = useState();
   const addToCart = async (pid, prise) => {
     if (user) {
@@ -143,8 +144,11 @@ function ViewProductPage() {
                 <FontAwesomeIcon icon={faCartPlus} /> ADD TO CART
               </button>
               <button
-                style={{ width: `${product.inStock < 1 ? "300px" : null}` }}
-                onClick={onPurchase}
+                style={{
+                  width: `${product.inStock < 1 ? "300px" : null}`,
+                  cursor: product.inStock < 1 ? "not-allowed" : null,
+                }}
+                onClick={product.inStock >= 1 ? onPurchase : null}
               >
                 <FontAwesomeIcon icon={faBolt} />{" "}
                 {product.inStock < 1 ? "Comming Soon" : "BUY NOW"}

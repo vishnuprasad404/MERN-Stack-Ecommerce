@@ -24,13 +24,9 @@ function OrderProductPage() {
   const [paymentMethord, setPaymentMethord] = useState("online");
   const { OrderId } = useParams();
   const [notify, setNotify] = useState({ display: "none" });
+  const [quantityLoading, setQuantityLoading] = useState(new Set());
 
   useEffect(() => {
-    window.scroll({
-      top: 0,
-      left: 0,
-      behavior: "smooth",
-    });
     const GetOrderDetails = async () => {
       let order = await GetOrderProvider(OrderId);
       if (order) {
@@ -51,15 +47,40 @@ function OrderProductPage() {
     GetOrderDetails();
   });
 
-  const changeOrderItemQuantity = (itm, action) => {
+  const changeOrderItemQuantity = async (itm, action, selectedIndex) => {
+    setQuantityLoading((prev) => new Set([...prev, selectedIndex]));
     if (action === "increese") {
       let new_prise = parseInt(itm.prise) + parseInt(itm.product.discountPrise);
       let new_quantity = itm.quantity + 1;
-      ChangeOrderQuantityProvider(itm._id, itm.item, new_prise, new_quantity);
+      let res = await ChangeOrderQuantityProvider(
+        itm._id,
+        itm.item,
+        new_prise,
+        new_quantity
+      );
+      if (res) {
+        setQuantityLoading((prev) => {
+          const updated = new Set(prev);
+          updated.delete(selectedIndex);
+          return updated;
+        });
+      }
     } else {
       let new_prise = parseInt(itm.prise) - parseInt(itm.product.discountPrise);
       let new_quantity = itm.quantity - 1;
-      ChangeOrderQuantityProvider(itm._id, itm.item, new_prise, new_quantity);
+      let res = await ChangeOrderQuantityProvider(
+        itm._id,
+        itm.item,
+        new_prise,
+        new_quantity
+      );
+      if (res) {
+        setQuantityLoading((prev) => {
+          const updated = new Set(prev);
+          updated.delete(selectedIndex);
+          return updated;
+        });
+      }
     }
   };
 
@@ -142,12 +163,12 @@ function OrderProductPage() {
     <div className="order-product-page">
       <>
         <Navbar />
-        <div className="order-product-container">
+        <div className="order-product-container" id="order">
           <div className="order-product-item-container-wrapper">
             <div className="order-item-container-wrapper">
-              {checkOutProducts.map((itm) => {
+              {checkOutProducts.map((itm, key) => {
                 return (
-                  <div className="order-item">
+                  <div className="order-item" key={key}>
                     <div className="order-item-image">
                       <img
                         width="100%"
@@ -165,10 +186,14 @@ function OrderProductPage() {
                       </div>
                       <div className="order-item-quantity">
                         <button
-                          disabled={itm.quantity <= 1 ? true : false}
+                          disabled={
+                            itm.quantity <= 1 || quantityLoading.has(key)
+                              ? true
+                              : false
+                          }
                           className="order-product-quantity-btn"
                           onClick={() =>
-                            changeOrderItemQuantity(itm, "decreese")
+                            changeOrderItemQuantity(itm, "decreese", key)
                           }
                         >
                           -
@@ -176,11 +201,14 @@ function OrderProductPage() {
                         <p>{itm.quantity}</p>
                         <button
                           disabled={
-                            itm.quantity >= itm.product.inStock ? true : false
+                            itm.quantity >= itm.product.inStock ||
+                            quantityLoading.has(key)
+                              ? true
+                              : false
                           }
                           className="order-product-quantity-btn"
                           onClick={() =>
-                            changeOrderItemQuantity(itm, "increese")
+                            changeOrderItemQuantity(itm, "increese", key)
                           }
                         >
                           +
@@ -216,7 +244,7 @@ function OrderProductPage() {
                 <input
                   type="checkbox"
                   checked={paymentMethord === "online" ? true : false}
-                  onClick={() => setPaymentMethord("online")}
+                  onChange={() => setPaymentMethord("online")}
                 />
                 <p>Online Payment</p>
               </div>
@@ -224,7 +252,7 @@ function OrderProductPage() {
                 <input
                   type="checkbox"
                   checked={paymentMethord === "cod" ? true : false}
-                  onClick={() => setPaymentMethord("cod")}
+                  onChange={() => setPaymentMethord("cod")}
                 />
                 <p>Cash on delivery (COD)</p>
               </div>

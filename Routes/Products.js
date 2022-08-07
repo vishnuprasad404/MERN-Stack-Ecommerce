@@ -1,22 +1,22 @@
 const express = require("express");
 const router = express.Router();
 const db = require("../database_config");
-const ObjectId = require('mongodb').ObjectId
+const ObjectId = require("mongodb").ObjectId;
 
 //get products start
 
 router.get("/products", async (req, res) => {
   try {
     let products = await db
-    .get()
-    .collection(process.env.PRODUCTS_COLLECTION)
-    .find()
-    .toArray();
-  if (products) {
-    res.json(products);
-  }
+      .get()
+      .collection(process.env.PRODUCTS_COLLECTION)
+      .find()
+      .toArray();
+    if (products) {
+      res.json(products);
+    }
   } catch (error) {
-    res.send("Network issue")
+    res.send("Network issue");
   }
 });
 
@@ -25,28 +25,79 @@ router.get("/products", async (req, res) => {
 //admin add product start
 
 router.post("/admin/addproduct", (req, res) => {
-  let image1 = req.files.image1;
-  let image2 = req.files.image2;
-  let image3 = req.files.image3;
-  let image4 = req.files.image4;
+  try {
+    let image1 = req.files.image1;
+    let image2 = req.files.image2;
+    let image3 = req.files.image3;
+    let image4 = req.files.image4;
 
-  if (req.body) {
-    if (image1) {
-      image1.mv("public/uploads/" + image1.md5 + ".png", (err) => {});
-    }
-    if (image2) {
-      image2.mv("public/uploads/" + image2.md5 + ".png", (err) => {});
-    }
-    if (image3) {
-      image3.mv("public/uploads/" + image3.md5 + ".png", (err) => {});
-    }
-    if (image4) {
-      image4.mv("public/uploads/" + image4.md5 + ".png", (err) => {});
-    }
+    if (req.body) {
+      if (image1) {
+        image1.mv("public/uploads/" + image1.md5 + ".png", (err) => {});
+      }
+      if (image2) {
+        image2.mv("public/uploads/" + image2.md5 + ".png", (err) => {});
+      }
+      if (image3) {
+        image3.mv("public/uploads/" + image3.md5 + ".png", (err) => {});
+      }
+      if (image4) {
+        image4.mv("public/uploads/" + image4.md5 + ".png", (err) => {});
+      }
 
-    db.get()
-      .collection(process.env.PRODUCTS_COLLECTION)
-      .insertOne({
+      db.get()
+        .collection(process.env.PRODUCTS_COLLECTION)
+        .insertOne({
+          title: req.body.title,
+          discountPrise: parseInt(req.body.disPrise),
+          orginalPrise: parseInt(req.body.orgPrise),
+          description: req.body.description,
+          category: req.body.category,
+          inStock: parseInt(req.body.inStock),
+          image1: process.env.ORGIN + "/uploads/" + image1.md5 + ".png",
+          image2: process.env.ORGIN + "/uploads/" + image2.md5 + ".png",
+          image3: process.env.ORGIN + "/uploads/" + image3.md5 + ".png",
+          image4: process.env.ORGIN + "/uploads/" + image4.md5 + ".png",
+          reviews: [],
+        })
+        .then((response) => {
+          if (response) {
+            res.send(true);
+          } else {
+            res.send(false);
+          }
+        });
+    }
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+// admin add product end
+
+//admin update products start//
+
+router.put("/admin/update-product/:id", (req, res) => {
+  try {
+    if (req.files) {
+      let image1 = req.files.image1;
+      let image2 = req.files.image2;
+      let image3 = req.files.image3;
+      let image4 = req.files.image4;
+      if (image1) {
+        image1.mv("public/uploads/" + image1.md5 + ".png", (err) => {});
+      }
+      if (image2) {
+        image2.mv("public/uploads/" + image2.md5 + ".png", (err) => {});
+      }
+      if (image3) {
+        image3.mv("public/uploads/" + image3.md5 + ".png", (err) => {});
+      }
+      if (image4) {
+        image4.mv("public/uploads/" + image4.md5 + ".png", (err) => {});
+      }
+
+      let updateObject = {
         title: req.body.title,
         discountPrise: parseInt(req.body.disPrise),
         orginalPrise: parseInt(req.body.orgPrise),
@@ -57,85 +108,55 @@ router.post("/admin/addproduct", (req, res) => {
         image2: process.env.ORGIN + "/uploads/" + image2.md5 + ".png",
         image3: process.env.ORGIN + "/uploads/" + image3.md5 + ".png",
         image4: process.env.ORGIN + "/uploads/" + image4.md5 + ".png",
-        reviews: [],
-      })
-      .then((response) => {
-        if (response) {
-          res.send(true);
-        } else {
-          res.send(false);
-        }
-      });
+      };
+      db.get()
+        .collection(process.env.PRODUCTS_COLLECTION)
+        .updateOne(
+          { _id: ObjectId(req.params.id) },
+          {
+            $set: updateObject,
+          }
+        )
+        .then(() => {
+          res.status(200).send(true);
+        });
+    } else {
+      db.get()
+        .collection(process.env.PRODUCTS_COLLECTION)
+        .updateOne(
+          { _id: ObjectId(req.params.id) },
+          {
+            $set: req.body,
+          }
+        )
+        .then(() => {
+          res.status(200).send(true);
+        });
+    }
+  } catch (error) {
+    console.log(error);
   }
 });
 
-// admin add product end
-
-//admin update products start//
-
-router.put('/admin/update-product/:id',(req,res)=>{
-  if(req.files){
-    let image1 = req.files.image1;
-    let image2 = req.files.image2;
-    let image3 = req.files.image3;
-    let image4 = req.files.image4;
-    if (image1) {
-      image1.mv("public/uploads/" + image1.md5 + ".png", (err) => {});
-    }
-    if (image2) {
-      image2.mv("public/uploads/" + image2.md5 + ".png", (err) => {});
-    }
-    if (image3) {
-      image3.mv("public/uploads/" + image3.md5 + ".png", (err) => {});
-    }
-    if (image4) {
-      image4.mv("public/uploads/" + image4.md5 + ".png", (err) => {});
-    }
-
-    let updateObject ={
-      title: req.body.title,
-      discountPrise: parseInt(req.body.disPrise),
-      orginalPrise: parseInt(req.body.orgPrise),
-      description: req.body.description,
-      category: req.body.category,
-      inStock: parseInt(req.body.inStock),
-      image1: process.env.ORGIN + "/uploads/" + image1.md5 + ".png",
-      image2: process.env.ORGIN + "/uploads/" + image2.md5 + ".png",
-      image3: process.env.ORGIN + "/uploads/" + image3.md5 + ".png",
-      image4: process.env.ORGIN + "/uploads/" + image4.md5 + ".png",
-    }
-    db.get().collection(process.env.PRODUCTS_COLLECTION).updateOne({_id : ObjectId(req.params.id)},{
-      $set : updateObject
-    }).then(()=>{
-      res.status(200).send(true)
-    })
-
-  }else{
-    db.get().collection(process.env.PRODUCTS_COLLECTION).updateOne({_id : ObjectId(req.params.id)},{
-      $set : req.body
-    }).then(()=>{
-      res.status(200).send(true)
-    })
-  }
-
-}) 
-
 //admin update products end//
-
 
 //admin remove products start//
 
 router.delete("/admin/remove-product/:id/", (req, res) => {
-  db.get()
-    .collection(process.env.PRODUCTS_COLLECTION)
-    .deleteOne({ _id: ObjectId(req.params.id) })
-    .then((result) => {
-      if (result.deletedCount === 1) {
-        res.status(200).send(true);
-      } else {
-        res.status(400).send(false);
-      }
-    });
+  try {
+    db.get()
+      .collection(process.env.PRODUCTS_COLLECTION)
+      .deleteOne({ _id: ObjectId(req.params.id) })
+      .then((result) => {
+        if (result.deletedCount === 1) {
+          res.status(200).send(true);
+        } else {
+          res.status(400).send(false);
+        }
+      });
+  } catch (error) {
+    console.log(error);
+  }
 });
 
 //admin remove products end/
