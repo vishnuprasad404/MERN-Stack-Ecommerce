@@ -11,6 +11,7 @@ import axios from "axios";
 import { EContextData } from "../../EContextData";
 import Notification from "../../Components/Notification/Notification";
 import { AddToCartProvider } from "../../ApiRenderController";
+import { Loading } from "../../Components/Loading/Loading";
 
 function ViewProductPage() {
   const { user } = useContext(EContextData);
@@ -18,15 +19,22 @@ function ViewProductPage() {
   const nav = useNavigate();
   const [product, setProduct] = useState();
   const [notify, setNotify] = useState({ display: "none" });
+  const [loading, setloading] = useState(true);
 
   useEffect(() => {
+    window.scroll({
+      top: 0,
+      left: 0,
+      behavior: "smooth",
+    });
     axios.get(`${process.env.REACT_APP_BASE_URL}/products`).then((res) => {
+      setloading(false)
       let proObj = res.data.find((itm) => {
         return itm._id === id;
       });
       setProduct(proObj);
     });
-  });
+  }, [id]);
   const [productImage, setProductImage] = useState();
   const addToCart = async (pid, prise) => {
     if (user) {
@@ -75,9 +83,11 @@ function ViewProductPage() {
   };
 
   return (
-    <div className="view-product-page">
+    <div className="view-product-page" id="view-product">
       <Navbar />
-      {product ? (
+      {loading ? (
+        <Loading />
+      ) : product ? (
         <>
           <div className="view-product-page-left-container">
             <div className="view-product-image-container">

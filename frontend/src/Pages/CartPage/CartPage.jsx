@@ -28,6 +28,11 @@ function CartPage() {
   const [pageNumber, setPageNumber] = useState(0);
 
   useEffect(() => {
+    window.scroll({
+      top: 0,
+      left: 0,
+      behavior: "smooth",
+    });
     getCart();
   }, []);
 
@@ -110,93 +115,74 @@ function CartPage() {
       }
     }
   };
-  const ordersPerPage = 3;
-  const pagesVisited = pageNumber * ordersPerPage;
-  const pageCount = Math.ceil(cartItems.length / ordersPerPage);
-
   const changePage = ({ selected }) => {
     setPageNumber(selected);
   };
+
   return (
     <>
       <Navbar />
       {!loading && cartItems.length >= 1 ? (
         <div className="cart-page" id="myCart">
           <div className="cart-item-container-wrapper">
-            {cartItems
-              .slice(pagesVisited, pagesVisited + ordersPerPage)
-
-              .map((itm, key) => {
-                return (
-                  <div className="cart-item-container" key={key}>
-                    <div
-                      className="cart-item-image"
-                      onClick={() => nav(`/product/${itm.product._id}`)}
-                    >
-                      <img width="99%" src={itm.product.image1} alt="" />
+            {cartItems.map((itm, key) => {
+              return (
+                <div className="cart-item-container" key={key}>
+                  <div
+                    className="cart-item-image"
+                    onClick={() => nav(`/product/${itm.product._id}`)}
+                  >
+                    <img width="99%" src={itm.product.image1} alt="" />
+                  </div>
+                  <div className="cart-item-details">
+                    <h4>{itm.product.title}</h4>
+                    <div className="rating-and-prise">
+                      <Rating
+                        id={itm.item}
+                        style={{
+                          marginTop: "5px",
+                          marginBottom: "5px",
+                          width: "50px",
+                          height: "25px",
+                        }}
+                      />
+                      <span>₹ {itm.prise}</span>
                     </div>
-                    <div className="cart-item-details">
-                      <h4>{itm.product.title}</h4>
-                      <div className="rating-and-prise">
-                        <Rating
-                          id={itm.item}
-                          style={{
-                            marginTop: "5px",
-                            marginBottom: "5px",
-                            width: "50px",
-                            height: "25px",
-                          }}
-                        />
-                        <span>₹ {itm.prise}</span>
-                      </div>
-                      <div className="cart-item-action">
-                        <button
-                          disabled={itm.quantity <= 1 ? true : false}
-                          className="quantity-btn"
-                          onClick={() => manageQuantity(itm, key, "dec")}
-                        >
-                          -
-                        </button>
-                        <span className="quantity">{itm.quantity}</span>
-                        <button
-                          disabled={
-                            itm.quantity >= itm.product.inStock ? true : false
-                          }
-                          className="quantity-btn"
-                          onClick={() => manageQuantity(itm, key, "inc")}
-                        >
-                          +
-                        </button>
-                        <div className="cart-item-remove-btn">
-                          {!removeCartLoading.has(key) ? (
-                            <FontAwesomeIcon
-                              icon={faTrash}
-                              onClick={() => {
-                                deleteCartItem(itm._id, itm.item, key);
-                              }}
-                            />
-                          ) : (
-                            <SmallLoading />
-                          )}
-                        </div>
+                    <div className="cart-item-action">
+                      <button
+                        disabled={itm.quantity <= 1 ? true : false}
+                        className="quantity-btn"
+                        onClick={() => manageQuantity(itm, key, "dec")}
+                      >
+                        -
+                      </button>
+                      <span className="quantity">{itm.quantity}</span>
+                      <button
+                        disabled={
+                          itm.quantity >= itm.product.inStock ? true : false
+                        }
+                        className="quantity-btn"
+                        onClick={() => manageQuantity(itm, key, "inc")}
+                      >
+                        +
+                      </button>
+                      <div className="cart-item-remove-btn">
+                        {!removeCartLoading.has(key) ? (
+                          <FontAwesomeIcon
+                            icon={faTrash}
+                            onClick={() => {
+                              deleteCartItem(itm._id, itm.item, key);
+                            }}
+                          />
+                        ) : (
+                          <SmallLoading />
+                        )}
                       </div>
                     </div>
                   </div>
-                );
-              })}
-            {cartItems.length > 3 ? (
-              <Paginate
-                previousLabel={"Previous"}
-                nextLabel={"Next"}
-                pageCount={pageCount}
-                onPageChange={changePage}
-                containerClassName={"pagination-container"}
-                previousLinkClassName={"previous-btn"}
-                nextLinkClassName={"next-btn"}
-                disabledClassName={"pagination-disabled-btn"}
-                activeClassName={"pagination-active"}
-              />
-            ) : null}
+                </div>
+              );
+            })}
           </div>
           <div className="cart-total-container-wrapper">
             <div className="cart-total-container">

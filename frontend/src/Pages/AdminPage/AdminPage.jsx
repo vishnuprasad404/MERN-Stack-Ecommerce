@@ -12,10 +12,18 @@ import {
   faUsers,
 } from "@fortawesome/free-solid-svg-icons";
 import { EContextData } from "../../EContextData";
+import { useEffect } from "react";
 
 function AdminPage() {
   const [pageContent, setPageContent] = useState("all-products");
   const [sidebarState, setSidebarState] = useState("");
+  useEffect(()=>{
+    window.scroll({
+      top: 0,
+      left: 0,
+      behavior: "smooth",
+    });
+  },[])
   return (
     <div className="admin-page">
       <div className="admin-navbar">

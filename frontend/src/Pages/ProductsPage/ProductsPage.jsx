@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Navbar from "../../Components/Navbar/Navbar";
 import "./ProductsPage.css";
-import {useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import axios from "axios";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
@@ -193,7 +193,8 @@ function ProductsPage() {
                     cardStyle={{
                       border: "1px solid rgb(223, 223, 223)",
                       boxShadow: "none",
-                      height: "max-content",
+                      minHeight: "300px",
+                      maxHeight: "300px",
                     }}
                     buttonStyle={{ display: "none" }}
                     cartIconStyle={{
@@ -201,7 +202,6 @@ function ProductsPage() {
                       top: "40px",
                       right: "10px",
                       padding: "0",
-                      color: "grey",
                     }}
                   />
                 );

@@ -6,12 +6,20 @@ import { EContextData as GlobalData } from "../../EContextData";
 import { Loading } from "../../Components/Loading/Loading";
 import Notification from "../../Components/Notification/Notification";
 import { LoginUserProvider } from "../../ApiRenderController";
+import { useEffect } from "react";
 
 function SigninPage() {
   const [loading, setLoading] = useState(false);
   const { setUser } = useContext(GlobalData);
   const [notify, setNotify] = useState({ display: "none" });
   const nav = useNavigate();
+  useEffect(()=>{
+    window.scroll({
+      top: 0,
+      left: 0,
+      behavior: "smooth",
+    });
+  },[])
   const {
     register,
     formState: { errors },
@@ -62,7 +70,7 @@ function SigninPage() {
   };
 
   return (
-    <div className="signin-page">
+    <div className="signin-page" id="signin">
       <div className="signin-page-container">
         <form onSubmit={handleSubmit(onSubmit)}>
           <h1>Sign In</h1>

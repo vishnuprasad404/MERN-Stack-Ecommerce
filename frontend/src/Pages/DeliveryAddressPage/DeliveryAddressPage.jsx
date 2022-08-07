@@ -10,6 +10,11 @@ function DeliveryAddressPage() {
   const [shippingAddress, setShippingAddress] = useState({});
   const [loading, setLoading] = useState(true);
   useEffect(() => {
+    window.scroll({
+      top: 0,
+      left: 0,
+      behavior: "smooth",
+    });
     getShippingAddress();
   });
 

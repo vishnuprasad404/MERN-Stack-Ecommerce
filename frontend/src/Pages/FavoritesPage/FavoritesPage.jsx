@@ -28,6 +28,11 @@ function FavoritesPage() {
   const [favoriteRemoveLoading, setFavoriteRemoveLoading] = useState(new Set());
 
   useEffect(() => {
+    window.scroll({
+      top: 0,
+      left: 0,
+      behavior: "smooth",
+    });
     getAllWishlist();
   }, []);
 

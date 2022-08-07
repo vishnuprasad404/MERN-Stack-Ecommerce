@@ -35,12 +35,17 @@
 }
 
 .view-product-btns button {
-  width: 150px;
+  width: 170px;
   height: 40px;
   margin: 10px;
   border: none;
   border-radius: 2px;
   letter-spacing: 1px;
+  padding: 0 10px;
+}
+.view-product-btns button:nth-child(1){
+  background: #6685ff;
+  color: white;
 }
 
 .view-product-page-right-container {

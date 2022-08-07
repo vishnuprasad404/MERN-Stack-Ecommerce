@@ -26,6 +26,11 @@ function OrderProductPage() {
   const [notify, setNotify] = useState({ display: "none" });
 
   useEffect(() => {
+    window.scroll({
+      top: 0,
+      left: 0,
+      behavior: "smooth",
+    });
     const GetOrderDetails = async () => {
       let order = await GetOrderProvider(OrderId);
       if (order) {

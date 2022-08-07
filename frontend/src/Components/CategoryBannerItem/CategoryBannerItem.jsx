@@ -1,13 +1,18 @@
 import React from "react";
 import "./CategoryBannerItem.css";
+import { HashLink as Link } from "react-router-hash-link";
 
-function CategoryBannerItem(props) {
+function CategoryBannerItem({ image, text, to }) {
   return (
-    <div className="category-banner-item" style={{backgroundImage: `url(${props.image})`}}>
+    <Link
+      to={`/products?item=${to}#allproducts`}
+      className="category-banner-item"
+      style={{ backgroundImage: `url(${image})` }}
+    >
       <div className="banner-cover">
-        <h2>{props.text}</h2>
+        <h2>{text}</h2>
       </div>
-    </div>
+    </Link>
   );
 }
 

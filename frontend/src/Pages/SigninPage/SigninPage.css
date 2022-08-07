@@ -56,3 +56,19 @@
   font-family: poppins;
   font-weight: 100;
 }
+
+@media (max-width: 500px) {
+  .signin-page-container {
+    width: 90%;
+    height: 450px;
+  }
+}
+
+@media (max-width: 400px) {
+  .signin-page-container .signin-input {
+    width: 90%;
+  }
+  .signin-page-container .form-btn {
+    width: 90%;
+  }
+}

@@ -27,6 +27,11 @@ function OrdersItemDetailPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    window.scroll({
+      top: 0,
+      left: 0,
+      behavior: "smooth",
+    });
     const GetAllOrders = async () => {
       let res = await GetAllOrdersProvider();
       if (res) {

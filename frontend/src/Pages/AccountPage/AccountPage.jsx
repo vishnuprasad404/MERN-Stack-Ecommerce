@@ -13,10 +13,18 @@ import { useNavigate } from "react-router-dom";
 import { EContextData as GlobalData } from "../../EContextData";
 import axios from "axios";
 import UpdateAccountForm from "../../Components/UpdateAccountForm/UpdateAccountForm";
+import { useEffect } from "react";
 
 function AccountPage() {
   const { user } = useContext(GlobalData);
   const nav = useNavigate();
+  useEffect(()=>{
+    window.scroll({
+      top: 0,
+      left: 0,
+      behavior: "smooth",
+    });
+  },[])
 
   return (
     <>

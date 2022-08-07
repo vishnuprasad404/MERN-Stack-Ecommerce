@@ -55,3 +55,22 @@
   font-family: poppins;
   font-weight: 100;
 }
+
+@media (max-width: 500px) {
+  .signup-page-container h1 {
+    font-size: 25px;
+  }
+  .signup-page-container {
+    width: 90%;
+    height: 550px;
+  }
+}
+
+@media (max-width: 400px) {
+  .signup-page-container .signup-input {
+    width: 90%;
+  }
+  .signup-page-container .form-btn {
+    width: 90%;
+  }
+}

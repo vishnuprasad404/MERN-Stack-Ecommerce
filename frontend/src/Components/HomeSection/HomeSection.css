@@ -1,13 +1,12 @@
-.home-section{
+.home-section {
   padding: 0;
   margin: 0;
 }
-.products-container{
+.products-container {
   padding: 40px 80px;
 }
 
-
-.rec{
+.rec {
   padding: 0;
   margin: 0;
   margin-top: 2px;
@@ -15,19 +14,22 @@
 .rec.rec-arrow {
   display: none;
 }
-.rec.rec-dot{
+.rec.rec-dot {
   background-color: rgba(204, 219, 230, 0.744);
   box-shadow: none;
   width: 8px;
   height: 8px;
 }
+.rec .rec-dot_active{
+  background-color: rgb(77, 139, 255);
+}
 
-.see-more{
+.see-more {
   text-decoration: none;
   font-size: 13px;
 }
 
-.category-banner-section{
+.category-banner-section {
   width: 100%;
   padding: 50px 0;
   background-color: rgba(227, 227, 227, 0.557);
@@ -38,7 +40,7 @@
 }
 
 @media (max-width: 1500px) {
-  .products-container{
+  .products-container {
     padding: 20px;
   }
 }

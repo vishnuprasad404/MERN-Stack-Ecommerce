@@ -6,12 +6,20 @@ import { EContextData } from "../../EContextData";
 import { Loading } from "../../Components/Loading/Loading";
 import Notification from "../../Components/Notification/Notification";
 import { RegisterUserProvider } from "../../ApiRenderController";
+import { useEffect } from "react";
 
 function SignupPage() {
   const [loading, setLoading] = useState(false);
   const { setUser } = useContext(EContextData);
   let [notify, setNotify] = useState({ display: "none" });
   const nav = useNavigate();
+  useEffect(() => {
+    window.scroll({
+      top: 0,
+      left: 0,
+      behavior: "smooth",
+    });
+  }, []);
   const {
     register,
     formState: { errors },

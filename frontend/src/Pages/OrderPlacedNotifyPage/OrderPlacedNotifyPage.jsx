@@ -2,10 +2,18 @@ import React from "react";
 import "./OrderPlacedNotifyPage.css";
 import image from "../../Assets/order-placed-success.png";
 import { useNavigate, useParams } from "react-router-dom";
+import { useEffect } from "react";
 
 function OrderPlacedNotifyPage() {
   const nav = useNavigate();
   const { OrderId } = useParams();
+  useEffect(() => {
+    window.scroll({
+      top: 0,
+      left: 0,
+      behavior: "smooth",
+    });
+  }, []);
 
   return (
     <div className="order-placed-notify-page">
