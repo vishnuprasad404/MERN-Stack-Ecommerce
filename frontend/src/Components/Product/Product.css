@@ -120,16 +120,13 @@
     max-width: 95%;
     font-size: 14.3px;
   }
-  .fav-icon {
-    display: none;
-  }
   .cart-icon {
     position: absolute;
-    top: 10px;
+    top: 40px;
     right: 10px;
     padding: 0;
     background: none;
-    color: rgb(104, 104, 104);
+    color: rgb(156, 156, 156);
   }
   .buy {
     width: 100%;
@@ -140,6 +137,9 @@
   .product-image-container img {
     width: 60%;
   }
+  .product-action-btns {
+    padding-top: 7px;
+}
 }
 
 @media (max-width: 350px) {

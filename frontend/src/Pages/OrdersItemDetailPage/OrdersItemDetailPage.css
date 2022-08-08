@@ -61,10 +61,19 @@
   width: 150px;
   height: 40px;
 }
-.buy-again-btn{
-  
+.buy-again-btn {
+  background: #595dff;
+  color: white;
 }
-
+.complete-order-btn {
+  background-color: rgba(0, 173, 0, 0.781);
+  color: white;
+  font-size: 14px;
+}
+.cancel-order-btn {
+  background-color: rgba(238, 14, 14, 0.781);
+  color: white;
+}
 
 .add-review,
 .add-review form {
@@ -113,5 +122,20 @@ input[type="radio"] {
 
   .step-wizard-list {
     display: flex;
+  }
+}
+
+@media (max-width: 400px) {
+  .purchased-item-action {
+    justify-content: flex-start;
+  }
+  .purchased-item-action button {
+    margin: 30px 5px;
+    width: 110px;
+    height: 35px;
+    font-size: 12px;
+  }
+  .purchased-item-action .complete-order-btn {
+    width: 140px;
   }
 }

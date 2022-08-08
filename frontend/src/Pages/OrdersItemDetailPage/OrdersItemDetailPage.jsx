@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import "./OrdersItemDetailPage.css";
 import Navbar from "../../Components/Navbar/Navbar";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faStar } from "@fortawesome/free-solid-svg-icons";
+import { faCartPlus, faStar, faXmark } from "@fortawesome/free-solid-svg-icons";
 import { useForm } from "react-hook-form";
 import Rating from "../../Components/Rating/Rating";
+import Footer from "../../Components/Footer/Footer";
 import { Loading } from "../../Components/Loading/Loading";
 import {
   GetAllOrdersProvider,
@@ -25,6 +26,7 @@ function OrdersItemDetailPage() {
   const [product, setProduct] = useState();
   const [isReview, setIsReview] = useState();
   const [loading, setLoading] = useState(true);
+  const nav = useNavigate();
 
   useEffect(() => {
     window.scroll({
@@ -56,6 +58,8 @@ function OrdersItemDetailPage() {
     console.log(res);
   };
 
+  console.log(product);
+
   return (
     <>
       <Navbar />
@@ -82,12 +86,37 @@ function OrdersItemDetailPage() {
                   </div>
                 </div>
                 <div className="purchased-item-action">
-                  <button className="buy-again-btn">Buy again</button>
+                  {product.status === "placed" ||
+                  product.status === "dispatched" ||
+                  product.status === "completed" ? (
+                    <button className="buy-again-btn">
+                      <FontAwesomeIcon
+                        icon={faCartPlus}
+                        style={{ marginRight: "8px" }}
+                      />
+                      Buy again
+                    </button>
+                  ) : null}
                   {product.status === "placed" ? (
-                    <button> Cancel Order</button>
+                    <button className="cancel-order-btn">
+                      <FontAwesomeIcon
+                        icon={faXmark}
+                        style={{ marginRight: "5px" }}
+                      />
+                      Cancel Order
+                    </button>
                   ) : null}
                   {product.status === "pending" ? (
-                    <button> Complete Order</button>
+                    <button
+                      className="complete-order-btn"
+                      onClick={() => nav(`/checkout/${product.order_id}`)}
+                    >
+                      <FontAwesomeIcon
+                        icon={faCartPlus}
+                        style={{ marginRight: "5px" }}
+                      />
+                      Complete Order
+                    </button>
                   ) : null}
                 </div>
                 {product.status === "completed" ? (
@@ -154,6 +183,7 @@ function OrdersItemDetailPage() {
       ) : (
         <Loading />
       )}
+      <Footer />
     </>
   );
 }
