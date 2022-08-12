@@ -73,7 +73,7 @@ function App() {
             element={user ? <OrdersPage /> : <SigninPage />}
           />
           <Route
-            path="/view-order-product/:id"
+            path="/view-order-product/:orderId/:productId"
             element={user ? <OrdersItemDetailPage /> : <SigninPage />}
           />
           <Route

@@ -67,7 +67,10 @@ router.post("/add-review", async (req, res) => {
       let isReview = await db
         .get()
         .collection(process.env.PRODUCTS_COLLECTION)
-        .find({ "reviews.uid": ObjectId(req.session.user._id) })
+        .find({
+          _id: ObjectId(req.body.id),
+          "reviews.uid": ObjectId(req.session.user._id),
+        })
         .toArray();
       if (isReview.length >= 1) {
         if (req.body.feedback && req.body.rating) {
@@ -84,10 +87,9 @@ router.post("/add-review", async (req, res) => {
                   "reviews.$.rating": parseInt(req.body.rating),
                 },
               }
-            )
-            .then((result) => {
-              console.log(result);
-            });
+            ).then(()=>{
+              res.json({itemUpdated : true})
+            })
         }
       } else {
         let reviewObj = {
@@ -110,8 +112,8 @@ router.post("/add-review", async (req, res) => {
           )
           .then(() => {
             res.json({
-              reviewUpdated: true,
-            });
+              itemAdded : true
+            })
           });
       }
     }

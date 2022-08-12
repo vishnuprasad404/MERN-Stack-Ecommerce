@@ -39,29 +39,22 @@ function FilterOrders(props) {
           onClick={() => filterOrders("placed")}
         />
         <OrderSortOption
+          opt="Shipped"
+          name="Shipped"
+          checked={filterActive === "dispatched" ? true : false}
+          onClick={() => filterOrders("dispatched")}
+        />
+        <OrderSortOption
           opt="Deliverd"
           name="Deliverd"
-          checked={filterActive === "deliverd" ? true : false}
-          onClick={() => filterOrders("deliverd")}
+          checked={filterActive === "completed" ? true : false}
+          onClick={() => filterOrders("completed")}
         />
         <OrderSortOption
           opt="Cancelled"
           name="Cancelled"
           checked={filterActive === "cancelled" ? true : false}
           onClick={() => filterOrders("cancelled")}
-        />
-        <p className="orders-sort-heading mt-3 ">Order Time</p>
-        <OrderSortOption
-          opt="Last 30 Days"
-          name="Last 30 Days"
-          checked={filterActive === "L30D" ? true : false}
-          onClick={() => filterOrders("L30D")}
-        />
-        <OrderSortOption
-          opt="Older"
-          name="Older"
-          checked={filterActive === "older" ? true : false}
-          onClick={() => filterOrders("older")}
         />
       </div>
     </section>

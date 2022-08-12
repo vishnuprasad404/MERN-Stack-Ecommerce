@@ -89,6 +89,7 @@ function OrderProductPage() {
   };
 
   const onCheckOut = async () => {
+    console.log(checkOutProducts);
     if (address) {
       setLoading(true);
       axios

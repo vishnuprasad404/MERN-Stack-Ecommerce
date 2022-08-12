@@ -32,7 +32,9 @@ function OrdersPage() {
   return (
     <>
       <Navbar />
-      {!loading && orders.length >= 1 ? (
+      {loading ? (
+        <Loading />
+      ) : orders.length >= 1 ? (
         <div className="view-orders-page">
           <FilterOrders setSearchQuery={setSearchQuery} />
           <section className="orders-section">
@@ -51,9 +53,7 @@ function OrdersPage() {
                     return data;
                   }
                 })
-                .map((itm, k) => {
-                  console.log(searchQuery);
-                  console.log(itm);
+                .map((itm, key) => {
                   let date = new Date(itm.created_at);
                   const yyyy = date.getFullYear();
                   let mm = date.getMonth() + 1;
@@ -62,44 +62,51 @@ function OrdersPage() {
                   if (mm < 10) mm = "0" + mm;
                   date = dd + "/" + mm + "/" + yyyy;
                   return (
-                    <div key={k}>
-                      <p className="order-date">{date}</p>
-                      <div
-                        className="orders-container"
-                        onClick={() => nav(`/view-order-product/${itm.item}`)}
-                      >
-                        <section className="orders-item-details">
-                          <div className="orders-item-image">
-                            <img src={itm.product.image1} alt="" />
-                          </div>
-                          <div className="orders-item-title-and-prise">
-                            <h6>{itm.product.title}</h6>
-                            <Rating
-                              id={itm.item}
-                              style={{ width: "45px", height: "25px" }}
-                            />
-
-                            <br />
-                            <p>
-                              ₹ {itm.prise} Quantity : {itm.quantity}{" "}
-                            </p>
-                          </div>
-                        </section>
-                        {itm.status === "pending" ? (
-                          <span className="pending-bnr">Pending</span>
-                        ) : null}
-                        {itm.status === "placed" ? (
-                          <span className="placed-bnr">Active</span>
-                        ) : null}
-                        {itm.status === "dispatched" ? (
-                          <span className="pending-bnr">Shipped</span>
-                        ) : null}
-                        {itm.status === "completed" ? (
-                          <span className="deliverd-bnr">Deliverd</span>
-                        ) : null}
-                        {itm.status === "cancelled" ? (
-                          <span className="cancelled-bnr">Cancelled</span>
-                        ) : null}
+                    <div key={key}>
+                      <div>
+                        <p className="order-date">{date}</p>
+                        <div
+                          className="orders-container"
+                          onClick={() =>
+                            nav(`/view-order-product/${itm.order_id}/${itm.product._id}`)
+                          }
+                        >
+                          <section className="orders-item-details">
+                            <div className="orders-item-image">
+                              <img src={itm.product.image1} alt="" />
+                            </div>
+                            <div className="orders-item-title-and-prise">
+                              <h6>{itm.product.title}</h6>
+                              <Rating
+                                id={itm.product._id}
+                                style={{
+                                  width: "45px",
+                                  height: "25px",
+                                  margin: "10px 0",
+                                }}
+                              />
+                              <p className="total-prise-and-quantity">
+                                Prise : {itm.prise}
+                                Quantity :{itm.quantity}
+                              </p>
+                            </div>
+                          </section>
+                          {itm.status === "pending" ? (
+                            <span className="pending-bnr">Pending</span>
+                          ) : null}
+                          {itm.status === "placed" ? (
+                            <span className="placed-bnr">Active</span>
+                          ) : null}
+                          {itm.status === "dispatched" ? (
+                            <span className="pending-bnr">Shipped</span>
+                          ) : null}
+                          {itm.status === "completed" ? (
+                            <span className="deliverd-bnr">Deliverd</span>
+                          ) : null}
+                          {itm.status === "cancelled" ? (
+                            <span className="cancelled-bnr">Cancelled</span>
+                          ) : null}
+                        </div>
                       </div>
                     </div>
                   );
@@ -107,14 +114,12 @@ function OrdersPage() {
             </div>
           </section>
         </div>
-      ) : !loading && orders.length < 1 ? (
+      ) : (
         <EmptyItemsPage
           text="No Orders Available"
           image={emptyOrder}
           imageSize="200px"
         />
-      ) : (
-        <Loading height="400px" />
       )}
     </>
   );

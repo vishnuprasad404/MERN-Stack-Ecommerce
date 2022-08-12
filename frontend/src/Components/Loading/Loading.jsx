@@ -1,10 +1,10 @@
 import React from "react";
 import "./Loading.css";
 
-export function Loading({ style, iconSize, color, iconSpace, }) {
+export function Loading({ style, iconSize, color, iconSpace }) {
   return (
     <div className="loading" style={style}>
-      <div class="dots-container">
+      <div className="dots-container">
         <div
           style={{
             width: iconSize,
@@ -12,7 +12,7 @@ export function Loading({ style, iconSize, color, iconSpace, }) {
             color: color,
             margin: iconSpace,
           }}
-          class="pulse-dot pulse-dot-1"
+          className="pulse-dot pulse-dot-1"
         ></div>
         <div
           style={{
@@ -21,7 +21,7 @@ export function Loading({ style, iconSize, color, iconSpace, }) {
             color: color,
             margin: iconSpace,
           }}
-          class="pulse-dot pulse-dot-2"
+          className="pulse-dot pulse-dot-2"
         ></div>
         <div
           style={{
@@ -30,7 +30,7 @@ export function Loading({ style, iconSize, color, iconSpace, }) {
             color: color,
             margin: iconSpace,
           }}
-          class="pulse-dot pulse-dot-3"
+          className="pulse-dot pulse-dot-3"
         >
           {" "}
         </div>
@@ -39,10 +39,10 @@ export function Loading({ style, iconSize, color, iconSpace, }) {
   );
 }
 
-export function SmallLoading({smallLoadingStyle}) {
+export function SmallLoading({ smallLoadingStyle }) {
   return (
-    <div class="spinner-container" style={smallLoadingStyle}>
-      <div class="spinner"></div>
+    <div className="spinner-container" style={smallLoadingStyle}>
+      <div className="spinner"></div>
     </div>
   );
 }

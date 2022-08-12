@@ -1,30 +1,24 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import "./OrdersItemDetailPage.css";
 import Navbar from "../../Components/Navbar/Navbar";
 import { useNavigate, useParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCartPlus, faStar, faXmark } from "@fortawesome/free-solid-svg-icons";
-import { useForm } from "react-hook-form";
+import { faCartPlus, faXmark } from "@fortawesome/free-solid-svg-icons";
 import Rating from "../../Components/Rating/Rating";
 import Footer from "../../Components/Footer/Footer";
 import { Loading } from "../../Components/Loading/Loading";
 import {
   GetAllOrdersProvider,
-  GetUserOwnReviewProvider,
-  AddProductReviewProvider,
+  CreateOrderProvider,
+  CancelOrderProvider,
 } from "../../ApiRenderController";
+import { EContextData } from "../../EContextData";
+import AddProductReviewForm from "../../Components/AddProductReviewForm/AddProductReviewForm";
 
 function OrdersItemDetailPage() {
-  const {
-    register,
-    formState: { errors },
-    handleSubmit,
-  } = useForm();
-  const [rating, setRating] = useState();
-  const [ratingHover, setRatingHover] = useState();
-  const { id } = useParams();
-  const [product, setProduct] = useState();
-  const [isReview, setIsReview] = useState();
+  const { user } = useContext(EContextData);
+  const { orderId, productId } = useParams();
+  const [orderdItem, setOrderdItem] = useState();
   const [loading, setLoading] = useState(true);
   const nav = useNavigate();
 
@@ -38,32 +32,42 @@ function OrdersItemDetailPage() {
       let res = await GetAllOrdersProvider();
       if (res) {
         setLoading(false);
-        let getItem = res.find((data) => {
-          return data.item === id;
+        let item = res.filter((data) => {
+          return data.order_id === orderId && data.product._id === productId;
         });
-        setProduct(getItem);
-        let review = await GetUserOwnReviewProvider(getItem.product._id);
-        if (review) {
-          setIsReview(review);
-          setRating(review.rating);
-        }
+        setOrderdItem(item);
       }
     };
     GetAllOrders();
-  }, [id]);
+  }, [orderId, productId]);
 
-  const addReview = async (data) => {
-    data.id = id;
-    let res = await AddProductReviewProvider(data);
-    console.log(res);
+  const buyAgain = async (pid, prise) => {
+    if (user) {
+      let orderObj = {
+        item: pid,
+        quantity: 1,
+        prise: parseInt(prise),
+      };
+      let res = await CreateOrderProvider([orderObj]);
+      if (res) {
+        nav(`/checkout/${res.OrderId}`);
+      }
+    } else {
+      nav("/signin");
+    }
   };
 
-  console.log(product);
+  const cancelOrder = async (pro_id) => {
+    let res = await CancelOrderProvider(orderdItem[0].order_id, pro_id);
+    if (res) {
+      nav("/orders");
+    }
+  };
 
   return (
     <>
       <Navbar />
-      {product && !loading ? (
+      {orderdItem && !loading ? (
         <div className="view-orders-item-details">
           <section className="view-orders-product-detail-section">
             <div className="view-orders-item-details-container">
@@ -71,25 +75,38 @@ function OrdersItemDetailPage() {
               <section className="view-orders-product-detail-content-section">
                 <div className="purshased-item-image-container">
                   <div className="purshased-item-image">
-                    <img width="100%" src={product.product.image1} alt="" />
+                    <img
+                      width="100%"
+                      src={orderdItem[0].product.image1}
+                      alt=""
+                    />
                   </div>
                   <div className="purchased-item-title-and-rating">
-                    <p>{product.product.title}</p>
+                    <p>{orderdItem[0].product.title}</p>
                     <Rating
-                      id={id}
+                      id={orderdItem[0].product._id}
                       style={{ marginBottom: "10px" }}
                       displayReview={true}
                     />
                     <p>
-                      ₹ {product.prise} (quantity : {product.quantity})
+                      ₹ {orderdItem[0].prise} (quantity :{" "}
+                      {orderdItem[0].quantity})
                     </p>
                   </div>
                 </div>
                 <div className="purchased-item-action">
-                  {product.status === "placed" ||
-                  product.status === "dispatched" ||
-                  product.status === "completed" ? (
-                    <button className="buy-again-btn">
+                  {orderdItem[0].status === "placed" ||
+                  orderdItem[0].status === "dispatched" ||
+                  orderdItem[0].status === "completed" ? (
+                    <button
+                      className="buy-again-btn"
+                      onClick={() =>
+                        buyAgain(
+                          orderdItem[0].product._id,
+                          orderdItem[0].product.discountPrise
+                        )
+                      }
+                    >
                       <FontAwesomeIcon
                         icon={faCartPlus}
                         style={{ marginRight: "8px" }}
@@ -97,8 +114,15 @@ function OrdersItemDetailPage() {
                       Buy again
                     </button>
                   ) : null}
-                  {product.status === "placed" ? (
-                    <button className="cancel-order-btn">
+                  {orderdItem[0].status === "placed" ? (
+                    <button
+                      className="cancel-order-btn"
+                      onClick={() =>
+                        cancelOrder(
+                          orderdItem[0].product._id
+                        )
+                      }
+                    >
                       <FontAwesomeIcon
                         icon={faXmark}
                         style={{ marginRight: "5px" }}
@@ -106,10 +130,10 @@ function OrdersItemDetailPage() {
                       Cancel Order
                     </button>
                   ) : null}
-                  {product.status === "pending" ? (
+                  {orderdItem[0].status === "pending" ? (
                     <button
                       className="complete-order-btn"
-                      onClick={() => nav(`/checkout/${product.order_id}`)}
+                      onClick={() => nav(`/checkout/${orderId}`)}
                     >
                       <FontAwesomeIcon
                         icon={faCartPlus}
@@ -119,62 +143,8 @@ function OrdersItemDetailPage() {
                     </button>
                   ) : null}
                 </div>
-                {product.status === "completed" ? (
-                  <div className="add-review">
-                    <p>Add a review</p>
-                    <form onSubmit={handleSubmit(addReview)}>
-                      <div className="order-rating-stars">
-                        {[...Array(5)].map((star, i) => {
-                          let ratingValue = i + 1;
-                          return (
-                            <label key={i}>
-                              <input
-                                type="radio"
-                                name="rating"
-                                value={ratingValue}
-                                {...register("rating", {
-                                  required: isReview ? false : true,
-                                })}
-                                onClick={() => setRating(ratingValue)}
-                              />
-                              <FontAwesomeIcon
-                                icon={faStar}
-                                className="order-rating-star"
-                                style={{
-                                  color: `${
-                                    ratingValue <= (ratingHover || rating)
-                                      ? "gold"
-                                      : "lightgrey"
-                                  }`,
-                                }}
-                                onMouseEnter={() => setRatingHover(ratingValue)}
-                                onMouseLeave={() => setRatingHover(null)}
-                              />
-                            </label>
-                          );
-                        })}
-                      </div>
-                      <span className="err">
-                        {errors.rating?.type === "required" &&
-                          "Please add a rating"}
-                      </span>
-                      <textarea
-                        rows="5"
-                        placeholder="Write a review"
-                        defaultValue={isReview ? isReview.feedback : null}
-                        {...register("feedback", {
-                          required: isReview ? false : true,
-                        })}
-                      ></textarea>
-                      <span className="err">
-                        {errors.feedback?.type === "required" &&
-                          "Please add your feedback"}
-                      </span>
-                      <button type="submit" className="review-btn">
-                        {isReview ? "Update Review" : "Submit Review"}
-                      </button>
-                    </form>
-                  </div>
+                {orderdItem[0].status === "completed" ? (
+                  <AddProductReviewForm pid={orderdItem[0]._id} />
                 ) : null}
               </section>
             </div>

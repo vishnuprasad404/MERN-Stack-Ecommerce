@@ -21,7 +21,7 @@
 }
 
 .orders-devider {
-  border-right: 2px solid rgb(224, 224, 224);
+  border-right: 2px solid rgb(240, 240, 240);
   margin: 10px 40px 20px 100px;
 }
 
@@ -96,6 +96,9 @@ input[type="radio"] {
   margin-left: 10px;
   color: grey;
 }
+.view-orders-item-details .rec.rec-arrow {
+  display: none;
+}
 
 @media (max-width: 1200px) {
   .view-orders-item-details {
@@ -110,18 +113,21 @@ input[type="radio"] {
   }
 }
 
+@media (max-width: 1000px) {
+  .orders-devider {
+    visibility: hidden;
+  }
+}
+
+@media (max-width: 850px) {
+  .orders-devider {
+    display: none;
+  }
+}
+
 @media (max-width: 500px) {
   .view-orders-item-details-container {
     flex-wrap: wrap;
-  }
-  .orders-devider {
-    width: 100%;
-    height: 2px;
-    border: none;
-  }
-
-  .step-wizard-list {
-    display: flex;
   }
 }
 
@@ -137,5 +143,12 @@ input[type="radio"] {
   }
   .purchased-item-action .complete-order-btn {
     width: 140px;
+  }
+  .view-orders-item-details-container {
+    padding: 0;
+  }
+  .purshased-item-image {
+    width: 144px;
+    margin-right: 10px;
   }
 }

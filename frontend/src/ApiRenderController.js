@@ -86,7 +86,7 @@ export const ChangeOrderQuantityProvider = async (
   let res = await axios.put(
     `${process.env.REACT_APP_BASE_URL}/change-order-item-quantity/${id}/${item}/${prise}/${quantity}`
   );
-  return res.data
+  return res.data;
 };
 
 // change order products item quantity end //
@@ -115,7 +115,7 @@ export const GetUserOwnReviewProvider = async (pid) => {
 // add review by user start //
 
 export const AddProductReviewProvider = async (data) => {
-  let res = axios.post(`${process.env.REACT_APP_BASE_URL}/add-review`, data);
+  let res = await axios.post(`${process.env.REACT_APP_BASE_URL}/add-review`, data);
   return res.data;
 };
 
@@ -183,7 +183,7 @@ export const RemoveFavoritesProvider = async (id) => {
   let res = await axios.delete(
     `${process.env.REACT_APP_BASE_URL}/removefavoriteitem/${id}`
   );
-  return res.data
+  return res.data;
 };
 
 // remove favorites item end //
@@ -233,3 +233,14 @@ export const GetCartTotalProvider = async () => {
 };
 
 //get users cart total end //
+
+// cancel ordered product start//
+
+export const CancelOrderProvider = async (order_id, pid) => {
+  let res = await axios.delete(
+    `${process.env.REACT_APP_BASE_URL}/user/cancel-order/${order_id}/${pid}`
+  );
+  return res.data;
+};
+
+// cancel ordered product end//

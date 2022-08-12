@@ -102,21 +102,22 @@ router.get("/user/get-orders", async (req, res) => {
             $unwind: "$products",
           },
           {
-            $project: {
-              item: { $toObjectId: "$products.item" },
-              order_id : "$order_id",
-              quantity: "$products.quantity",
-              prise: "$products.prise",
-              status: "$status",
-              created_at: "$created_at",
+            $lookup: {
+              from: process.env.PRODUCTS_COLLECTION,
+              localField: "products.item",
+              foreignField: "_id",
+              as: "product",
             },
           },
           {
-            $lookup: {
-              from: process.env.PRODUCTS_COLLECTION,
-              localField: "item",
-              foreignField: "_id",
-              as: "product",
+            $project: {
+              order_id: "$order_id",
+              item: "$products.item",
+              product: "$product",
+              quantity: "$products.quantity",
+              prise: "$products.prise",
+              status: "$products.status",
+              created_at: "$created_at",
             },
           },
           {
@@ -127,7 +128,7 @@ router.get("/user/get-orders", async (req, res) => {
       res.json(orders);
     }
   } catch (error) {
-    console.log(error);
+    console.log("cannot get orders");
   }
 });
 
@@ -189,6 +190,15 @@ router.get("/get-order/:order_id", async (req, res) => {
 router.post("/create-order", async (req, res) => {
   try {
     if (req.session.user) {
+      let products = req.body.map((data) => {
+        let proObj = {
+          item: ObjectId(data.item),
+          quantity: data.quantity,
+          prise: data.prise,
+          status: "pending",
+        };
+        return proObj;
+      });
       const orderID = crypto.randomBytes(16).toString("hex");
       let address = await db
         .get()
@@ -200,9 +210,8 @@ router.post("/create-order", async (req, res) => {
         username: req.session.user.username,
         order_id: orderID,
         created_at: new Date(),
-        status: "pending",
         address: address,
-        products: req.body,
+        products: products,
       };
       db.get()
         .collection(process.env.ORDERS_COLLECTION)
@@ -237,9 +246,10 @@ router.put(
                 "products.$.quantity": parseInt(req.params.quantity),
               },
             }
-          ).then(()=>{
-            res.send(true)
-          })
+          )
+          .then(() => {
+            res.send(true);
+          });
       }
     } catch (error) {
       console.log(error);
@@ -268,23 +278,29 @@ router.delete("/remove-checkout-item/:OrderId/:ItemId", (req, res) => {
 });
 
 router.put("/place-order/:OrderId/:totalPrise/:paymentMethord", (req, res) => {
+  console.log(req.params);
   try {
     if (req.session.user) {
       if (req.params.paymentMethord == "cod") {
         db.get()
           .collection(process.env.ORDERS_COLLECTION)
-          .updateOne(
+          .updateMany(
             {
               user: ObjectId(req.session.user._id),
               _id: ObjectId(req.params.OrderId),
             },
             {
-              $set: { status: "placed", payment_methord: "cod" },
+              $set: {
+                payment_methord: "cod",
+                "products.$[].status": "placed",
+              },
             }
           )
           .then((result) => {
             if (result) {
-              res.send({ status: "placed" });
+              res.json({
+                status: "placed",
+              });
             }
           });
       } else {
@@ -331,7 +347,10 @@ router.post("/verify-online-payment", (req, res) => {
               _id: ObjectId(req.body.order.receipt),
             },
             {
-              $set: { status: "placed", payment_methord: "online" },
+              $set: {
+                "products.$[].status": "placed",
+                payment_methord: "online",
+              },
             }
           )
           .then((result) => {
@@ -342,6 +361,33 @@ router.post("/verify-online-payment", (req, res) => {
       } else {
         res.send({ paymentVerified: false });
       }
+    }
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+// cancel order //
+
+router.delete("/user/cancel-order/:orderId/:pid", async (req, res) => {
+  try {
+    if (req.session.user) {
+      db.get()
+        .collection(process.env.ORDERS_COLLECTION)
+        .updateOne(
+          {
+            order_id: req.params.orderId,
+            "products.item": ObjectId(req.params.pid),
+          },
+          {
+            $set: {
+              "products.$.status": "cancelled",
+            },
+          }
+        )
+        .then((result) => {
+          res.send(true);
+        });
     }
   } catch (error) {
     console.log(error);
