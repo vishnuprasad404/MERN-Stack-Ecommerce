@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Fragment } from "react";
 import CategorySubItem from "../CategorySubItem/CategorySubItem";
 import "./HomeSection.css";
 import Product from "../../Components/Product/Product";
@@ -43,17 +43,20 @@ function HomeSection() {
       </Carousel>
       <div className="products-container container-fluid ">
         <div className="row gy-5">
-          {products.slice(0, 6).map((itm) => {
+          {products.slice(0, 6).map((itm, key) => {
             return (
-              <Product
-                pid={itm._id}
-                title={itm.title}
-                image={itm.image1}
-                disPrise={itm.discountPrise}
-                cutPrise={itm.orginalPrise}
-                inStock={itm.inStock}
-                skelton={skelton}
-              />
+              <Fragment key={key}>
+                <Product
+                  key={key}
+                  pid={itm._id}
+                  title={itm.title}
+                  image={itm.image1}
+                  disPrise={itm.discountPrise}
+                  cutPrise={itm.orginalPrise}
+                  inStock={itm.inStock}
+                  skelton={skelton}
+                />
+              </Fragment>
             );
           })}
         </div>

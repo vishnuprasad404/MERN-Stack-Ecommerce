@@ -9,7 +9,7 @@ export function Loading({ style, iconSize, color, iconSpace }) {
           style={{
             width: iconSize,
             height: iconSize,
-            color: color,
+            background: color,
             margin: iconSpace,
           }}
           className="pulse-dot pulse-dot-1"
@@ -18,7 +18,7 @@ export function Loading({ style, iconSize, color, iconSpace }) {
           style={{
             width: iconSize,
             height: iconSize,
-            color: color,
+            background: color,
             margin: iconSpace,
           }}
           className="pulse-dot pulse-dot-2"
@@ -27,7 +27,7 @@ export function Loading({ style, iconSize, color, iconSpace }) {
           style={{
             width: iconSize,
             height: iconSize,
-            color: color,
+            background: color,
             margin: iconSpace,
           }}
           className="pulse-dot pulse-dot-3"

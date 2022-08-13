@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState, useRef } from "react";
 import "./CartPage.css";
 import Navbar from "../../Components/Navbar/Navbar";
 import Rating from "../../Components/Rating/Rating";
@@ -16,6 +16,7 @@ import {
   GetAllCartProductProvider,
   GetCartTotalProvider,
 } from "../../ApiRenderController";
+import ConfirmBox from "../../Components/ConfirmBox/ConfirmBox";
 
 function CartPage() {
   const { user } = useContext(GlobalData);
@@ -26,6 +27,8 @@ function CartPage() {
   const [changeQuantityLoading, setChangeQuantityLoading] = useState(new Set());
   const [removeCartLoading, setRemoveCartLoading] = useState(new Set());
   const [orderLoading, setOrderLoading] = useState(false);
+  const [showModel, setShowModel] = useState(false);
+  const refrence = useRef();
 
   useEffect(() => {
     window.scroll({
@@ -82,7 +85,6 @@ function CartPage() {
         temp[key].quantity,
         temp[key].prise
       );
-      // setCartItems([...temp]);
       setTimeout(() => {
         setChangeQuantityLoading((prev) => {
           const updated = new Set(prev);
@@ -94,20 +96,35 @@ function CartPage() {
     }
   };
 
-  const deleteCartItem = async (cid, pid, selectedIndex) => {
-    setRemoveCartLoading((prev) => new Set([...prev, selectedIndex]));
-    let res = await RemoveCartItemProvider(cid, pid);
-    if (res) {
-      if (res === true) {
-        let cartItemCopy = cartItems;
-        cartItemCopy.splice(selectedIndex, 1);
-        setCartItems([...cartItemCopy]);
+  const deleteCartItem = (cid, pid, selectedIndex) => {
+    setShowModel(true);
+    refrence.current = selectedIndex;
+    refrence.cart_id = cid;
+    refrence.product_id = pid;
+  };
+
+  const areUSureDelete = async (choose) => {
+    if (choose) {
+      setShowModel(false);
+      setRemoveCartLoading((prev) => new Set([...prev, refrence.current]));
+      let res = await RemoveCartItemProvider(
+        refrence.cart_id,
+        refrence.product_id
+      );
+      if (res) {
+        if (res === true) {
+          let cartItemCopy = cartItems;
+          cartItemCopy.splice(refrence.current, 1);
+          setCartItems([...cartItemCopy]);
+        }
+        setRemoveCartLoading((prev) => {
+          const updated = new Set(prev);
+          updated.delete(refrence.current);
+          return updated;
+        });
       }
-      setRemoveCartLoading((prev) => {
-        const updated = new Set(prev);
-        updated.delete(selectedIndex);
-        return updated;
-      });
+    } else {
+      setShowModel(false);
     }
   };
 
@@ -233,6 +250,12 @@ function CartPage() {
       ) : (
         <Loading height="400px" />
       )}
+      <ConfirmBox
+        text="Are you sure want to delete?"
+        open={showModel}
+        onDialog={areUSureDelete}
+        onClose={() => setShowModel(false)}
+      />
     </>
   );
 }

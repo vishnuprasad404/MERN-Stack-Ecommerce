@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-import { Loading } from "../../Components/Loading/Loading";
+import { Loading, SmallLoading } from "../../Components/Loading/Loading";
 import {
   GetOrderProvider,
   GetDeliveryAddressProvider,
@@ -25,6 +25,7 @@ function OrderProductPage() {
   const { OrderId } = useParams();
   const [notify, setNotify] = useState({ display: "none" });
   const [quantityLoading, setQuantityLoading] = useState(new Set());
+  const [addressLoading, setAddressLoading] = useState(true);
 
   useEffect(() => {
     const GetOrderDetails = async () => {
@@ -41,6 +42,7 @@ function OrderProductPage() {
       }
       let deliveryDetails = await GetDeliveryAddressProvider();
       if (deliveryDetails) {
+        setAddressLoading(false);
         setAddress(deliveryDetails);
       }
     };
@@ -89,7 +91,6 @@ function OrderProductPage() {
   };
 
   const onCheckOut = async () => {
-    console.log(checkOutProducts);
     if (address) {
       setLoading(true);
       axios
@@ -268,7 +269,9 @@ function OrderProductPage() {
           </div>
           <div className="order-product-address-container">
             <h4>Shipping Address</h4>
-            {address ? (
+            {addressLoading ? (
+              <SmallLoading smallLoadingStyle={{ margin: "30px 0",height: 'auto' }} />
+            ) : address ? (
               <DeliveryAddressContainer
                 name={address.name}
                 phone={address.phone}
@@ -278,7 +281,7 @@ function OrderProductPage() {
               />
             ) : null}
             <Link to="/delivery-address" className="change-address-link">
-              {address ? "change address" : "add Delivery address"}
+              {addressLoading ? null :  address ? "change address" : "add Delivery address"}
             </Link>
           </div>
         </div>

@@ -4,6 +4,7 @@ const router = express.Router();
 const db = require("../database_config");
 const crypto = require("crypto");
 const Razorpay = require("razorpay");
+const { pid } = require("process");
 let instance = new Razorpay({
   key_id: process.env.RAZORPAY_KEY_ID,
   key_secret: process.env.RAZORPAY_KEY_SECRET,
@@ -277,52 +278,85 @@ router.delete("/remove-checkout-item/:OrderId/:ItemId", (req, res) => {
   }
 });
 
-router.put("/place-order/:OrderId/:totalPrise/:paymentMethord", (req, res) => {
-  console.log(req.params);
-  try {
-    if (req.session.user) {
-      if (req.params.paymentMethord == "cod") {
-        db.get()
-          .collection(process.env.ORDERS_COLLECTION)
-          .updateMany(
-            {
-              user: ObjectId(req.session.user._id),
-              _id: ObjectId(req.params.OrderId),
-            },
-            {
-              $set: {
-                payment_methord: "cod",
-                "products.$[].status": "placed",
+router.put(
+  "/place-order/:OrderId/:totalPrise/:paymentMethord",
+  async (req, res) => {
+    try {
+      if (req.session.user) {
+        if (req.params.paymentMethord == "cod") {
+          db.get()
+            .collection(process.env.ORDERS_COLLECTION)
+            .updateMany(
+              {
+                user: ObjectId(req.session.user._id),
+                _id: ObjectId(req.params.OrderId),
               },
-            }
-          )
-          .then((result) => {
-            if (result) {
+              {
+                $set: {
+                  payment_methord: "cod",
+                  "products.$[].status": "placed",
+                },
+              }
+            )
+            .then((result) => {
+              if (result) {
+                db.get()
+                  .collection(process.env.ORDERS_COLLECTION)
+                  .aggregate([
+                    {
+                      $match: { _id: ObjectId(req.params.OrderId) },
+                    },
+                    {
+                      $unwind: "$products",
+                    },
+                    {
+                      $project: {
+                        item: "$products.item",
+                        quantity: "$products.quantity",
+                      },
+                    },
+                  ])
+                  .forEach(async (pro) => {
+                    let updateInStock = await db
+                      .get()
+                      .collection(process.env.PRODUCTS_COLLECTION)
+                      .updateOne(
+                        {
+                          _id: pro.item,
+                        },
+                        {
+                          $inc: { inStock: -pro.quantity },
+                        }
+                      );
+                    if (updateInStock) {
+                      res.json({
+                        status: "placed",
+                      });
+                    }
+                  });
+              }
+            });
+        } else {
+          instance.orders.create(
+            {
+              amount: parseInt(req.params.totalPrise) * 100,
+              currency: "INR",
+              receipt: req.params.OrderId,
+            },
+            (err, order) => {
               res.json({
-                status: "placed",
+                status: "pending",
+                order,
               });
             }
-          });
-      } else {
-        instance.orders.create(
-          {
-            amount: parseInt(req.params.totalPrise) * 100,
-            currency: "INR",
-            receipt: req.params.OrderId,
-          },
-          (err, order) => {
-            res.json({
-              status: "pending",
-              order,
-            });
-          }
-        );
+          );
+        }
       }
+    } catch (error) {
+      console.log(error);
     }
-  } catch (error) {
-    console.log(error);
   }
-});
+);
 
 router.post("/verify-online-payment", (req, res) => {
   try {
@@ -354,9 +388,38 @@ router.post("/verify-online-payment", (req, res) => {
             }
           )
           .then((result) => {
-            if (result) {
-              res.send({ paymentVerified: true });
-            }
+            db.get()
+              .collection(process.env.ORDERS_COLLECTION)
+              .aggregate([
+                {
+                  $match: { _id: ObjectId(req.body.order.receipt) },
+                },
+                {
+                  $unwind: "$products",
+                },
+                {
+                  $project: {
+                    item: "$products.item",
+                    quantity: "$products.quantity",
+                  },
+                },
+              ])
+              .forEach(async (pro) => {
+                let updateInStock = await db
+                  .get()
+                  .collection(process.env.PRODUCTS_COLLECTION)
+                  .updateOne(
+                    {
+                      _id: pro.item,
+                    },
+                    {
+                      $inc: { inStock: -pro.quantity },
+                    }
+                  );
+                if (updateInStock) {
+                  res.send({ paymentVerified: true });
+                }
+              });
           });
       } else {
         res.send({ paymentVerified: false });
@@ -386,7 +449,7 @@ router.delete("/user/cancel-order/:orderId/:pid", async (req, res) => {
           }
         )
         .then((result) => {
-          res.send(true);
+          res.send(true)
         });
     }
   } catch (error) {

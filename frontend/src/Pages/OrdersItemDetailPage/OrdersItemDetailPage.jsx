@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import "./OrdersItemDetailPage.css";
 import Navbar from "../../Components/Navbar/Navbar";
 import { useNavigate, useParams } from "react-router-dom";
@@ -14,12 +14,17 @@ import {
 } from "../../ApiRenderController";
 import { EContextData } from "../../EContextData";
 import AddProductReviewForm from "../../Components/AddProductReviewForm/AddProductReviewForm";
+import ConfirmBox from "../../Components/ConfirmBox/ConfirmBox";
 
 function OrdersItemDetailPage() {
   const { user } = useContext(EContextData);
   const { orderId, productId } = useParams();
   const [orderdItem, setOrderdItem] = useState();
   const [loading, setLoading] = useState(true);
+  const [cancelLoading, setCancelLoading] = useState(false);
+  const [buyAgainLoading, setBuyAgainLoading] = useState(false);
+  const [showModel, setShowModel] = useState(false);
+  const reference = useRef();
   const nav = useNavigate();
 
   useEffect(() => {
@@ -43,6 +48,7 @@ function OrdersItemDetailPage() {
 
   const buyAgain = async (pid, prise) => {
     if (user) {
+      setBuyAgainLoading(true);
       let orderObj = {
         item: pid,
         quantity: 1,
@@ -50,6 +56,7 @@ function OrdersItemDetailPage() {
       };
       let res = await CreateOrderProvider([orderObj]);
       if (res) {
+        setBuyAgainLoading(false);
         nav(`/checkout/${res.OrderId}`);
       }
     } else {
@@ -57,10 +64,24 @@ function OrdersItemDetailPage() {
     }
   };
 
-  const cancelOrder = async (pro_id) => {
-    let res = await CancelOrderProvider(orderdItem[0].order_id, pro_id);
-    if (res) {
-      nav("/orders");
+  const cancelOrder = (pro_id) => {
+    setShowModel(true);
+    reference.current = pro_id;
+  };
+  const confirmCancelOrder = async (choose) => {
+    if (choose) {
+      setCancelLoading(true);
+      setShowModel(false);
+      let res = await CancelOrderProvider(
+        orderdItem[0].order_id,
+        reference.current
+      );
+      if (res) {
+        setCancelLoading(false);
+        nav("/orders");
+      }
+    } else {
+      setCancelLoading(false);
     }
   };
 
@@ -107,27 +128,43 @@ function OrdersItemDetailPage() {
                         )
                       }
                     >
-                      <FontAwesomeIcon
-                        icon={faCartPlus}
-                        style={{ marginRight: "8px" }}
-                      />
-                      Buy again
+                      {!buyAgainLoading ? (
+                        <FontAwesomeIcon
+                          icon={faCartPlus}
+                          style={{ marginRight: "8px" }}
+                        />
+                      ) : null}
+                      {!buyAgainLoading ? (
+                        "Buy again"
+                      ) : (
+                        <Loading
+                          style={{ height: "auto" }}
+                          iconSize="3px"
+                          color="white"
+                        />
+                      )}
                     </button>
                   ) : null}
                   {orderdItem[0].status === "placed" ? (
                     <button
                       className="cancel-order-btn"
-                      onClick={() =>
-                        cancelOrder(
-                          orderdItem[0].product._id
-                        )
-                      }
+                      onClick={() => cancelOrder(orderdItem[0].product._id)}
                     >
-                      <FontAwesomeIcon
-                        icon={faXmark}
-                        style={{ marginRight: "5px" }}
-                      />
-                      Cancel Order
+                      {!cancelLoading ? (
+                        <FontAwesomeIcon
+                          icon={faXmark}
+                          style={{ marginRight: "5px" }}
+                        />
+                      ) : null}
+                      {cancelLoading ? (
+                        <Loading
+                          style={{ height: "auto" }}
+                          iconSize="3px"
+                          color="white"
+                        />
+                      ) : (
+                        "Cancel Order"
+                      )}
                     </button>
                   ) : null}
                   {orderdItem[0].status === "pending" ? (
@@ -148,6 +185,12 @@ function OrdersItemDetailPage() {
                 ) : null}
               </section>
             </div>
+            <ConfirmBox
+              open={showModel}
+              text="Are you sure want to cancel order?"
+              onClose={() => setShowModel(false)}
+              onDialog={confirmCancelOrder}
+            />
           </section>
         </div>
       ) : (
