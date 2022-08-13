@@ -64,9 +64,10 @@ function OrdersItemDetailPage() {
     }
   };
 
-  const cancelOrder = (pro_id) => {
+  const cancelOrder = (pro_id,quantity) => {
     setShowModel(true);
     reference.current = pro_id;
+    reference.quantity = quantity
   };
   const confirmCancelOrder = async (choose) => {
     if (choose) {
@@ -74,7 +75,8 @@ function OrdersItemDetailPage() {
       setShowModel(false);
       let res = await CancelOrderProvider(
         orderdItem[0].order_id,
-        reference.current
+        reference.current,
+        reference.quantity
       );
       if (res) {
         setCancelLoading(false);
@@ -148,7 +150,7 @@ function OrdersItemDetailPage() {
                   {orderdItem[0].status === "placed" ? (
                     <button
                       className="cancel-order-btn"
-                      onClick={() => cancelOrder(orderdItem[0].product._id)}
+                      onClick={() => cancelOrder(orderdItem[0].product._id,orderdItem[0].quantity)}
                     >
                       {!cancelLoading ? (
                         <FontAwesomeIcon

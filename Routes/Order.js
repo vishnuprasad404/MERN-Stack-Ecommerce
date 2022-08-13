@@ -387,7 +387,8 @@ router.post("/verify-online-payment", (req, res) => {
               },
             }
           )
-          .then((result) => {
+          .then(() => {
+            res.send({ paymentVerified: true });
             db.get()
               .collection(process.env.ORDERS_COLLECTION)
               .aggregate([
@@ -404,9 +405,8 @@ router.post("/verify-online-payment", (req, res) => {
                   },
                 },
               ])
-              .forEach(async (pro) => {
-                let updateInStock = await db
-                  .get()
+              .forEach((pro) => {
+                db.get()
                   .collection(process.env.PRODUCTS_COLLECTION)
                   .updateOne(
                     {
@@ -416,9 +416,6 @@ router.post("/verify-online-payment", (req, res) => {
                       $inc: { inStock: -pro.quantity },
                     }
                   );
-                if (updateInStock) {
-                  res.send({ paymentVerified: true });
-                }
               });
           });
       } else {
@@ -432,29 +429,48 @@ router.post("/verify-online-payment", (req, res) => {
 
 // cancel order //
 
-router.delete("/user/cancel-order/:orderId/:pid", async (req, res) => {
-  try {
-    if (req.session.user) {
-      db.get()
-        .collection(process.env.ORDERS_COLLECTION)
-        .updateOne(
-          {
-            order_id: req.params.orderId,
-            "products.item": ObjectId(req.params.pid),
-          },
-          {
-            $set: {
-              "products.$.status": "cancelled",
+router.delete(
+  "/user/cancel-order/:orderId/:pid/:quantity",
+  async (req, res) => {
+    try {
+      if (req.session.user) {
+        db.get()
+          .collection(process.env.ORDERS_COLLECTION)
+          .updateOne(
+            {
+              order_id: req.params.orderId,
+              "products.item": ObjectId(req.params.pid),
             },
-          }
-        )
-        .then((result) => {
-          res.send(true)
-        });
+            {
+              $set: {
+                "products.$.status": "cancelled",
+              },
+            }
+          )
+          .then((result) => {
+            if (result) {
+              db.get()
+                .collection(process.env.PRODUCTS_COLLECTION)
+                .updateOne(
+                  {
+                    _id: ObjectId(req.params.pid),
+                  },
+                  {
+                    $inc: { inStock: parseInt(req.params.quantity) },
+                  }
+                )
+                .then((response) => {
+                  if (response) {
+                    res.send(true);
+                  }
+                });
+            }
+          });
+      }
+    } catch (error) {
+      console.log(error);
     }
-  } catch (error) {
-    console.log(error);
   }
-});
+);
 
 module.exports = router;

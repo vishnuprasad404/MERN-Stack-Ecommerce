@@ -236,9 +236,9 @@ export const GetCartTotalProvider = async () => {
 
 // cancel ordered product start//
 
-export const CancelOrderProvider = async (order_id, pid) => {
+export const CancelOrderProvider = async (order_id, pid,quantity) => {
   let res = await axios.delete(
-    `${process.env.REACT_APP_BASE_URL}/user/cancel-order/${order_id}/${pid}`
+    `${process.env.REACT_APP_BASE_URL}/user/cancel-order/${order_id}/${pid}/${quantity}`
   );
   return res.data;
 };
