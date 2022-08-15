@@ -12,7 +12,6 @@
 .order-placed-notify-container {
   width: 100%;
   min-height: 100vh;
-  /* margin-top: 20px; */
   border-top: 5px solid limegreen red;
   display: flex;
   align-items: center;
@@ -31,8 +30,35 @@
   background-color: rgb(255, 255, 255);
 }
 
-.order-placed-container button{
-    padding: 8px 30px;
-    margin-top: 20px;
-    background-color: rgb(241, 241, 241);
+.order-placed-container button {
+  padding: 8px 30px;
+  margin-top: 20px;
+  background-color: rgb(113, 180, 255);
+  color: white;
+}
+.order-placed-link{
+  margin-top: 10px;
+}
+.order-placed-link .link{
+  text-decoration: none;
+
+}
+
+@media (max-width: 1000px) {
+  .order-placed-notify-container {
+    background-color: rgb(255, 255, 255);
+  }
+  .order-placed-container {
+    width: 100%;
+  }
+
+}
+
+@media (max-width: 500px) {
+  .order-placed-container h3{
+    font-size: 20px;
+  }
+  .order-placed-container .order-id{
+    font-size: 12px;
+  }
 }

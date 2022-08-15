@@ -239,7 +239,7 @@ router.put(
             {
               user: ObjectId(req.session.user._id),
               _id: ObjectId(req.params.OrderId),
-              "products.item": req.params.itemId,
+              "products.item": ObjectId(req.params.itemId),
             },
             {
               $set: {

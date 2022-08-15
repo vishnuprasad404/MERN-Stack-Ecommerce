@@ -2,23 +2,27 @@
   min-height: 50vh;
   padding: 40px 80px;
 }
-.favorite-card {
+.favorite-card-col {
   position: relative;
 }
-
+.favorite-card {
+  min-height: 320px;
+}
 .card-img-top {
+  width: 100%;
+  min-height: 130px;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding-top: 15px;
+  overflow: hidden;
 }
 .fav-remove-btn {
   position: absolute;
 }
 .fav-title {
-  height: 40px;
-  text-overflow: ellipsis;
+  white-space: nowrap;
   overflow: hidden;
+  text-overflow: ellipsis;
 }
 .fav-prise {
   font-weight: 600;
@@ -29,7 +33,17 @@
   margin-left: 5px;
   font-weight: normal;
 }
-
+.fav-to-cart-btn-container {
+  background-color: red;
+}
+.fav-to-cart-btn {
+  width: 90%;
+  position: absolute;
+  bottom: 10px;
+  left: 12px;
+  background-color: rgb(137, 173, 221);
+  color: white;
+}
 .favorite-remove-btn {
   position: absolute;
   top: 10px;
@@ -45,21 +59,25 @@
 }
 
 @media (max-width: 400px) {
+  .favorite-card{
+    min-height: 230px;
+  }
   .fav-to-cart-btn {
-    margin: 0 !important;
     font-size: 12px;
   }
   .fav-title {
-    height: 28px;
-    font-size: 13px;
+    font-size: 14px;
   }
   .fav-prise {
     font-size: 11px;
   }
+  .card-img-top {
+    min-height: 81px;
+  }
 }
 
-@media (max-width : 320px) {
-  .favorite-card{
-    width : 100%
+@media (max-width: 320px) {
+  .favorite-card {
+    width: 100%;
   }
 }

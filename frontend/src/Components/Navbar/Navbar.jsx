@@ -40,7 +40,7 @@ function Navbar() {
       setCartCount(res);
     };
     getCart();
-  }, []);
+  });
 
   return (
     <>

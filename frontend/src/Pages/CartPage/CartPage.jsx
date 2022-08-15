@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import EmptyItemsPage from "../../Components/EmptyItemsPage/EmptyItemsPage";
-import empty_cart from "../../Assets/empty-cart.webp";
+import empty_cart from "../../Assets/emptyCart.gif";
 import { EContextData as GlobalData } from "../../EContextData";
 import { Loading, SmallLoading } from "../../Components/Loading/Loading";
 import {
@@ -246,7 +246,7 @@ function CartPage() {
           </div>
         </div>
       ) : !loading && cartItems.length < 1 ? (
-        <EmptyItemsPage image={empty_cart} text="YOUR CART IS EMPTY" />
+        <EmptyItemsPage image={empty_cart} text="YOUR CART IS EMPTY" imageSize="600px"/>
       ) : (
         <Loading height="400px" />
       )}

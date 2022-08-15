@@ -68,7 +68,9 @@ function OrdersPage() {
                         <div
                           className="orders-container"
                           onClick={() =>
-                            nav(`/view-order-product/${itm.order_id}/${itm.product._id}`)
+                            nav(
+                              `/view-order-product/${itm.order_id}/${itm.product._id}`
+                            )
                           }
                         >
                           <section className="orders-item-details">
@@ -76,7 +78,16 @@ function OrdersPage() {
                               <img src={itm.product.image1} alt="" />
                             </div>
                             <div className="orders-item-title-and-prise">
-                              <h6>{itm.product.title}</h6>
+                              <h6
+                                style={{
+                                  textDecoration:
+                                    itm.status === "cancelled"
+                                      ? "line-through"
+                                      : null,
+                                }}
+                              >
+                                {itm.product.title}
+                              </h6>
                               <Rating
                                 id={itm.product._id}
                                 style={{

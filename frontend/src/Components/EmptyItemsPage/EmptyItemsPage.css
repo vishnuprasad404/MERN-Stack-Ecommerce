@@ -29,3 +29,10 @@
     margin-top: 30px;
   }
 }
+
+@media (max-width: 400px) {
+  .empty-items-page h3 {
+    letter-spacing: 1px;
+    font-size: 19px;
+  }
+}

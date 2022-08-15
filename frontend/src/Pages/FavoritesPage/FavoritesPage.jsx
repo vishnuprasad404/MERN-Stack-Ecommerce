@@ -106,10 +106,10 @@ function FavoritesPage() {
               {favoriteProducts.map((itm, key) => {
                 return (
                   <div
-                    className="col-6 col-sm-4 col-md-3 col-lg-2 favorite-card"
+                    className="col-6 col-sm-4 col-md-3 col-lg-2 favorite-card-col"
                     key={key}
                   >
-                    <div className="card">
+                    <div className="card favorite-card">
                       <div
                         className="card-img-top"
                         onClick={() => nav(`/product/${itm.item}`)}
@@ -133,7 +133,7 @@ function FavoritesPage() {
                           <del>{itm.product[0].orginalPrise}</del>
                         </p>
                         <button
-                          className="w-100 mt-3 p-2 fav-to-cart-btn"
+                          className="p-2 fav-to-cart-btn"
                           onClick={() =>
                             addToCart(
                               itm.item,

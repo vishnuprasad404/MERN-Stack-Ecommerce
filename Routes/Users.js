@@ -97,7 +97,7 @@ router.post("/user/signin", async (req, res) => {
             req.session.isLoggedIn = true;
             res.send({
               isLoggedIn: true,
-              userDetails: req.session.user,
+              user: req.session.user,
             });
           } else {
             res.send({ isLoggedIn: false });
@@ -130,8 +130,11 @@ router.post("/updateaccount", async (req, res) => {
           )
           .then((result) => {
             if (result) {
+              req.session.user.username = req.body.username
+              req.session.user.email = req.body.email
+              req.session.user.phone = req.body.phone
+
               res.send({ updated: true });
-              req.session.destroy();
             } else {
               res.send({ updated: false });
             }
@@ -144,6 +147,12 @@ router.post("/updateaccount", async (req, res) => {
 
         if (matchCurrentPass === true) {
           let hashedPasswd = await bcrypt.hash(req.body.new_password, 10);
+          let updatedInfo = {
+            username: req.body.username,
+            phone: req.body.phone,
+            email: req.body.email,
+            password: hashedPasswd,
+          }
           db.get()
             .collection(process.env.USERS_COLLECTION)
             .updateOne(
@@ -151,16 +160,12 @@ router.post("/updateaccount", async (req, res) => {
                 _id: ObjectId(req.session.user._id),
               },
               {
-                $set: {
-                  username: req.body.username,
-                  phone: req.body.phone,
-                  email: req.body.email,
-                  password: hashedPasswd,
-                },
+                $set: updatedInfo
               }
             )
             .then((result) => {
               if (result) {
+                req.session.user = updatedInfo
                 res.send({ updated: true });
                 req.session.destroy();
               } else {

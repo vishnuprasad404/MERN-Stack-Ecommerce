@@ -103,14 +103,14 @@ function SigninPage() {
           <button
             className="form-btn"
             type="submit"
-            style={{ background: loading ? "rgb(241, 241, 241)" : null }}
+            // style={{ background: loading ? "rgb(241, 241, 241)" : null }}
           >
             {!loading ? (
               "SignIn"
             ) : (
               <Loading
                 iconSize="8px"
-                color="red"
+                color="white"
                 style={{ height: "10px", width: "100%" }}
               />
             )}
