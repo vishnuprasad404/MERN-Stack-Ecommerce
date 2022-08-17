@@ -24,7 +24,7 @@ import { EContextData as GlobalData } from "./EContextData";
 import axios from "axios";
 import OrderPlacedNotifyPage from "./Pages/OrderPlacedNotifyPage/OrderPlacedNotifyPage";
 import OrdersItemDetailPage from "./Pages/OrdersItemDetailPage/OrdersItemDetailPage";
-
+import EmailVerificationStatusPage from "./Pages/EmailVerificationStatusPage/EmailVerificationStatusPage";
 
 function App() {
   const [user, setUser] = useState(false);
@@ -41,7 +41,7 @@ function App() {
   });
   return (
     <div className="App">
-      <GlobalData.Provider value={{ user, setUser,admin,setAdmin }}>
+      <GlobalData.Provider value={{ user, setUser, admin, setAdmin }}>
         <Routes>
           <Route
             path="/admin-login"
@@ -97,6 +97,8 @@ function App() {
             path="/order-placed-successfully/:OrderId"
             element={user ? <OrderPlacedNotifyPage /> : <SigninPage />}
           />
+          <Route path="/user/verify-email" element={<EmailVerificationStatusPage />} />
+
           <Route path="*" element={<ErrorPage />} />
         </Routes>
       </GlobalData.Provider>
