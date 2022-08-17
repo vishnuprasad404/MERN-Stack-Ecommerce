@@ -115,7 +115,10 @@ export const GetUserOwnReviewProvider = async (pid) => {
 // add review by user start //
 
 export const AddProductReviewProvider = async (data) => {
-  let res = await axios.post(`${process.env.REACT_APP_BASE_URL}/add-review`, data);
+  let res = await axios.post(
+    `${process.env.REACT_APP_BASE_URL}/add-review`,
+    data
+  );
   return res.data;
 };
 
@@ -236,7 +239,7 @@ export const GetCartTotalProvider = async () => {
 
 // cancel ordered product start//
 
-export const CancelOrderProvider = async (order_id, pid,quantity) => {
+export const CancelOrderProvider = async (order_id, pid, quantity) => {
   let res = await axios.delete(
     `${process.env.REACT_APP_BASE_URL}/user/cancel-order/${order_id}/${pid}/${quantity}`
   );
@@ -244,3 +247,10 @@ export const CancelOrderProvider = async (order_id, pid,quantity) => {
 };
 
 // cancel ordered product end//
+
+//----------------------------admin get data---------------------//
+
+export const AdminGetAllOrdersProvider = async () => {
+  let res = await axios.get(`${process.env.REACT_APP_BASE_URL}/admin/orders`);
+  return res.data;
+};

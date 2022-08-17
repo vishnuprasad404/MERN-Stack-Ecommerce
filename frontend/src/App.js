@@ -41,7 +41,7 @@ function App() {
   });
   return (
     <div className="App">
-      <GlobalData.Provider value={{ user, setUser }}>
+      <GlobalData.Provider value={{ user, setUser,admin,setAdmin }}>
         <Routes>
           <Route
             path="/admin-login"

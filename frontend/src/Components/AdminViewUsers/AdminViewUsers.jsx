@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faSearch, faTrash } from "@fortawesome/free-solid-svg-icons";
 import axios from "axios";
 import Paginate from "react-paginate";
-import { Loading } from "../Loading/Loading";
+import { SmallLoading } from "../Loading/Loading";
 
 function AdminViewUsers() {
   const [users, setUsers] = useState([]);
@@ -56,14 +56,21 @@ function AdminViewUsers() {
   const displayUsers = filterdUsers
     .slice(pagesVisited, pagesVisited + allUsersPage)
     .map((itm, key) => {
+      let date = new Date(itm.created_at);
+      const yyyy = date.getFullYear();
+      let mm = date.getMonth() + 1;
+      let dd = date.getDate();
+      if (dd < 10) dd = "0" + dd;
+      if (mm < 10) mm = "0" + mm;
+      date = dd + "/" + mm + "/" + yyyy;
       return (
         <tbody>
           <td data-label="No">#{key + 1}</td>
           <td data-label="Username">{itm.username}</td>
           <td data-label="Email">{itm.email}</td>
           <td data-label="Phone">{itm.phone}</td>
-          <td data-label="Account Created Date">{itm.created_at}</td>
-          <td data-label="Remove">
+          <td data-label="Account Created Date">{date}</td>
+          <td data-label="Remove" style={{ textAlign: "center", padding: "0" }}>
             {!loading.has(key) ? (
               <FontAwesomeIcon
                 icon={faTrash}
@@ -71,18 +78,15 @@ function AdminViewUsers() {
                 onClick={() => deleteUser(itm._id, key)}
               />
             ) : (
-              <Loading iconSize="17px" color="black" />
+              <SmallLoading
+                smallLoadingStyle={{
+                  display: "flex",
+                  justifyContent: "center",
+                }}
+              />
             )}
           </td>
-          {/* {!loading ? (
-              <FontAwesomeIcon
-                icon={faTrash}
-                className="admin-remove-user-btn"
-                onClick={() => deleteUser(itm._id)}
-              />
-            ) : (
-              <Loading iconSize="17px" color="black" />
-            )} */}
+
         </tbody>
       );
     });
@@ -118,14 +122,14 @@ function AdminViewUsers() {
             <th>Email ID</th>
             <th>Phone Number</th>
             <th>Account Created Date</th>
-            <th>Remove</th>
+            <th style={{ textAlign: "center", padding: "0" }}>Remove</th>
           </thead>
           {displayUsers}
         </table>
         {users.length < 1 || filterdUsers.length < 1 ? (
           <center className="no-user">
             {" "}
-            <FontAwesomeIcon className="no-user-icon" icon={faSearch} /> No user
+            <FontAwesomeIcon className="no-user-icon" icon={faSearch} /> No users
             found
           </center>
         ) : null}

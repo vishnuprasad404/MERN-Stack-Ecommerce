@@ -51,7 +51,7 @@ function SignupPage() {
           setNotify({ display: "none" });
           setUser(res.data.user);
           nav("/");
-        }, 1000);
+        }, 200);
       }
     }
   };

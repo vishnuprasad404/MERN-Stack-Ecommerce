@@ -24,7 +24,7 @@
     border-bottom: 1px solid grey !important;
     border-radius: 0 !important;
 }
-.admin-login-page button{
+.admin-login-page .admin-login-btn{
     width: 350px;
     height: 45px;
     border: none;

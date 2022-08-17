@@ -19,38 +19,26 @@ router.get("/admin/orders", async (req, res) => {
       .collection(process.env.ORDERS_COLLECTION)
       .aggregate([
         {
+          $unwind: "$products",
+        },
+        {
           $match: {
             $and: [
               {
                 $or: [
-                  { status: "placed" },
-                  { status: "dispatched" },
-                  { status: "completed" },
-                  { status: "cancelled" },
+                  { "products.status": "placed" },
+                  { "products.status": "dispatched" },
+                  { "products.status": "completed" },
+                  { "products.status": "cancelled" },
                 ],
               },
             ],
           },
         },
         {
-          $unwind: "$products",
-        },
-        {
-          $project: {
-            username: "$username",
-            created_at: "$created_at",
-            status: "$status",
-            address: "$address",
-            payment_methord: "$payment_methord",
-            pid: { $toObjectId: "$products.item" },
-            quantity: "$products.quantity",
-            prise: "$products.prise",
-          },
-        },
-        {
           $lookup: {
             from: process.env.PRODUCTS_COLLECTION,
-            localField: "pid",
+            localField: "products.item",
             foreignField: "_id",
             as: "product",
           },
@@ -58,9 +46,20 @@ router.get("/admin/orders", async (req, res) => {
         {
           $unwind: "$product",
         },
+        {
+          $project: {
+            username: "$username",
+            address: "$address",
+            item: "$products.item",
+            quantity: "$products.quantity",
+            prise: "$products.prise",
+            status: "$products.status",
+            product: "$product",
+            created_at: "$created_at",
+          },
+        },
       ])
       .toArray();
-
     res.status(200).json(orders);
   } catch (error) {
     console.log(error);
@@ -71,14 +70,14 @@ router.get("/admin/orders", async (req, res) => {
 
 //admin change order status route start//
 
-router.put("/admin/change-order-status/:id/:status", (req, res) => {
+router.put("/admin/change-order-status/:id/:status/:pid", (req, res) => {
   try {
     db.get()
       .collection(process.env.ORDERS_COLLECTION)
       .updateOne(
-        { _id: ObjectId(req.params.id) },
+        { _id: ObjectId(req.params.id),"products.item" : ObjectId(req.params.pid) },
         {
-          $set: { status: req.params.status },
+          $set: { 'products.$.status': req.params.status },
         }
       )
       .then(() => {

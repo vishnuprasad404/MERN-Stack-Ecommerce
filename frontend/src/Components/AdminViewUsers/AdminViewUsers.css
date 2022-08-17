@@ -7,10 +7,10 @@
   margin: 20px 0px;
   align-items: center;
 }
-.admin-view-users-filter-input{
-    border: 1px solid grey;
-    padding: 8px;
-    border-radius: 10px;
+.admin-view-users-filter-input {
+  border: 1px solid grey;
+  padding: 8px;
+  border-radius: 10px;
 }
 .admin-view-users-filter-input input {
   border: none;
@@ -18,64 +18,68 @@
   outline: none;
 }
 .admin-view-users-filter-btn {
-    background-color: rgb(109, 167, 255);
-    color: white;
-    padding: 12px 25px;
-    margin-left: 10px;
-    border-radius: 10%;
-    cursor: pointer;
+  background-color: rgb(109, 167, 255);
+  color: white;
+  padding: 12px 25px;
+  margin-left: 10px;
+  border-radius: 10%;
+  cursor: pointer;
 }
 
-.admin-view-users-list{
-    width: 100%;
-    max-height: 700px;
-    overflow: auto;
-    padding: 20px 0px;
-}
-
-.admin-view-users-list table{
-    width: 100%;
-    text-align: center;
-}
-.admin-view-users-list thead{
-  background-color: rgb(239, 246, 255);
-}
-.admin-view-users-list th{
-  font-weight: 600;
-  padding: 10px 0px;
-}
-.admin-view-users-list td{
+.admin-view-users-list {
+  width: 100%;
+  max-height: 700px;
+  overflow: auto;
   padding: 20px 0px;
 }
 
-.admin-remove-user-btn{
+.admin-view-users-list table {
+  width: 100%;
+}
+.admin-view-users-list thead {
+  background-color: rgb(239, 246, 255);
+}
+.admin-view-users-list th {
+  font-weight: 600;
+  padding: 15px;
+}
+.admin-view-users-list td {
+  padding: 15px;
+  background-color: rgb(255, 255, 255);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  max-width: 200px;
+}
+
+.admin-remove-user-btn {
   color: rgb(94, 94, 94);
   cursor: pointer;
 }
-.admin-remove-user-btn:hover{
+.admin-remove-user-btn:hover {
   color: red;
 }
-.no-user{
+.no-user {
   margin-top: 40px;
   color: grey;
 }
-.no-user .no-user-icon{
+.no-user .no-user-icon {
   margin-right: 8px;
 }
 
-@media (max-width:760px) {
-  .admin-view-users{
+@media (max-width: 760px) {
+  .admin-view-users {
     padding: 10px;
   }
-  .admin-view-users-list{
+  .admin-view-users-list {
     padding: 0;
   }
-  .admin-view-users-table{
+  .admin-view-users-table {
     padding: 0px;
     font-size: calc(0.5rem + 1vw);
     text-align: center;
   }
-  .admin-view-users-table tbody{
+  .admin-view-users-table tbody {
     border-top: none;
     box-shadow: none;
     margin: 40px 0px;
@@ -85,7 +89,6 @@
   }
   .admin-view-users-table thead {
     display: none;
-    
   }
   .admin-view-users-table tbody,
   .admin-view-users-table tr,
@@ -105,14 +108,14 @@
   }
 }
 
-@media (max-width : 500px) {
-  .admin-view-users-filter-btn{
+@media (max-width: 500px) {
+  .admin-view-users-filter-btn {
     display: none;
   }
-  .admin-view-users-filter-input{
+  .admin-view-users-filter-input {
     width: 100%;
   }
-  .admin-view-users-filter-input input{
+  .admin-view-users-filter-input input {
     width: 90%;
   }
 }

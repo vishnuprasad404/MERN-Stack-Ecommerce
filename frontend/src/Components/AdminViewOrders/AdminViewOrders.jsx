@@ -2,50 +2,58 @@ import React, { useState } from "react";
 import "./AdminViewOrders.css";
 import Paginate from "react-paginate";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faCircleCheck, faCircleDot } from "@fortawesome/free-solid-svg-icons";
+import {
+  faCircleCheck,
+  faCircleDot,
+  faSearch,
+} from "@fortawesome/free-solid-svg-icons";
 import { useEffect } from "react";
 import axios from "axios";
+import { AdminGetAllOrdersProvider } from "../../ApiRenderController";
 
 function AdminViewOrders() {
   const [orders, setOrders] = useState([]);
-  const [filterOrders, setFilterOrders] = useState(orders);
+  const [filterQuery, setFilterQuery] = useState("");
   const [active, setActive] = useState("");
   const [pageNumber, setPageNumber] = useState(0);
 
   useEffect(() => {
-    getAllOrders()
+    getAllOrders();
   }, []);
 
-  function getAllOrders(){
-    axios.get(`${process.env.REACT_APP_BASE_URL}/admin/orders`).then((res) => {
-      setOrders(res.data);
-      setFilterOrders(res.data);
-    });
-  }
+  const getAllOrders = async () => {
+    let res = await AdminGetAllOrdersProvider();
+    setOrders(res);
+  };
 
   const selectStatus = (key) => {
     setActive(key);
-    var filterdData = orders.filter((data) => {
-      return data.status === key;
-    });
-    setFilterOrders(filterdData);
+    setFilterQuery(key);
   };
 
-  const changeOrderStatus = (e, id, selectedIndex) => {
+  const changeOrderStatus = (e, order_id, pid) => {
     axios
       .put(
-        `${process.env.REACT_APP_BASE_URL}/admin/change-order-status/${id}/${e.target.value}`
+        `${process.env.REACT_APP_BASE_URL}/admin/change-order-status/${order_id}/${e.target.value}/${pid}`
       )
       .then((res) => {
-        getAllOrders()
+        getAllOrders();
       });
   };
 
   const ordersPerPage = 5;
   const pagesVisited = pageNumber * ordersPerPage;
 
-  const displayOrders = filterOrders
+  const displayOrders = orders
     .slice(pagesVisited, pagesVisited + ordersPerPage)
+    .filter((data) => {
+      if (filterQuery !== "") {
+        console.log(data);
+        return data.status === filterQuery;
+      } else {
+        return data;
+      }
+    })
     .map((itm, key) => {
       return (
         <tbody
@@ -92,25 +100,44 @@ function AdminViewOrders() {
                   ? "Dispatched"
                   : itm.status === "completed"
                   ? "Completed"
-                  : "Canceled"}
+                  : itm.status === "cancelled"
+                  ? "Canceled"
+                  : null}
               </span>
             </div>
           </td>
           <td
             style={{
-              display: `${itm.status === "cancelled" || itm.status === "completed" ? "none" : "flex"}`,
+              display: `${
+                itm.status === "cancelled" || itm.status === "completed"
+                  ? "none"
+                  : "flex"
+              }`,
             }}
           >
             <select
-              onChange={(e) => changeOrderStatus(e, itm._id, key)}
+              onChange={(e) => changeOrderStatus(e, itm._id, itm.item)}
               value={itm.status}
             >
-              <option value="" disabled={itm.status === "pending" || itm.status === "dispatched" || itm.status === "completed" ? true : false}>
+              <option
+                value=""
+                disabled={
+                  itm.status === "pending" ||
+                  itm.status === "dispatched" ||
+                  itm.status === "completed"
+                    ? true
+                    : false
+                }
+              >
                 Pending
               </option>
               <option
                 value="dispatched"
-                disabled={itm.status === "dispatched" || itm.status === "completed" ? true : false}
+                disabled={
+                  itm.status === "dispatched" || itm.status === "completed"
+                    ? true
+                    : false
+                }
               >
                 Dispatched
               </option>
@@ -126,7 +153,7 @@ function AdminViewOrders() {
       );
     });
 
-  const pageCount = Math.ceil(filterOrders.length / ordersPerPage);
+  const pageCount = Math.ceil(orders.length / ordersPerPage);
 
   const changePage = ({ selected }) => {
     setPageNumber(selected);
@@ -141,7 +168,7 @@ function AdminViewOrders() {
           style={{ color: `${active === "" ? "blue" : "black"}` }}
           onClick={() => {
             setActive("");
-            setFilterOrders(orders);
+            selectStatus("");
           }}
         >
           All Orders
@@ -185,19 +212,28 @@ function AdminViewOrders() {
             <th>Status</th>
             <th>Action</th>
           </thead>
-          {displayOrders}
+          {displayOrders.length >= 1 ? displayOrders : null}
         </table>
-        <Paginate
-          previousLabel={"Previous"}
-          nextLabel={"Next"}
-          pageCount={pageCount}
-          onPageChange={changePage}
-          containerClassName={"pagination-container"}
-          previousLinkClassName={"previous-btn"}
-          nextLinkClassName={"next-btn"}
-          disabledClassName={"pagination-disabled-btn"}
-          activeClassName={"pagination-active"}
-        />
+        {displayOrders.length < 1 ? (
+          <center className="no-orders">
+            {" "}
+            <FontAwesomeIcon className="no-user-icon" icon={faSearch} /> No
+            users found
+          </center>
+        ) : null}
+        {displayOrders.length >= 1 ? (
+          <Paginate
+            previousLabel={"Previous"}
+            nextLabel={"Next"}
+            pageCount={pageCount}
+            onPageChange={changePage}
+            containerClassName={"pagination-container"}
+            previousLinkClassName={"previous-btn"}
+            nextLinkClassName={"next-btn"}
+            disabledClassName={"pagination-disabled-btn"}
+            activeClassName={"pagination-active"}
+          />
+        ) : null}
       </div>
     </div>
   );

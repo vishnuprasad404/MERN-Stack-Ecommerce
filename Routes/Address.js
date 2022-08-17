@@ -11,7 +11,11 @@ router.get("/getshippingaddress", async (req, res) => {
         .collection(process.env.ADDRESS_COLLECTION)
         .findOne({ user: ObjectId(req.session.user._id) });
 
-      res.json(address);
+      if(address){
+        res.json(address);
+      }else{
+        res.send(false)
+      }
     }
   } catch (error) {
     console.log(error);

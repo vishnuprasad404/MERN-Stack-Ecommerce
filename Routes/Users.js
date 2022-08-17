@@ -51,6 +51,8 @@ router.post("/user/signup", async (req, res) => {
             email: req.body.email,
             phone: req.body.phone,
             password: hasedPassword,
+            verified : false,
+            created_at: new Date()
           })
           .then(async (response) => {
             if (response) {

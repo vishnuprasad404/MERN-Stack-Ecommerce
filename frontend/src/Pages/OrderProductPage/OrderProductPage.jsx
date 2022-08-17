@@ -44,6 +44,8 @@ function OrderProductPage() {
       if (deliveryDetails) {
         setAddressLoading(false);
         setAddress(deliveryDetails);
+      }else{
+        setAddressLoading(false);
       }
     };
     GetOrderDetails();
