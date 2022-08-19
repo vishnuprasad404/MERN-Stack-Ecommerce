@@ -98,7 +98,7 @@ const sendVerfificationMain = (id, email, res) => {
     from: process.env.AUTH_EMAIL,
     to: email,
     subject: "Verfy your email",
-    html: `<p>Verify your email to complete the signup <p>this link expires in 6hour</p> <p><a href=${
+    html: `<p>Verify your email to complete the signup <p>this link expires in 24hour</p> <p><a href=${
       process.env.BASE_URL +
       "/api/user/verify/" +
       email +
@@ -106,7 +106,15 @@ const sendVerfificationMain = (id, email, res) => {
       id +
       "/" +
       uniqueStr
-    } >click to verify</a></p> </p>`,
+    } >${
+      process.env.BASE_URL +
+      "/api/user/verify/" +
+      email +
+      "/" +
+      id +
+      "/" +
+      uniqueStr
+    } </a></p> </p>`,
   };
 
   const saltRound = 10;
@@ -119,7 +127,7 @@ const sendVerfificationMain = (id, email, res) => {
           userId: id,
           uniqueStr: hashedStr,
           created_at: Date.now(),
-          expires_at: Date.now() + 120000,
+          expires_at: Date.now() + 86400000,
         })
         .then(() => {
           transporter
@@ -208,10 +216,6 @@ router.get("/user/verify/:email/:id/:uniquStr", async (req, res) => {
 
 //end
 
-router.get("/verified/:email", (req, res) => {
-  res.redirect(`${process.env.ORIGIN}/user/verify-email/${req.params.email}`);
-});
-// `${process.env.ORIGIN}/user/verify-email/${req.params.email}`
 
 // check user verification status //
 
