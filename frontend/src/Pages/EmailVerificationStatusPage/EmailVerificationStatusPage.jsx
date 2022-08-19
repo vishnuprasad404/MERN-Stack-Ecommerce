@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 import { useEffect } from "react";
 import axios from "axios";
 import { useState } from "react";
+import SimpleNavbar from "../../Components/SimpleNavbar/SimpleNavbar";
 
 function EmailVerificationStatusPage() {
   const { email } = useParams();
@@ -22,21 +23,8 @@ function EmailVerificationStatusPage() {
     <>
       {verified ? (
         <div className="verification-status-page">
-          <nav className="simple-navbar">
-            <h4>Ecart</h4>
-            <ul className="simple-nav-links">
-              <li>
-                <Link className="link" to="/signin">
-                  SignIn
-                </Link>
-              </li>
-              <li>
-                <Link className="link" to="/signup">
-                  Create an account
-                </Link>
-              </li>
-            </ul>
-          </nav>
+          <SimpleNavbar />
+
           <div className="container">
             <h1>User Verification</h1>
             <div

@@ -109,7 +109,6 @@ function SigninPage() {
             {errors.email?.type === "required" && "*Email is required"}
             {errors.email?.type === "pattern" && "*Email is invalid !"}
           </span>
-
           <input
             className="signin-input"
             type="password"
@@ -121,7 +120,12 @@ function SigninPage() {
             {errors.password?.type === "minLength" &&
               "*Password much contain atlest 8 character"}
           </span>
-
+          <Link
+            className="link forget-pass-link"
+            to="/user/password-reset"
+          >
+            Forget password
+          </Link>{" "}
           <button
             className="form-btn"
             type="submit"
@@ -137,8 +141,7 @@ function SigninPage() {
               />
             )}
           </button>
-
-          <p style={{ fontSize: "12px" }}>
+          <p style={{ fontSize: "12px",textAlign:"center" }}>
             Don't have an account{" "}
             <Link style={{ textDecoration: "none" }} to="/signup">
               SignUp

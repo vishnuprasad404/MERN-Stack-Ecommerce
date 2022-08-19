@@ -19,6 +19,7 @@ const Order = require("./Routes/Order");
 const Favorites = require("./Routes/Favorites");
 const Address = require("./Routes/Address");
 const Reviews = require("./Routes/Reviews");
+const PasswordReset = require("./Routes/PasswordReset")
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -49,6 +50,8 @@ app.use("/api", Cart);
 app.use("/api", Order);
 app.use("/api", Address);
 app.use("/api", Reviews);
+app.use("/api", PasswordReset);
+
 
 //get admin
 app.get("/api/admin", (req, res) => {

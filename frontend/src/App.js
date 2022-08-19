@@ -25,6 +25,8 @@ import axios from "axios";
 import OrderPlacedNotifyPage from "./Pages/OrderPlacedNotifyPage/OrderPlacedNotifyPage";
 import OrdersItemDetailPage from "./Pages/OrdersItemDetailPage/OrdersItemDetailPage";
 import EmailVerificationStatusPage from "./Pages/EmailVerificationStatusPage/EmailVerificationStatusPage";
+import ForgetPassRequestPage from "./Pages/ForgetPassRequestPage/ForgetPassRequestPage";
+import PasswordResetPage from "./Pages/PasswordResetPage/PasswordResetPage";
 
 function App() {
   const [user, setUser] = useState(false);
@@ -39,7 +41,7 @@ function App() {
       setUser(res.data);
     });
   });
-  
+
   return (
     <div className="App">
       <GlobalData.Provider value={{ user, setUser, admin, setAdmin }}>
@@ -98,7 +100,18 @@ function App() {
             path="/order-placed-successfully/:OrderId"
             element={user ? <OrderPlacedNotifyPage /> : <SigninPage />}
           />
-          <Route path="/user/verify-email/:email" element={<EmailVerificationStatusPage />} />
+          <Route
+            path="/user/verify-email/:email"
+            element={<EmailVerificationStatusPage />}
+          />
+          <Route
+            path="/user/password-reset"
+            element={<ForgetPassRequestPage />}
+          />
+          <Route
+            path="/user/password-reset/create-password/:userId/:verificationToken"
+            element={<PasswordResetPage />}
+          />
 
           <Route path="*" element={<ErrorPage />} />
         </Routes>

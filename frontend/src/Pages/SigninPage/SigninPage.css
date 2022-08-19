@@ -14,7 +14,6 @@
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  text-align: center;
   background-color: white;
   border-radius: 10px;
   padding: 0;
@@ -24,6 +23,8 @@
   font-weight: 300;
   letter-spacing: 1px;
   margin-bottom: 25px;
+  text-align: center;
+
 }
 .signin-page-container .signin-input {
   width: 100%;
@@ -55,6 +56,10 @@
   letter-spacing: 1px;
   font-family: poppins;
   font-weight: 100;
+}
+.forget-pass-link{
+  font-size: 11px;
+  align-self: auto;
 }
 
 @media (max-width: 500px) {

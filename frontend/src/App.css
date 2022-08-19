@@ -7,10 +7,18 @@
   scrollbar-width: none;
   scrollbar-color: white white;
   scroll-behavior: smooth;
-  transition: .1s;
+  transition: 0.1s;
 }
-*::-webkit-scrollbar{
+*::-webkit-scrollbar {
   display: none;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  margin: 0;
 }
 button,
 i {
@@ -30,9 +38,9 @@ ul {
   list-style: none;
   padding: 0;
 }
-.App{
- height: 100vh;
+.App {
+  height: 100vh;
 }
-.link{
+.link {
   text-decoration: none;
 }

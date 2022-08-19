@@ -139,7 +139,7 @@ const sendVerfificationMain = (id, email, res) => {
             })
             .catch(() =>
               res.json({
-                emailSended: true,
+                emailSended: false,
               })
             );
         })
