@@ -19,8 +19,6 @@ let transporter = nodemailer.createTransport({
 transporter.verify((error, success) => {
   if (error) {
     console.log(error);
-  } else {
-    console.log("succes ");
   }
 });
 
@@ -94,10 +92,6 @@ router.post("/user/signup", async (req, res) => {
 // send verfication mail handler function //
 
 const sendVerfificationMain = (id, email, res) => {
-  console.log(id);
-  console.log(email);
-  // console.log(res);
-
   let uniqueStr = uuidv4() + id;
 
   const mailOptions = {
@@ -105,7 +99,13 @@ const sendVerfificationMain = (id, email, res) => {
     to: email,
     subject: "Verfy your email",
     html: `<p>Verify your email to complete the signup <p>this link expires in 6hour</p> <p><a href=${
-      process.env.ORGIN + "/api/user/verify/" + id + "/" + uniqueStr
+      process.env.BASE_URL +
+      "/api/user/verify/" +
+      email +
+      "/" +
+      id +
+      "/" +
+      uniqueStr
     } >click to verify</a></p> </p>`,
   };
 
@@ -122,7 +122,18 @@ const sendVerfificationMain = (id, email, res) => {
           expires_at: Date.now() + 120000,
         })
         .then(() => {
-          transporter.sendMail(mailOptions);
+          transporter
+            .sendMail(mailOptions)
+            .then(() => {
+              res.json({
+                emailSended: true,
+              });
+            })
+            .catch(() =>
+              res.json({
+                emailSended: true,
+              })
+            );
         })
         .catch((er) => {
           console.log(er);
@@ -140,14 +151,12 @@ const sendVerfificationMain = (id, email, res) => {
 
 // verify email /
 
-router.get("/user/verify/:id/:uniquStr", async (req, res) => {
+router.get("/user/verify/:email/:id/:uniquStr", async (req, res) => {
   let isVerificationProgress = await db
     .get()
     .collection(process.env.VERIFICATION_COLLECTION)
     .findOne({ userId: ObjectId(req.params.id) });
-  console.log(isVerificationProgress);
   if (isVerificationProgress) {
-    res.json({ status: "PENDING" });
     if (isVerificationProgress.expires_at < Date.now()) {
       // expire verifivcation link //
       db.get()
@@ -171,24 +180,50 @@ router.get("/user/verify/:id/:uniquStr", async (req, res) => {
                   $set: { verified: true },
                 }
               )
-              .then(() => {
-                db.get()
+              .then(async () => {
+                let isDeleteToken = await db
+                  .get()
                   .collection(process.env.VERIFICATION_COLLECTION)
                   .deleteOne({
                     userId: ObjectId(req.params.id),
                   });
+                if (isDeleteToken) {
+                  res.redirect(
+                    `${process.env.ORIGIN}/user/verify-email/${req.params.email}`
+                  );
+                }
               });
           } else {
             //link is not valid
           }
         })
         .catch(() => {
-          console.log("not valid link and cant find user ");
+          res.send("Invalid access token");
         });
     }
   } else {
-    res.json({ status: "TimeOUT" });
+    res.send("Verification link expired please signup again");
   }
+});
+
+//end
+
+router.get("/verified/:email", (req, res) => {
+  res.redirect(`${process.env.ORIGIN}/user/verify-email/${req.params.email}`);
+});
+// `${process.env.ORIGIN}/user/verify-email/${req.params.email}`
+
+// check user verification status //
+
+router.post("/user/verified", (req, res) => {
+  db.get()
+    .collection(process.env.USERS_COLLECTION)
+    .findOne({ email: req.body.email })
+    .then((result) => {
+      if (result) {
+        res.send(result.verified);
+      }
+    });
 });
 
 //end
@@ -202,19 +237,26 @@ router.post("/user/signin", async (req, res) => {
         .get()
         .collection(process.env.USERS_COLLECTION)
         .findOne({ email: req.body.email });
+
       if (user) {
-        bcrypt.compare(req.body.password, user.password).then((result) => {
-          if (result) {
-            req.session.user = user;
-            req.session.isLoggedIn = true;
-            res.send({
-              isLoggedIn: true,
-              user: req.session.user,
-            });
-          } else {
-            res.send({ isLoggedIn: false });
-          }
-        });
+        if (user.verified === true) {
+          bcrypt.compare(req.body.password, user.password).then((result) => {
+            if (result) {
+              req.session.user = user;
+              req.session.isLoggedIn = true;
+              res.send({
+                isLoggedIn: true,
+                user: req.session.user,
+              });
+            } else {
+              res.send({ isLoggedIn: false });
+            }
+          });
+        } else {
+          res.json({
+            verified: false,
+          });
+        }
       } else {
         res.send({ userFound: false });
       }

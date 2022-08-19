@@ -33,3 +33,6 @@ ul {
 .App{
  height: 100vh;
 }
+.link{
+  text-decoration: none;
+}

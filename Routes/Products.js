@@ -54,10 +54,10 @@ router.post("/admin/addproduct", (req, res) => {
           description: req.body.description,
           category: req.body.category,
           inStock: parseInt(req.body.inStock),
-          image1: process.env.ORGIN + "/uploads/" + image1.md5 + ".png",
-          image2: process.env.ORGIN + "/uploads/" + image2.md5 + ".png",
-          image3: process.env.ORGIN + "/uploads/" + image3.md5 + ".png",
-          image4: process.env.ORGIN + "/uploads/" + image4.md5 + ".png",
+          image1: process.env.BASE_URL + "/uploads/" + image1.md5 + ".png",
+          image2: process.env.BASE_URL + "/uploads/" + image2.md5 + ".png",
+          image3: process.env.BASE_URL + "/uploads/" + image3.md5 + ".png",
+          image4: process.env.BASE_URL + "/uploads/" + image4.md5 + ".png",
           reviews: [],
         })
         .then((response) => {
@@ -104,10 +104,10 @@ router.put("/admin/update-product/:id", (req, res) => {
         description: req.body.description,
         category: req.body.category,
         inStock: parseInt(req.body.inStock),
-        image1: process.env.ORGIN + "/uploads/" + image1.md5 + ".png",
-        image2: process.env.ORGIN + "/uploads/" + image2.md5 + ".png",
-        image3: process.env.ORGIN + "/uploads/" + image3.md5 + ".png",
-        image4: process.env.ORGIN + "/uploads/" + image4.md5 + ".png",
+        image1: process.env.BASE_URL + "/uploads/" + image1.md5 + ".png",
+        image2: process.env.BASE_URL + "/uploads/" + image2.md5 + ".png",
+        image3: process.env.BASE_URL + "/uploads/" + image3.md5 + ".png",
+        image4: process.env.BASE_URL + "/uploads/" + image4.md5 + ".png",
       };
       db.get()
         .collection(process.env.PRODUCTS_COLLECTION)

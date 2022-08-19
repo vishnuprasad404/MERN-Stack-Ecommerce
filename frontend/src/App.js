@@ -39,6 +39,7 @@ function App() {
       setUser(res.data);
     });
   });
+  
   return (
     <div className="App">
       <GlobalData.Provider value={{ user, setUser, admin, setAdmin }}>
@@ -97,7 +98,7 @@ function App() {
             path="/order-placed-successfully/:OrderId"
             element={user ? <OrderPlacedNotifyPage /> : <SigninPage />}
           />
-          <Route path="/user/verify-email" element={<EmailVerificationStatusPage />} />
+          <Route path="/user/verify-email/:email" element={<EmailVerificationStatusPage />} />
 
           <Route path="*" element={<ErrorPage />} />
         </Routes>

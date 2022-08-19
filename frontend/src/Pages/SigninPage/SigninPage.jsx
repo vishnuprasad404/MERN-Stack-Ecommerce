@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import "./SigninPage.css";
 import { useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { EContextData as GlobalData } from "../../EContextData";
 import { Loading } from "../../Components/Loading/Loading";
 import Notification from "../../Components/Notification/Notification";
@@ -9,17 +9,28 @@ import { LoginUserProvider } from "../../ApiRenderController";
 import { useEffect } from "react";
 
 function SigninPage() {
+  const [searchParams] = useSearchParams();
+  let verification = searchParams.get("verification_progress");
+
   const [loading, setLoading] = useState(false);
   const { setUser } = useContext(GlobalData);
   const [notify, setNotify] = useState({ display: "none" });
   const nav = useNavigate();
-  useEffect(()=>{
+  useEffect(() => {
     window.scroll({
       top: 0,
       left: 0,
       behavior: "smooth",
     });
-  },[])
+
+    if (verification) {
+      setNotify({
+        display: "flex",
+        text: `A Verification link has been sent to your email account `,
+        type: "SUCCESS",
+      });
+    }
+  }, [verification]);
   const {
     register,
     formState: { errors },
@@ -41,6 +52,17 @@ function SigninPage() {
           setNotify({ display: "none" });
         }, 2000);
       }
+      if (res.verified === false) {
+        setNotify({
+          display: "flex",
+          text: "This email is not verified! please verify",
+          type: "WARNING",
+        });
+        setTimeout(() => {
+          setNotify({ display: "none" });
+        }, 2000);
+      }
+
       if (res.isLoggedIn === true) {
         setNotify({
           display: "flex",
@@ -126,6 +148,7 @@ function SigninPage() {
       </div>
       <Notification
         status={notify}
+        style={{ width: "400px" }}
         parentStyle={{
           top: "20px",
           alignItems: "flex-end",

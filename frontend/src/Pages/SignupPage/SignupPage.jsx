@@ -1,8 +1,7 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import "./SignupPage.css";
 import { useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router-dom";
-import { EContextData } from "../../EContextData";
+import { Link } from "react-router-dom";
 import { Loading } from "../../Components/Loading/Loading";
 import Notification from "../../Components/Notification/Notification";
 import { RegisterUserProvider } from "../../ApiRenderController";
@@ -10,9 +9,7 @@ import { useEffect } from "react";
 
 function SignupPage() {
   const [loading, setLoading] = useState(false);
-  const { setUser } = useContext(EContextData);
   let [notify, setNotify] = useState({ display: "none" });
-  const nav = useNavigate();
   useEffect(() => {
     window.scroll({
       top: 0,
@@ -30,6 +27,7 @@ function SignupPage() {
     setLoading(true);
     let res = await RegisterUserProvider(data);
     if (res) {
+      console.log(res);
       setLoading(false);
       if (res.userExist) {
         setNotify({
@@ -41,17 +39,12 @@ function SignupPage() {
           setNotify({ display: "none" });
         }, 2000);
       }
-      if (res.isUserAdded) {
+      if (res.emailSended) {
         setNotify({
           display: "flex",
-          text: "Account Created Successfully",
+          text: `A verification link has been sent to your email account`,
           type: "SUCCESS",
         });
-        setTimeout(() => {
-          setNotify({ display: "none" });
-          setUser(res.data.user);
-          nav("/");
-        }, 200);
       }
     }
   };
@@ -137,6 +130,7 @@ function SignupPage() {
       </div>
       <Notification
         status={notify}
+        style={{ width: "450px" }}
         parentStyle={{
           top: "20px",
           alignItems: "flex-end",
