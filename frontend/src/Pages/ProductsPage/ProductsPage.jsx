@@ -8,6 +8,7 @@ import { faStar } from "@fortawesome/free-solid-svg-icons";
 import CategorySubItem from "../../Components/CategorySubItem/CategorySubItem";
 import { Loading } from "../../Components/Loading/Loading";
 import Product from "../../Components/Product/Product";
+import noProductImg from "../../Assets/no-product-found.png";
 
 function ProductsPage() {
   const [loading, setLoading] = useState(true);
@@ -47,6 +48,62 @@ function ProductsPage() {
       // end
     });
   }, []);
+
+  const DispalyProducts = products
+    // filter product by title or category //
+    .filter((item) => {
+      if (searchTerm && searchTerm !== "all") {
+        return (
+          item.title.toLowerCase().includes(searchTerm) ||
+          item.category.toLowerCase().includes(searchTerm)
+        );
+      } else {
+        return item;
+      }
+    })
+    // filter product by exclude out of stock //
+    .filter((item) => {
+      return excludeStock ? item.inStock >= 1 : item;
+    })
+    // filter product by avarage rating //
+    .filter((item) => {
+      return ratingQuery ? item.total_ratings >= ratingQuery : item;
+    })
+    // filter product by minimum prise and maximum prise //
+    .filter((item) => {
+      return item.discountPrise >= minValue && item.discountPrise <= maxValue;
+    })
+    .map((itm, key) => {
+      return (
+        <Fragment key={key}>
+          <Product
+            Mapkey={key}
+            pid={itm._id}
+            title={itm.title}
+            image={itm.image1}
+            skelton={false}
+            cutPrise={itm.orginalPrise}
+            disPrise={itm.discountPrise}
+            inStock={itm.inStock}
+            cardStyle={{
+              border: "1px solid rgb(223, 223, 223)",
+              boxShadow: "none",
+              minHeight: "300px",
+              maxHeight: "300px",
+            }}
+            buttonStyle={{ display: "none" }}
+            cartIconStyle={{
+              position: "absolute",
+              top: "40px",
+              right: "10px",
+              padding: "0",
+            }}
+          />
+        </Fragment>
+      );
+    });
+
+  console.log(DispalyProducts);
 
   return (
     <div className="products-page" id="allproducts">
@@ -192,64 +249,16 @@ function ProductsPage() {
           </div>
         </div>
         {!loading ? (
-          <div className="container-fluid p-3">
-            <div className="row gy-4">
-              {products
-                // filter product by title or category //
-                .filter((item) => {
-                  if (searchTerm && searchTerm !== "all") {
-                    return (
-                      item.title.toLowerCase().includes(searchTerm) ||
-                      item.category.toLowerCase().includes(searchTerm)
-                    );
-                  } else {
-                    return item;
-                  }
-                })
-                // filter product by exclude out of stock //
-                .filter((item) => {
-                  return excludeStock ? item.inStock >= 1 : item;
-                })
-                // filter product by avarage rating //
-                .filter((item) => {
-                  return ratingQuery ? item.total_ratings >= ratingQuery : item;
-                })
-                // filter product by minimum prise and maximum prise //
-                .filter((item) => {
-                  return (
-                    item.discountPrise >= minValue &&
-                    item.discountPrise <= maxValue
-                  );
-                })
-                .map((itm, key) => {
-                  return (
-                    <Fragment key={key}>
-                      <Product
-                        Mapkey={key}
-                        pid={itm._id}
-                        title={itm.title}
-                        image={itm.image1}
-                        skelton={false}
-                        cutPrise={itm.orginalPrise}
-                        disPrise={itm.discountPrise}
-                        inStock={itm.inStock}
-                        cardStyle={{
-                          border: "1px solid rgb(223, 223, 223)",
-                          boxShadow: "none",
-                          minHeight: "300px",
-                          maxHeight: "300px",
-                        }}
-                        buttonStyle={{ display: "none" }}
-                        cartIconStyle={{
-                          position: "absolute",
-                          top: "40px",
-                          right: "10px",
-                          padding: "0",
-                        }}
-                      />
-                    </Fragment>
-                  );
-                })}
+          <div className="container-fluid p-2">
+            <div className="row gy-3">
+              {DispalyProducts.length >= 1 ? (
+                DispalyProducts
+              ) : (
+                <div className="no-product-container">
+                  <img width="250px" src={noProductImg} alt="" />
+                  <h1 className="no-product-text">No Products Avalible!</h1>
+                </div>
+              )}
             </div>
           </div>
         ) : (
