@@ -4,20 +4,24 @@ import { useForm } from "react-hook-form";
 import Notification from "../../Components/Notification/Notification";
 import axios from "axios";
 import SimpleNavbar from "../../Components/SimpleNavbar/SimpleNavbar";
+import { Loading } from "../../Components/Loading/Loading";
 
 function ForgetPassRequestPage() {
   const [notify, setNotify] = useState({ display: "none" });
+  const [loading, setLoading] = useState(false);
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
   const onSendVerification = (data) => {
+    setLoading(true);
     axios
       .post(`${process.env.REACT_APP_BASE_URL}/user/password-reset`, {
         email: data.email,
       })
       .then((res) => {
+        setLoading(false);
         setNotify({
           display: "flex",
           text: `${res.data.message}`,
@@ -49,14 +53,20 @@ function ForgetPassRequestPage() {
             {errors.email?.type === "required" && "*Email is required"}
             {errors.email?.type === "pattern" && "*Email is invalid !"}
           </span>
-          <button type="submit">Reset Password</button>
+          <button type="submit">
+            {loading ? (
+              <Loading style={{ height: "auto" }} color="white" />
+            ) : (
+              "Reset Password"
+            )}
+          </button>
         </form>
       </div>
       <Notification
         status={notify}
-        style={{ width: "400px" }}
+        style={{ width: "500px" }}
         parentStyle={{
-          top: "50px",
+          top: "80px",
           alignItems: "flex-end",
           justifyContent: "center",
         }}

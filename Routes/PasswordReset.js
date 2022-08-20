@@ -7,7 +7,7 @@ const bcrypt = require("bcrypt");
 
 let transporter = nodemailer.createTransport({
   service: "gmail",
-  auth: {
+  auth: { 
     user: process.env.AUTH_EMAIL,
     pass: process.env.AUTH_PASS,
   },
@@ -33,6 +33,8 @@ router.get("/user/check/password-reset/token/:userId/:token", (req, res) => {
             res.send(false);
           }
         });
+      }else{
+        res.send(false)
       }
     });
 });
@@ -90,7 +92,7 @@ router.post("/user/password-reset", (req, res) => {
                 };
                 transporter
                   .sendMail(mailOptions)
-                  .then(() => {
+                  .then((maild) => {
                     res.json({
                       message:
                         "A email has been send to your email account. with instruction to reset your password",

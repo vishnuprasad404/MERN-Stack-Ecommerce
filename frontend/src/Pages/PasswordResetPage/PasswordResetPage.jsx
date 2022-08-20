@@ -4,9 +4,9 @@ import { useForm } from "react-hook-form";
 import Notification from "../../Components/Notification/Notification";
 import axios from "axios";
 import SimpleNavbar from "../../Components/SimpleNavbar/SimpleNavbar";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faWarning } from "@fortawesome/free-solid-svg-icons";
+import { faCheckCircle, faWarning } from "@fortawesome/free-solid-svg-icons";
 import Footer from "../../Components/Footer/Footer";
 import { Link } from "react-router-dom";
 
@@ -14,7 +14,7 @@ function PasswordResetPage() {
   const { userId, verificationToken } = useParams();
   const [notify, setNotify] = useState({ display: "none" });
   const [validToken, setValidToken] = useState(true);
-  const nav = useNavigate();
+  const [isPassChanged, setIsPassChanged] = useState(false);
   const {
     register,
     formState: { errors },
@@ -33,7 +33,6 @@ function PasswordResetPage() {
       .then((res) => {
         setValidToken(res.data);
       });
-      
   }, [userId, verificationToken]);
 
   const resetPassword = (data) => {
@@ -44,24 +43,54 @@ function PasswordResetPage() {
         newPassword: data.pass,
       })
       .then((res) => {
+        if (res.data.status === "SUCCESS") {
+          setIsPassChanged(true)
+        }else{
         setNotify({
           display: "flex",
           text: `${res.data.message}`,
           type: `${res.data.status === "FAILED" ? "DANGER" : res.data.status}`,
         });
-        if (res.data.status === "SUCCESS") {
-          setTimeout(() => {
-            setNotify({ display: "none" });
-            nav("/signin");
-          }, 2000);
-        }
+      }
+
+
       });
   };
 
   return (
     <>
       <SimpleNavbar />
-      {validToken ? (
+      {!validToken ? (
+        <div className="container valid-token-error-wrapper">
+          <div className="valid-token-error-container">
+            <FontAwesomeIcon
+              icon={faWarning}
+              className="valid-token-error-icon"
+            />
+            <h6>
+              Sorry, Link expired or Invalid verification token please try again!{" "}
+              <Link to="/user/password-reset" className="link">
+                Reset Password
+              </Link>{" "}
+            </h6>
+          </div>
+        </div>
+      ) : isPassChanged ? (
+        <div className="container password-changed-wrapper">
+          <div className="password-changed-container">
+            <FontAwesomeIcon
+              icon={faCheckCircle}
+              className="password-changed-icon"
+            />
+            <h6>
+              Password changed successfully.{" "}
+              <Link to="/signin" className="link">
+                Login
+              </Link>{" "}
+            </h6>
+          </div>
+        </div>
+      ) : (
         <div className="password-reset-page">
           <div className="password-reset-form-container">
             <form onSubmit={handleSubmit(resetPassword)}>
@@ -110,23 +139,8 @@ function PasswordResetPage() {
             }}
           />
         </div>
-      ) : (
-        <div className="container valid-token-error-wrapper">
-          <div className="valid-token-error-container">
-            <FontAwesomeIcon
-              icon={faWarning}
-              className="valid-token-error-icon"
-            />
-            <h6>
-              Sorry, Invalid verification token please try again!{" "}
-              <Link to="/user/password-reset" className="link">
-                Reset Password
-              </Link>{" "}
-            </h6>
-          </div>
-        </div>
       )}
-      <Footer />
+      <Footer/>
     </>
   );
 }
