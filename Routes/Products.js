@@ -5,16 +5,33 @@ const ObjectId = require("mongodb").ObjectId;
 
 //get products start
 
-router.get("/products", async (req, res) => {
+router.get("/products", (req, res) => {
   try {
-    let products = await db
-      .get()
+    db.get()
       .collection(process.env.PRODUCTS_COLLECTION)
-      .find()
-      .toArray();
-    if (products) {
-      res.json(products);
-    }
+      .aggregate([
+        {
+          $project: {
+            title: "$title",
+            discountPrise: "$discountPrise",
+            orginalPrise: "$orginalPrise",
+            description: "$description",
+            category: "$category",
+            inStock: "$inStock",
+            image1: "$image1",
+            image2: "$image2",
+            image3: "$image3",
+            image4: "$image4",
+            reviews: "$reviews",
+            total_reviews: { $sum: { $size: "$reviews.feedback" } },
+            total_ratings: { $avg: "$reviews.rating" },
+          },
+        },
+      ])
+      .toArray()
+      .then((result) => {
+        res.json(result);
+      });
   } catch (error) {
     res.send("Network issue");
   }

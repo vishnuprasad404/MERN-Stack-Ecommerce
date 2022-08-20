@@ -20,7 +20,7 @@ function Product({
   cutPrise,
   inStock,
   pid,
-  key,
+  Mapkey,
   skelton,
   buttonStyle,
   cartIconStyle,
@@ -114,7 +114,7 @@ function Product({
   return (
     <>
       <div
-        key={key}
+        key={Mapkey}
         className="col-6 col-sm-4 col-md-3 col-lg-2 product-column"
       >
         <div className="card product-card" style={cardStyle}>
@@ -159,9 +159,9 @@ function Product({
               <button
                 style={buttonStyle}
                 className={`${skelton ? "skelton-btn" : "buy"}`}
-                onClick={() => onPurchase(key)}
+                onClick={() => onPurchase(Mapkey)}
               >
-                {!loading1.has(key) ? (
+                {!loading1.has(Mapkey) ? (
                   "Buy Now"
                 ) : (
                   <Loading

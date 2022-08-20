@@ -27,11 +27,9 @@ function ForgetPassRequestPage() {
           text: `${res.data.message}`,
           type: `${res.data.status === "FAILED" ? "DANGER" : res.data.status}`,
         });
-        if (res.data.status !== "SUCCESS") {
-          setTimeout(() => {
-            setNotify({ display: "none" });
-          }, 2000);
-        }
+        setTimeout(() => {
+          setNotify({ display: "none" });
+        }, 4000);
       });
   };
 

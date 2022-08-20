@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, Fragment, useRef } from "react";
 import Navbar from "../../Components/Navbar/Navbar";
 import "./ProductsPage.css";
 import { useSearchParams } from "react-router-dom";
@@ -13,61 +13,40 @@ function ProductsPage() {
   const [loading, setLoading] = useState(true);
   const [filterToggler, setFilterToggler] = useState(false);
   const [products, setProducts] = useState([]);
-  const [productsTemp, setProductsTemp] = useState([]);
   const [searchParams, setSearchParams] = useSearchParams();
   const searchTerm = searchParams.get("item");
-  const [minValue, setMinValue] = useState(100);
-  const [maxValue, setMaxValue] = useState(30000);
-  const [excludeStock, setExcludeStock] = useState(true);
+  const [minValue, setMinValue] = useState(0);
+  const [maxValue, setMaxValue] = useState(0);
+  const [excludeStock, setExcludeStock] = useState(false);
+  const [ratingQuery, setRatingQuery] = useState(0);
+  const MinRef = useRef();
+  const MaxRef = useRef();
 
   useEffect(() => {
     axios.get(`${process.env.REACT_APP_BASE_URL}/products`).then((res) => {
       setProducts(res.data);
-      setProductsTemp(res.data);
       setLoading(false);
+      //get the maximum amount of product from array //
+      const productsMaxPrise = Math.max(
+        ...res.data.map((p) => {
+          return p.discountPrise;
+        })
+      );
+      setMaxValue(productsMaxPrise);
+      MaxRef.current = productsMaxPrise;
+      // end
+      //get the minimum amount of product from array //
+      const productsMinPrise = Math.min(
+        ...res.data.map((p) => {
+          return p.discountPrise;
+        })
+      );
+      setMinValue(productsMinPrise);
+      MinRef.current = productsMinPrise;
+
+      // end
     });
   }, []);
-
-  useEffect(() => {
-    if (searchTerm) {
-      let filterdData = productsTemp.filter((item) => {
-        return (
-          item.category.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          item.title.toLowerCase().includes(searchTerm.toLowerCase())
-        );
-      });
-      setProducts([...filterdData]);
-    }
-  }, [productsTemp, searchTerm]);
-
-  const filterByCategory = (e) => {
-    if (e.target.value !== "") {
-      setSearchParams({ item: e.target.value });
-    } else {
-      setProducts([...productsTemp]);
-    }
-  };
-
-  const filterByPrise = () => {
-    let filterdData = productsTemp.filter((item) => {
-      return item.discountPrise >= minValue && item.discountPrise <= maxValue;
-    });
-    setProducts([...filterdData]);
-  };
-
-  const filterByStock = () => {
-    setExcludeStock(excludeStock === true ? false : true);
-
-    if (excludeStock === true) {
-      setProductsTemp([...products]);
-      let filterData = products.filter((item) => {
-        return item.inStock >= 1;
-      });
-      setProducts([...filterData]);
-    } else {
-      setProducts([...productsTemp]);
-    }
-  };
 
   return (
     <div className="products-page" id="allproducts">
@@ -90,12 +69,13 @@ function ProductsPage() {
             }`}
           >
             <p className="fiter-heading">Filter by Category</p>
-            <select onChange={(e) => filterByCategory(e.target.value)}>
+            <select onChange={(e) => setSearchParams({ item: e.target.value })}>
               <option value="all">All Products</option>
               <option value="mobiles">Mobiles</option>
               <option value="electronics">Elactronics</option>
               <option value="appliences">Appliences</option>
               <option value="headphones">Headphones</option>
+              <option value="watches">Watches</option>
               <option value="desktops">Desktops</option>
             </select>
             <p className="fiter-heading">Filter by Prise</p>
@@ -103,73 +83,107 @@ function ProductsPage() {
               <input
                 type="range"
                 className="prise-range"
-                min={100}
-                max={5000}
-                defaultValue={100}
+                min={MinRef.current}
+                max={MaxRef.current / 2}
+                value={minValue}
                 onChange={(e) => {
                   setMinValue(parseInt(e.target.value));
-                  filterByPrise();
                 }}
               />
               <input
                 type="range"
                 className="prise-range"
-                min={5000}
-                max={30000}
-                defaultValue={30000}
+                min={MaxRef.current / 2}
+                max={MaxRef.current}
+                value={maxValue}
                 onChange={(e) => {
                   setMaxValue(parseInt(e.target.value));
-                  filterByPrise();
                 }}
               />
             </div>
             <div className="prise-filter-container">
               <input
-                type="text"
+                type="number"
                 placeholder="Minimum"
                 value={minValue}
-                readOnly
+                min={MinRef.current}
+                max={MaxRef.current / 2}
+                onChange={(e) => {
+                  setMinValue(e.target.value);
+                }}
               />
               <input
-                type="text"
+                type="number"
                 placeholder="Maximum"
                 value={maxValue}
-                readOnly
+                min={MaxRef.current / 2}
+                max={MaxRef.current}
+                onChange={(e) => {
+                  setMaxValue(e.target.value);
+                }}
               />
             </div>
             <p className="fiter-heading">Avalibility</p>
             <div className="filter-by-avalibility">
               <input
                 type="checkbox"
-                onClick={filterByStock}
+                onClick={() =>
+                  setExcludeStock(excludeStock === true ? false : true)
+                }
                 id="excludeOutOfStock"
               />
               <label htmlFor="excludeOutOfStock">Exclude out of stock</label>
             </div>
             <p className="fiter-heading">Customer Ratings</p>
-            <div className="filter-by-rating">
-              <input type="checkbox" />
+            <div
+              className="filter-by-rating"
+              onClick={() => {
+                setRatingQuery(4);
+              }}
+            >
+              <input
+                type="checkbox"
+                checked={ratingQuery === 4 ? true : false}
+                onChange={() => setRatingQuery(4)}
+              />
               <span>
                 4 <FontAwesomeIcon icon={faStar} style={{ fontSize: "11px" }} />{" "}
                 & above{" "}
               </span>
             </div>
-            <div className="filter-by-rating">
-              <input type="checkbox" />
+            <div
+              className="filter-by-rating"
+              onClick={() => {
+                setRatingQuery(3);
+              }}
+            >
+              <input
+                type="checkbox"
+                checked={ratingQuery === 3 ? true : false}
+                onChange={() => setRatingQuery(3)}
+              />
               <span>
                 3 <FontAwesomeIcon icon={faStar} style={{ fontSize: "11px" }} />{" "}
                 & above{" "}
               </span>
             </div>{" "}
-            <div className="filter-by-rating">
-              <input type="checkbox" />
+            <div className="filter-by-rating" onClick={() => setRatingQuery(2)}>
+              <input
+                type="checkbox"
+                checked={ratingQuery === 2 ? true : false}
+                onChange={() => setRatingQuery(2)}
+              />
               <span>
                 2 <FontAwesomeIcon icon={faStar} style={{ fontSize: "11px" }} />{" "}
                 & above{" "}
               </span>
             </div>
-            <div className="filter-by-rating">
-              <input type="checkbox" />
+            <div className="filter-by-rating" onClick={() => setRatingQuery(1)}>
+              <input
+                type="checkbox"
+                checked={ratingQuery === 1 ? true : false}
+                onChange={() => setRatingQuery(1)}
+              />
               <span>
                 1 <FontAwesomeIcon icon={faStar} style={{ fontSize: "11px" }} />{" "}
                 & above{" "}
@@ -180,32 +194,62 @@ function ProductsPage() {
         {!loading ? (
           <div className="container-fluid p-3">
             <div className="row gy-4">
-              {products.map((itm, key) => {
-                return (
-                  <Product
-                    pid={itm._id}
-                    title={itm.title}
-                    image={itm.image1}
-                    skelton={false}
-                    cutPrise={itm.orginalPrise}
-                    disPrise={itm.discountPrise}
-                    inStock={itm.inStock}
-                    cardStyle={{
-                      border: "1px solid rgb(223, 223, 223)",
-                      boxShadow: "none",
-                      minHeight: "300px",
-                      maxHeight: "300px",
-                    }}
-                    buttonStyle={{ display: "none" }}
-                    cartIconStyle={{
-                      position: "absolute",
-                      top: "40px",
-                      right: "10px",
-                      padding: "0",
-                    }}
-                  />
-                );
-              })}
+              {products
+                // filter product by title or category //
+                .filter((item) => {
+                  if (searchTerm && searchTerm !== "all") {
+                    return (
+                      item.title.toLowerCase().includes(searchTerm) ||
+                      item.category.toLowerCase().includes(searchTerm)
+                    );
+                  } else {
+                    return item;
+                  }
+                })
+                // filter product by exclude out of stock //
+                .filter((item) => {
+                  return excludeStock ? item.inStock >= 1 : item;
+                })
+                // filter product by avarage rating //
+                .filter((item) => {
+                  return ratingQuery ? item.total_ratings >= ratingQuery : item;
+                })
+                // filter product by minimum prise and maximum prise //
+                .filter((item) => {
+                  return (
+                    item.discountPrise >= minValue &&
+                    item.discountPrise <= maxValue
+                  );
+                })
+                .map((itm, key) => {
+                  return (
+                    <Fragment key={key}>
+                      <Product
+                        Mapkey={key}
+                        pid={itm._id}
+                        title={itm.title}
+                        image={itm.image1}
+                        skelton={false}
+                        cutPrise={itm.orginalPrise}
+                        disPrise={itm.discountPrise}
+                        inStock={itm.inStock}
+                        cardStyle={{
+                          border: "1px solid rgb(223, 223, 223)",
+                          boxShadow: "none",
+                          minHeight: "300px",
+                          maxHeight: "300px",
+                        }}
+                        buttonStyle={{ display: "none" }}
+                        cartIconStyle={{
+                          position: "absolute",
+                          top: "40px",
+                          right: "10px",
+                          padding: "0",
+                        }}
+                      />
+                    </Fragment>
+                  );
+                })}
             </div>
           </div>
         ) : (

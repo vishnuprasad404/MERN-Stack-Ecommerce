@@ -20,6 +20,7 @@ function DeliveryAddressPage() {
 
   const getShippingAddress = async () => {
     let res = await GetDeliveryAddressProvider();
+    console.log(res);
     setShippingAddress(res);
     setLoading(false);
   };

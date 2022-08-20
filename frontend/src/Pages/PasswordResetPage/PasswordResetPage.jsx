@@ -51,6 +51,9 @@ function PasswordResetPage() {
           text: `${res.data.message}`,
           type: `${res.data.status === "FAILED" ? "DANGER" : res.data.status}`,
         });
+        setTimeout(()=>{
+          setNotify({display : 'none'})
+        },4000)
       }
 
 

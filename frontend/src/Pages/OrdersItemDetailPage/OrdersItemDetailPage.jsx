@@ -41,6 +41,7 @@ function OrdersItemDetailPage() {
           return data.order_id === orderId && data.product._id === productId;
         });
         setOrderdItem(item);
+        console.log(item);
       }
     };
     GetAllOrders();
@@ -183,7 +184,7 @@ function OrdersItemDetailPage() {
                   ) : null}
                 </div>
                 {orderdItem[0].status === "completed" ? (
-                  <AddProductReviewForm pid={orderdItem[0]._id} />
+                  <AddProductReviewForm pid={orderdItem[0].product._id} />
                 ) : null}
               </section>
             </div>
