@@ -37,7 +37,7 @@ function Rating(props) {
             rating >= 3
               ? "rgba(106, 183, 255, 0.719)"
               : rating < 3 && rating > 1
-              ? "rgba(255, 136, 106, 0.719)"
+              ? "rgb(255 93 53 / 72%)"
               : "rgba(255, 0, 0, 0.719)",
         }}
       >

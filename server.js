@@ -19,7 +19,7 @@ const Order = require("./Routes/Order");
 const Favorites = require("./Routes/Favorites");
 const Address = require("./Routes/Address");
 const Reviews = require("./Routes/Reviews");
-const PasswordReset = require("./Routes/PasswordReset")
+const PasswordReset = require("./Routes/PasswordReset");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -52,7 +52,6 @@ app.use("/api", Address);
 app.use("/api", Reviews);
 app.use("/api", PasswordReset);
 
-
 //get admin
 app.get("/api/admin", (req, res) => {
   res.json({
@@ -74,13 +73,13 @@ app.get("/api/user", (req, res) => {
 });
 //
 
-// serve react app page //
+//serve react app page //
 
-// app.use(express.static(path.join(__dirname, "./frontend/build")))
-// app.get("*",(req,res)=>{
-//   res.sendFile(path.join(__dirname, "./frontend/build","index.html"))
-// })
+app.use(express.static(path.join(__dirname, "./frontend/build")));
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "./frontend/build", "index.html"));
+});
 
-// serve react app page //
+//serve react app page //
 
 app.listen(PORT);

@@ -14,7 +14,7 @@ function CategorySubItem() {
     {
       title: "Top Offers",
       image: offers,
-      category: "offer",
+      category: "all",
     },
     {
       title: "Mobiles",

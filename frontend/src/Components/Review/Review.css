@@ -21,4 +21,11 @@
     color: rgb(95, 93, 93);
     font-size: 14px;
     margin-top: 10px;
+    max-width: 70%;
+
+}
+@media (max-width: 500px) {
+    .review-feedback{
+        max-width: 90%;
+    }
 }
