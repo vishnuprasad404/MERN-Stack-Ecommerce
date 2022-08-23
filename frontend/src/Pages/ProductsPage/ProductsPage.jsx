@@ -25,7 +25,7 @@ function ProductsPage() {
 
   useEffect(() => {
     axios.get(`${process.env.REACT_APP_BASE_URL}/products`).then((res) => {
-      setProducts(res.data);
+      setProducts(shuffleArray(res.data));
       setLoading(false);
       //get the maximum amount of product from array //
       const productsMaxPrise = Math.max(
@@ -48,6 +48,21 @@ function ProductsPage() {
       // end
     });
   }, []);
+
+  // shuffle products array start //
+
+  const shuffleArray = (array) => {
+    for (let i = array.length - 1; i > 0; i--) {
+      let j = Math.floor(Math.random() * (i + 1));
+
+      let temp = array[i];
+      array[i] = array[j];
+      array[j] = temp;
+    }
+
+    return array;
+  };
+  //shuffle products array end //
 
   const DispalyProducts = products
     // filter product by title or category //

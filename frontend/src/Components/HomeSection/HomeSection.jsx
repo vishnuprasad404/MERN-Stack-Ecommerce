@@ -21,10 +21,27 @@ function HomeSection() {
       let data = items.filter((item) => {
         return item.inStock >= 1;
       });
-      setProducts(data);
+
+      setProducts(shuffleArray(data));
       setSkelton(false);
     });
   }, []);
+
+  //shuffle products array start //
+
+  const shuffleArray = (array) => {
+    for (let i = array.length - 1; i > 0; i--) {
+      let j = Math.floor(Math.random() * (i + 1));
+
+      let temp = array[i];
+      array[i] = array[j];
+      array[j] = temp;
+    }
+
+    return array;
+  };
+
+  //shuffle products array end //
 
   return (
     <div className="home-section">
