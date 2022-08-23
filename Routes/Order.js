@@ -268,9 +268,11 @@ router.delete("/remove-checkout-item/:OrderId/:ItemId", (req, res) => {
             _id: ObjectId(req.params.OrderId),
           },
           {
-            $pull: { products: { item: req.params.ItemId } },
+            $pull: { products: { item: ObjectId(req.params.ItemId )} },
           }
-        );
+        ).then(()=>{
+          res.send(true)
+        })
     }
   } catch (error) {
     console.log(error);

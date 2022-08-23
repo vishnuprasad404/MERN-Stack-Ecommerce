@@ -22,11 +22,6 @@ function ViewProductPage() {
   const [loading, setloading] = useState(true);
 
   useEffect(() => {
-    window.scroll({
-      top: 0,
-      left: 0,
-      behavior: "smooth",
-    });
     axios.get(`${process.env.REACT_APP_BASE_URL}/products`).then((res) => {
       setloading(false);
       let proObj = res.data.find((itm) => {
@@ -87,7 +82,7 @@ function ViewProductPage() {
     <div className="view-product-page" id="view-product">
       <Navbar />
       {loading ? (
-        <Loading />
+        <div className="view-product-page-loading-container"><Loading /></div>
       ) : product ? (
         <>
           <div className="view-product-page-left-container">

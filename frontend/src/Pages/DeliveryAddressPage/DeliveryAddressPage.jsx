@@ -10,11 +10,6 @@ function DeliveryAddressPage() {
   const [shippingAddress, setShippingAddress] = useState({});
   const [loading, setLoading] = useState(true);
   useEffect(() => {
-    window.scroll({
-      top: 0,
-      left: 0,
-      behavior: "smooth",
-    });
     getShippingAddress();
   });
 
@@ -35,7 +30,9 @@ function DeliveryAddressPage() {
         <div className="delivery-address-list-container">
           <h3>Delivery Address</h3>
           {loading ? (
-            <SmallLoading smallLoadingStyle={{ marginTop: "20px" }} />
+            <SmallLoading
+              smallLoadingStyle={{ margin: "30px 0", width: "95%" }}
+            />
           ) : shippingAddress ? (
             <DeliveryAddressContainer
               name={shippingAddress.name}

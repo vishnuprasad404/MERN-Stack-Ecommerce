@@ -54,8 +54,8 @@ function ProductsPage() {
     .filter((item) => {
       if (searchTerm && searchTerm !== "all") {
         return (
-          item.title.toLowerCase().includes(searchTerm) ||
-          item.category.toLowerCase().includes(searchTerm)
+          item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          item.category.toLowerCase().includes(searchTerm.toLowerCase())
         );
       } else {
         return item;

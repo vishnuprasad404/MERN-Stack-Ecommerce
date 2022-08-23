@@ -12,7 +12,7 @@ import {
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import { EContextData as GlobalData } from "../../EContextData";
-import { Link } from "react-router-dom";
+import { HashLink as Link } from "react-router-hash-link";
 import {
   GetAllCartProductProvider,
   LogoutUserProvider,
@@ -91,20 +91,14 @@ function Navbar() {
               placeholder="Search Products"
             />
           </div>
-          <FontAwesomeIcon
-            icon={faHeart}
-            className="nav-icon fav"
-            onClick={() => {
-              nav("/favorites");
-            }}
-          />
+          <Link to="/favorites#mywishlist">
+            <FontAwesomeIcon icon={faHeart} className="nav-icon fav" />
+          </Link>
           <span className="cart">
-            <FontAwesomeIcon
-              icon={faCartPlus}
-              className="nav-icon"
-              onClick={() => nav("/cart")}
-            />
-            <span className="cart-count">{cartCount.length}</span>
+            <Link to="/cart#myCart">
+              <FontAwesomeIcon icon={faCartPlus} className="nav-icon" />
+            </Link>
+              <span className="cart-count">{cartCount.length}</span>
           </span>
           {user ? (
             <FontAwesomeIcon

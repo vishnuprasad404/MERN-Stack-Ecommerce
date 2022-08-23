@@ -27,6 +27,7 @@ import OrdersItemDetailPage from "./Pages/OrdersItemDetailPage/OrdersItemDetailP
 import EmailVerificationStatusPage from "./Pages/EmailVerificationStatusPage/EmailVerificationStatusPage";
 import ForgetPassRequestPage from "./Pages/ForgetPassRequestPage/ForgetPassRequestPage";
 import PasswordResetPage from "./Pages/PasswordResetPage/PasswordResetPage";
+import {ScrollToTop} from './ScrollToTop'
 
 function App() {
   const [user, setUser] = useState(false);
@@ -44,6 +45,8 @@ function App() {
 
   return (
     <div className="App">
+
+      <ScrollToTop />
       <GlobalData.Provider value={{ user, setUser, admin, setAdmin }}>
         <Routes>
           <Route

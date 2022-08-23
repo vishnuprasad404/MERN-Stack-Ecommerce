@@ -1,4 +1,6 @@
 import axios from "axios";
+let cancelToken;
+cancelToken = axios.CancelToken.source();
 
 //------------create a order from user start------------//
 export const CreateOrderProvider = async (orderProduct) => {
@@ -12,10 +14,14 @@ export const CreateOrderProvider = async (orderProduct) => {
 
 //------------add item to users cart api start-------------//
 export const AddToCartProvider = async (pid, prise) => {
-  let res = await axios.post(`${process.env.REACT_APP_BASE_URL}/addtocart`, {
-    pid: pid,
-    prise: parseInt(prise),
-  });
+  let res = await axios.post(
+    `${process.env.REACT_APP_BASE_URL}/addtocart`,
+    {
+      pid: pid,
+      prise: parseInt(prise),
+    },
+    { cancelToken: cancelToken.token }
+  );
   return res.data;
 };
 //------------add item to users cart api end-------------//
@@ -24,7 +30,8 @@ export const AddToCartProvider = async (pid, prise) => {
 export const AddToFavoritesProvider = async (pid) => {
   let res = await axios.post(
     `${process.env.REACT_APP_BASE_URL}/addtofavorites`,
-    { item: pid }
+    { item: pid },
+    { cancelToken: cancelToken.token }
   );
   return res.data;
 };
@@ -34,7 +41,8 @@ export const AddToFavoritesProvider = async (pid) => {
 
 export const GetOrderProvider = async (order_id) => {
   let res = await axios.get(
-    `${process.env.REACT_APP_BASE_URL}/get-order/${order_id}`
+    `${process.env.REACT_APP_BASE_URL}/get-order/${order_id}`,
+    { cancelToken: cancelToken.token }
   );
   return res.data;
 };
@@ -45,7 +53,8 @@ export const GetOrderProvider = async (order_id) => {
 
 export const GetDeliveryAddressProvider = async () => {
   let res = await axios.get(
-    `${process.env.REACT_APP_BASE_URL}/getshippingaddress`
+    `${process.env.REACT_APP_BASE_URL}/getshippingaddress`,
+    { cancelToken: cancelToken.token }
   );
   return res.data;
 };
@@ -57,7 +66,8 @@ export const GetDeliveryAddressProvider = async () => {
 export const AddDeliverAddressProvider = async (data) => {
   let res = await axios.post(
     `${process.env.REACT_APP_BASE_URL}/addshippingaddress`,
-    data
+    data,
+    { cancelToken: cancelToken.token }
   );
   return res.data;
 };
@@ -68,7 +78,8 @@ export const AddDeliverAddressProvider = async (data) => {
 
 export const GetAllOrdersProvider = async () => {
   let res = await axios.get(
-    `${process.env.REACT_APP_BASE_URL}/user/get-orders`
+    `${process.env.REACT_APP_BASE_URL}/user/get-orders`,
+    { cancelToken: cancelToken.token }
   );
   return res.data;
 };
@@ -84,7 +95,8 @@ export const ChangeOrderQuantityProvider = async (
   quantity
 ) => {
   let res = await axios.put(
-    `${process.env.REACT_APP_BASE_URL}/change-order-item-quantity/${id}/${item}/${prise}/${quantity}`
+    `${process.env.REACT_APP_BASE_URL}/change-order-item-quantity/${id}/${item}/${prise}/${quantity}`,
+    { cancelToken: cancelToken.token }
   );
   return res.data;
 };
@@ -94,9 +106,11 @@ export const ChangeOrderQuantityProvider = async (
 // remove Checkout item from order start//
 
 export const RemoveCheckoutItemProvider = async (order_id, item_id) => {
-  axios.delete(
-    `${process.env.REACT_APP_BASE_URL}/remove-checkout-item/${order_id}/${item_id}`
+  const res = await axios.delete(
+    `${process.env.REACT_APP_BASE_URL}/remove-checkout-item/${order_id}/${item_id}`,
+    { cancelToken: cancelToken.token }
   );
+  return res.data
 };
 
 // remove Checkout item from order end//
@@ -105,7 +119,8 @@ export const RemoveCheckoutItemProvider = async (order_id, item_id) => {
 
 export const GetUserOwnReviewProvider = async (pid) => {
   let res = await axios.get(
-    `${process.env.REACT_APP_BASE_URL}/user/review/${pid}`
+    `${process.env.REACT_APP_BASE_URL}/user/review/${pid}`,
+    { cancelToken: cancelToken.token }
   );
   return res.data;
 };
@@ -117,7 +132,8 @@ export const GetUserOwnReviewProvider = async (pid) => {
 export const AddProductReviewProvider = async (data) => {
   let res = await axios.post(
     `${process.env.REACT_APP_BASE_URL}/add-review`,
-    data
+    data,
+    { cancelToken: cancelToken.token }
   );
   return res.data;
 };
@@ -129,7 +145,8 @@ export const AddProductReviewProvider = async (data) => {
 export const RegisterUserProvider = async (data) => {
   let res = await axios.post(
     `${process.env.REACT_APP_BASE_URL}/user/signup`,
-    data
+    data,
+    { cancelToken: cancelToken.token }
   );
   return res.data;
 };
@@ -141,7 +158,8 @@ export const RegisterUserProvider = async (data) => {
 export const LoginUserProvider = async (data) => {
   let res = await axios.post(
     `${process.env.REACT_APP_BASE_URL}/user/signin`,
-    data
+    data,
+    { cancelToken: cancelToken.token }
   );
   return res.data;
 };
@@ -151,7 +169,9 @@ export const LoginUserProvider = async (data) => {
 // logout user start //
 
 export const LogoutUserProvider = async () => {
-  let res = await axios.get(`${process.env.REACT_APP_BASE_URL}/signout`);
+  let res = await axios.get(`${process.env.REACT_APP_BASE_URL}/signout`, {
+    cancelToken: cancelToken.token,
+  });
   return res.data;
 };
 
@@ -165,7 +185,8 @@ export const CheckoutProductsProvider = async (
   payment_methord
 ) => {
   let res = await axios.put(
-    `${process.env.REACT_APP_BASE_URL}/place-order/${product_id}/${total}/${payment_methord} `
+    `${process.env.REACT_APP_BASE_URL}/place-order/${product_id}/${total}/${payment_methord} `,
+    { cancelToken: cancelToken.token }
   );
   return res.data;
 };
@@ -175,7 +196,9 @@ export const CheckoutProductsProvider = async (
 //get users wishlist start //
 
 export const GetAllWishlistProvider = async () => {
-  let res = await axios.get(`${process.env.REACT_APP_BASE_URL}/getfavorites`);
+  let res = await axios.get(`${process.env.REACT_APP_BASE_URL}/getfavorites`, {
+    cancelToken: cancelToken.token,
+  });
   return res.data;
 };
 // get users wishlist end //
@@ -184,7 +207,8 @@ export const GetAllWishlistProvider = async () => {
 
 export const RemoveFavoritesProvider = async (id) => {
   let res = await axios.delete(
-    `${process.env.REACT_APP_BASE_URL}/removefavoriteitem/${id}`
+    `${process.env.REACT_APP_BASE_URL}/removefavoriteitem/${id}`,
+    { cancelToken: cancelToken.token }
   );
   return res.data;
 };
@@ -195,7 +219,8 @@ export const RemoveFavoritesProvider = async (id) => {
 
 export const RemoveCartItemProvider = async (cid, pid) => {
   let res = await axios.delete(
-    `${process.env.REACT_APP_BASE_URL}/deletecartitem/${cid}/${pid}`
+    `${process.env.REACT_APP_BASE_URL}/deletecartitem/${cid}/${pid}`,
+    { cancelToken: cancelToken.token }
   );
   return res.data;
 };
@@ -211,7 +236,8 @@ export const ManageCartItemQuantityProvider = async (
   prise
 ) => {
   await axios.put(
-    `${process.env.REACT_APP_BASE_URL}/managequantity/${cid}/${pid}/${quantity}/${prise}`
+    `${process.env.REACT_APP_BASE_URL}/managequantity/${cid}/${pid}/${quantity}/${prise}`,
+    { cancelToken: cancelToken.token }
   );
 };
 
@@ -221,7 +247,8 @@ export const ManageCartItemQuantityProvider = async (
 
 export const GetAllCartProductProvider = async () => {
   let res = await axios.get(
-    `${process.env.REACT_APP_BASE_URL}/getcartproducts`
+    `${process.env.REACT_APP_BASE_URL}/getcartproducts`,
+    { cancelToken: cancelToken.token }
   );
   return res.data;
 };
@@ -231,7 +258,9 @@ export const GetAllCartProductProvider = async () => {
 //get users cart total start //
 
 export const GetCartTotalProvider = async () => {
-  let res = await axios.get(`${process.env.REACT_APP_BASE_URL}/getcarttotal`);
+  let res = await axios.get(`${process.env.REACT_APP_BASE_URL}/getcarttotal`, {
+    cancelToken: cancelToken.token,
+  });
   return res.data;
 };
 
@@ -241,7 +270,8 @@ export const GetCartTotalProvider = async () => {
 
 export const CancelOrderProvider = async (order_id, pid, quantity) => {
   let res = await axios.delete(
-    `${process.env.REACT_APP_BASE_URL}/user/cancel-order/${order_id}/${pid}/${quantity}`
+    `${process.env.REACT_APP_BASE_URL}/user/cancel-order/${order_id}/${pid}/${quantity}`,
+    { cancelToken: cancelToken.token }
   );
   return res.data;
 };
@@ -251,6 +281,8 @@ export const CancelOrderProvider = async (order_id, pid, quantity) => {
 //----------------------------admin get data---------------------//
 
 export const AdminGetAllOrdersProvider = async () => {
-  let res = await axios.get(`${process.env.REACT_APP_BASE_URL}/admin/orders`);
+  let res = await axios.get(`${process.env.REACT_APP_BASE_URL}/admin/orders`, {
+    cancelToken: cancelToken.token,
+  });
   return res.data;
 };

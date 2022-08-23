@@ -31,19 +31,14 @@ function CartPage() {
   const refrence = useRef();
 
   useEffect(() => {
-    window.scroll({
-      top: 0,
-      left: 0,
-      behavior: "smooth",
-    });
     getCart();
   }, []);
 
   const getCart = async () => {
     let res = await GetAllCartProductProvider();
-    setCartItems(res);
     if (res) {
-      setLoading(false);
+      setLoading(false); 
+      setCartItems(res);
       if (res.length >= 1) {
         let total = await GetCartTotalProvider();
         if (total) {

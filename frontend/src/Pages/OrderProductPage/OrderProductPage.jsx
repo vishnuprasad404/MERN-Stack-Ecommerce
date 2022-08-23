@@ -14,6 +14,7 @@ import {
   RemoveCheckoutItemProvider,
 } from "../../ApiRenderController";
 import Notification from "../../Components/Notification/Notification";
+import Carousal from 'react-elastic-carousel'
 
 function OrderProductPage() {
   const nav = useNavigate();
@@ -26,6 +27,9 @@ function OrderProductPage() {
   const [notify, setNotify] = useState({ display: "none" });
   const [quantityLoading, setQuantityLoading] = useState(new Set());
   const [addressLoading, setAddressLoading] = useState(true);
+  const [removeOrderItemLoading, setRemoveOrderItemLoading] = useState(
+    new Set()
+  );
 
   useEffect(() => {
     const GetOrderDetails = async () => {
@@ -44,7 +48,7 @@ function OrderProductPage() {
       if (deliveryDetails) {
         setAddressLoading(false);
         setAddress(deliveryDetails);
-      }else{
+      } else {
         setAddressLoading(false);
       }
     };
@@ -88,8 +92,16 @@ function OrderProductPage() {
     }
   };
 
-  const removeCheckoutItem = (OrderId, ItemId) => {
-    RemoveCheckoutItemProvider(OrderId, ItemId);
+  const removeCheckoutItem = async (OrderId, ItemId, key) => {
+    setRemoveOrderItemLoading((prev) => new Set([...prev, key]));
+    const res = await RemoveCheckoutItemProvider(OrderId, ItemId);
+    if (res) {
+      setRemoveOrderItemLoading((prev) => {
+        const updated = new Set(prev);
+        updated.delete(key);
+        return updated;
+      });
+    }
   };
 
   const onCheckOut = async () => {
@@ -170,6 +182,7 @@ function OrderProductPage() {
         <div className="order-product-container" id="order">
           <div className="order-product-item-container-wrapper">
             <div className="order-item-container-wrapper">
+              <Carousal>
               {checkOutProducts.map((itm, key) => {
                 return (
                   <div className="order-item" key={key}>
@@ -219,19 +232,27 @@ function OrderProductPage() {
                         </button>
                       </div>
                     </div>
-                    <FontAwesomeIcon
-                      icon={faTrash}
-                      style={{
-                        display: `${
-                          checkOutProducts.length < 2 ? "none" : null
-                        }`,
-                      }}
-                      onClick={() => removeCheckoutItem(itm._id, itm.item)}
-                      className="remove-order-product-btn"
-                    />
+                    <div className="remove-order-product-btn">
+                      {!removeOrderItemLoading.has(key) ? (
+                        <FontAwesomeIcon
+                          icon={faTrash}
+                          style={{
+                            display: `${
+                              checkOutProducts.length < 2 ? "none" : null
+                            }`,
+                          }}
+                          onClick={() =>
+                            removeCheckoutItem(itm._id, itm.item, key)
+                          }
+                        />
+                      ) : (
+                        <SmallLoading />
+                      )}
+                    </div>
                   </div>
                 );
               })}
+              </Carousal>
             </div>
             <div className="check-out-details">
               <p className="check-out-heading">Prise Details</p>
@@ -272,7 +293,9 @@ function OrderProductPage() {
           <div className="order-product-address-container">
             <h4>Shipping Address</h4>
             {addressLoading ? (
-              <SmallLoading smallLoadingStyle={{ margin: "30px 0",height: 'auto' }} />
+              <SmallLoading
+                smallLoadingStyle={{ margin: `30px 0`, height: "auto",width : "95%" }}
+              />
             ) : address ? (
               <DeliveryAddressContainer
                 name={address.name}
@@ -283,7 +306,11 @@ function OrderProductPage() {
               />
             ) : null}
             <Link to="/delivery-address" className="change-address-link">
-              {addressLoading ? null :  address ? "change address" : "add Delivery address"}
+              {addressLoading
+                ? null
+                : address
+                ? "change address"
+                : "add Delivery address"}
             </Link>
           </div>
         </div>
