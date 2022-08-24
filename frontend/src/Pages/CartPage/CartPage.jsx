@@ -164,15 +164,23 @@ function CartPage() {
                     <img width="99%" src={itm.product.image1} alt="" />
                   </div>
                   <div className="cart-item-details">
-                    <h4>{itm.product.title}</h4>
+                    <h4>
+                      {itm.product.title.slice(0, 40)}
+                      <br />{" "}
+                      <h3>
+                        {itm.product.title.slice(40, itm.product.title.length)}
+                      </h3>{" "}
+                    </h4>
                     <div className="rating-and-prise">
                       <Rating
                         id={itm.item}
                         style={{
                           marginTop: "5px",
                           marginBottom: "5px",
-                          width: "50px",
-                          height: "25px",
+                          width:
+                            window.screen.width <= "500px" ? "40px" : "50px",
+                          height:
+                            window.screen.width <= "500px" ? "20px" : "25px",
                         }}
                       />
                       <span>₹ {itm.prise}</span>
@@ -226,6 +234,10 @@ function CartPage() {
               <div className="total-items">
                 <p>Total Items</p>
                 <p>{cartItems.length}</p>
+              </div>
+              <div className="total-items">
+                <p>Delivery Charge</p>
+                <p className="text-success">Free</p>
               </div>
               <div className="total-amount">
                 <p>Total Amount</p>

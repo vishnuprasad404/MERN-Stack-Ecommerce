@@ -62,7 +62,7 @@ function Product({
       if (result.itemAdded) {
         dispatch({
           type: "ADD_TO_CART",
-          payload: [{pid,disPrise}],
+          payload: [{ pid, disPrise }],
         });
         setNotify({
           display: "flex",
@@ -135,7 +135,11 @@ function Product({
             {!skelton ? (
               <Rating
                 id={pid}
-                style={{ marginBottom: "10px", width: "45px", height: "25px" }}
+                style={{
+                  marginBottom: "10px", 
+                  width: '45px',
+                  height: "24px",
+                }}
               />
             ) : null}
             <h6
