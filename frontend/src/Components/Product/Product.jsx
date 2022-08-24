@@ -1,9 +1,8 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart, faCartPlus } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import "./Product.css";
-import { EContextData as GlobalData } from "../../EContextData";
 import {
   AddToCartProvider,
   AddToFavoritesProvider,
@@ -12,6 +11,7 @@ import {
 import Notification from "../Notification/Notification";
 import Rating from "../../Components/Rating/Rating";
 import { Loading } from "../../Components/Loading/Loading";
+import { useStore } from "../../Hooks/useStore";
 
 function Product({
   title,
@@ -28,7 +28,8 @@ function Product({
   cardStyle,
   notificationStyle,
 }) {
-  const { user } = useContext(GlobalData);
+  const { state, dispatch } = useStore();
+  const { user } = state;
   const [notify, setNotify] = useState({ display: "none" });
   const nav = useNavigate();
   const [loading1, setLoading1] = useState(new Set());
@@ -59,6 +60,10 @@ function Product({
     if (user) {
       let result = await AddToCartProvider(pid, disPrise);
       if (result.itemAdded) {
+        dispatch({
+          type: "ADD_TO_CART",
+          payload: [{pid,disPrise}],
+        });
         setNotify({
           display: "flex",
           text: "Item added to cart",

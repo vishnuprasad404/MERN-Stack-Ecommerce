@@ -19,106 +19,104 @@ import AdminViewProducts from "./Components/AdminViewProducts/AdminViewProducts"
 import AdminViewUsers from "./Components/AdminViewUsers/AdminViewUsers";
 import OrderProductPage from "./Pages/OrderProductPage/OrderProductPage";
 import DeliveryAddressPage from "./Pages/DeliveryAddressPage/DeliveryAddressPage";
-import { useEffect, useState } from "react";
-import { EContextData as GlobalData } from "./EContextData";
+import { useEffect } from "react";
 import axios from "axios";
 import OrderPlacedNotifyPage from "./Pages/OrderPlacedNotifyPage/OrderPlacedNotifyPage";
 import OrdersItemDetailPage from "./Pages/OrdersItemDetailPage/OrdersItemDetailPage";
 import EmailVerificationStatusPage from "./Pages/EmailVerificationStatusPage/EmailVerificationStatusPage";
 import ForgetPassRequestPage from "./Pages/ForgetPassRequestPage/ForgetPassRequestPage";
 import PasswordResetPage from "./Pages/PasswordResetPage/PasswordResetPage";
-import {ScrollToTop} from './ScrollToTop'
+import { ScrollToTop } from "./ScrollToTop";
+import { useStore } from "./Hooks/useStore";
 
 function App() {
-  const [user, setUser] = useState(false);
-  const [admin, setAdmin] = useState(false);
+  const { state, dispatch } = useStore();
+  const { user, admin } = state;
 
   axios.defaults.withCredentials = true;
+
   useEffect(() => {
     axios.get(`${process.env.REACT_APP_BASE_URL}/admin`).then((res) => {
-      setAdmin(res.data.isLoggedIn);
+      dispatch({
+        type: "ADD_ADMIN",
+        payload: res.data.isLoggedIn,
+      });
     });
     axios.get(`${process.env.REACT_APP_BASE_URL}/user`).then((res) => {
-      setUser(res.data);
+      dispatch({
+        type: "ADD_USER",
+        payload: res.data,
+      });
     });
-  });
+  }, [dispatch]);
 
   return (
     <div className="App">
-
       <ScrollToTop />
-      <GlobalData.Provider value={{ user, setUser, admin, setAdmin }}>
-        <Routes>
-          <Route
-            path="/admin-login"
-            element={admin ? <AdminPage /> : <AdminLoginPage />}
-          />
-          <Route
-            path="/admin"
-            element={admin ? <AdminPage /> : <AdminLoginPage />}
-          >
-            <Route path="" element={<AdminDashboard />} />
-            <Route path="orders" element={<AdminViewOrders />} />
-            <Route path="products" element={<AdminViewProducts />} />
-            <Route path="product/:action" element={<AdminAddProduct />} />
-            <Route path="users" element={<AdminViewUsers />} />
-          </Route>
-          <Route path="/" element={<HomePage />} />
-          <Route
-            path="/signup"
-            element={!user ? <SignupPage /> : <HomePage />}
-          />
-          <Route
-            path="/signin"
-            element={!user ? <SigninPage /> : <HomePage />}
-          />
-          <Route path="/products" element={<ProductsPage />} />
-          <Route path="/product/:id" element={<ViewProductPage />} />
-          <Route path="/cart" element={user ? <CartPage /> : <SigninPage />} />
-          <Route
-            path="/orders"
-            element={user ? <OrdersPage /> : <SigninPage />}
-          />
-          <Route
-            path="/view-order-product/:orderId/:productId"
-            element={user ? <OrdersItemDetailPage /> : <SigninPage />}
-          />
-          <Route
-            path="/favorites"
-            element={user ? <FavoritesPage /> : <SigninPage />}
-          />
-          <Route
-            path="/account"
-            element={user ? <AccountPage /> : <SigninPage />}
-          />
-          <Route
-            path="/delivery-address"
-            element={user ? <DeliveryAddressPage /> : <SigninPage />}
-          />
-          <Route
-            path="/checkout/:OrderId"
-            element={user ? <OrderProductPage /> : <SigninPage />}
-          />
-          <Route
-            path="/order-placed-successfully/:OrderId"
-            element={user ? <OrderPlacedNotifyPage /> : <SigninPage />}
-          />
-          <Route
-            path="/user/verify-email/:email"
-            element={<EmailVerificationStatusPage />}
-          />
-          <Route
-            path="/user/password-reset"
-            element={<ForgetPassRequestPage />}
-          />
-          <Route
-            path="/user/password-reset/create-password/:userId/:verificationToken"
-            element={<PasswordResetPage />}
-          />
+      <Routes>
+        <Route
+          path="/admin-login"
+          element={admin ? <AdminPage /> : <AdminLoginPage />}
+        />
+        <Route
+          path="/admin"
+          element={admin ? <AdminPage /> : <AdminLoginPage />}
+        >
+          <Route path="" element={<AdminDashboard />} />
+          <Route path="orders" element={<AdminViewOrders />} />
+          <Route path="products" element={<AdminViewProducts />} />
+          <Route path="product/:action" element={<AdminAddProduct />} />
+          <Route path="users" element={<AdminViewUsers />} />
+        </Route>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/signup" element={!user ? <SignupPage /> : <HomePage />} />
+        <Route path="/signin" element={!user ? <SigninPage /> : <HomePage />} />
+        <Route path="/products" element={<ProductsPage />} />
+        <Route path="/product/:id" element={<ViewProductPage />} />
+        <Route path="/cart" element={user ? <CartPage /> : <SigninPage />} />
+        <Route
+          path="/orders"
+          element={user ? <OrdersPage /> : <SigninPage />}
+        />
+        <Route
+          path="/view-order-product/:orderId/:productId"
+          element={user ? <OrdersItemDetailPage /> : <SigninPage />}
+        />
+        <Route
+          path="/favorites"
+          element={user ? <FavoritesPage /> : <SigninPage />}
+        />
+        <Route
+          path="/account"
+          element={user ? <AccountPage /> : <SigninPage />}
+        />
+        <Route
+          path="/delivery-address"
+          element={user ? <DeliveryAddressPage /> : <SigninPage />}
+        />
+        <Route
+          path="/checkout/:OrderId"
+          element={user ? <OrderProductPage /> : <SigninPage />}
+        />
+        <Route
+          path="/order-placed-successfully/:OrderId"
+          element={user ? <OrderPlacedNotifyPage /> : <SigninPage />}
+        />
+        <Route
+          path="/user/verify-email/:email"
+          element={<EmailVerificationStatusPage />}
+        />
+        <Route
+          path="/user/password-reset"
+          element={<ForgetPassRequestPage />}
+        />
+        <Route
+          path="/user/password-reset/create-password/:userId/:verificationToken"
+          element={<PasswordResetPage />}
+        />
 
-          <Route path="*" element={<ErrorPage />} />
-        </Routes>
-      </GlobalData.Provider>
+        <Route path="*" element={<ErrorPage />} />
+      </Routes>
     </div>
   );
 }

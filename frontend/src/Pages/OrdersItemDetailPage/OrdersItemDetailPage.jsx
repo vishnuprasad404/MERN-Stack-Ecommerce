@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./OrdersItemDetailPage.css";
 import Navbar from "../../Components/Navbar/Navbar";
 import { useNavigate, useParams } from "react-router-dom";
@@ -12,12 +12,13 @@ import {
   CreateOrderProvider,
   CancelOrderProvider,
 } from "../../ApiRenderController";
-import { EContextData } from "../../EContextData";
 import AddProductReviewForm from "../../Components/AddProductReviewForm/AddProductReviewForm";
 import ConfirmBox from "../../Components/ConfirmBox/ConfirmBox";
+import { useStore } from "../../Hooks/useStore";
 
 function OrdersItemDetailPage() {
-  const { user } = useContext(EContextData);
+  const { state } = useStore();
+  const { user } = state;
   const { orderId, productId } = useParams();
   const [orderdItem, setOrderdItem] = useState();
   const [loading, setLoading] = useState(true);

@@ -1,6 +1,6 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import "./Navbar.css";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faRightToBracket,
@@ -11,18 +11,17 @@ import {
   faBars,
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
-import { EContextData as GlobalData } from "../../EContextData";
-import { HashLink as Link } from "react-router-hash-link";
 import {
   GetAllCartProductProvider,
   LogoutUserProvider,
 } from "../../ApiRenderController";
+import { useStore } from "../../Hooks/useStore";
 
 function Navbar() {
-  const { user } = useContext(GlobalData);
+  const { state, dispatch } = useStore();
+  const { user, cart } = state;
   const nav = useNavigate();
   const [drawer, setDrawer] = useState(false);
-  const [cartCount, setCartCount] = useState([]);
 
   const openDrawer = () => {
     setDrawer(drawer === true ? false : true);
@@ -34,13 +33,16 @@ function Navbar() {
     }
   };
 
-  useEffect(() => {
-    const getCart = async () => {
-      let res = await GetAllCartProductProvider();
-      setCartCount(res);
-    };
-    getCart();
-  });
+  // useEffect(() => {
+  //   const getCart = async () => {
+  //     let res = await GetAllCartProductProvider();
+  //     dispatch({
+  //       type: "ADD_TO_CART",
+  //       payload: [...res],
+  //     });
+  //   };
+  //   getCart();
+  // }, [dispatch]);
 
   return (
     <>
@@ -91,14 +93,14 @@ function Navbar() {
               placeholder="Search Products"
             />
           </div>
-          <Link to="/favorites#mywishlist">
+          <Link to="/favorites">
             <FontAwesomeIcon icon={faHeart} className="nav-icon fav" />
           </Link>
           <span className="cart">
-            <Link to="/cart#myCart">
+            <Link to="/cart">
               <FontAwesomeIcon icon={faCartPlus} className="nav-icon" />
             </Link>
-              <span className="cart-count">{cartCount.length}</span>
+            <span className="cart-count">{cart.length}</span>
           </span>
           {user ? (
             <FontAwesomeIcon

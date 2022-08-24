@@ -63,40 +63,42 @@ router.post("/addtocart", async (req, res) => {
 
 // get Cart products start
 
-router.get("/getcartproducts", async (req, res) => {
+router.get("/getcartproducts", (req, res) => {
   try {
     if (req.session.user) {
-      let cartItems = await db
-        .get()
-        .collection(process.env.CART_COLLECTION)
-        .aggregate([
-          {
-            $match: { user: ObjectId(req.session.user._id) },
+    db.get()
+      .collection(process.env.CART_COLLECTION)
+      .aggregate([
+        {
+          $match: { user: ObjectId(req.session.user._id) },
+        },
+        {
+          $unwind: "$products",
+        },
+        {
+          $project: {
+            item: "$products.item",
+            prise: "$products.prise",
+            quantity: "$products.quantity",
           },
-          {
-            $unwind: "$products",
+        },
+        {
+          $lookup: {
+            from: "products",
+            localField: "item",
+            foreignField: "_id",
+            as: "product",
           },
-          {
-            $project: {
-              item: "$products.item",
-              prise: "$products.prise",
-              quantity: "$products.quantity",
-            },
-          },
-          {
-            $lookup: {
-              from: "products",
-              localField: "item",
-              foreignField: "_id",
-              as: "product",
-            },
-          },
-          {
-            $unwind: "$product",
-          },
-        ])
-        .toArray();
-      res.json(cartItems);
+        },
+        {
+          $unwind: "$product",
+        },
+      ])
+      .toArray()
+      .then((result) => {
+        // console.log(result);
+        res.json(result);
+      });
     }
   } catch (error) {
     console.log(error);

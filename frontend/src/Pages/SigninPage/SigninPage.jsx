@@ -1,28 +1,21 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import "./SigninPage.css";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { EContextData as GlobalData } from "../../EContextData";
 import { Loading } from "../../Components/Loading/Loading";
 import Notification from "../../Components/Notification/Notification";
 import { LoginUserProvider } from "../../ApiRenderController";
 import { useEffect } from "react";
+import { useStore } from "../../Hooks/useStore";
 
 function SigninPage() {
   const [searchParams] = useSearchParams();
   let verification = searchParams.get("verification_progress");
-
   const [loading, setLoading] = useState(false);
-  const { setUser } = useContext(GlobalData);
+  const { dispatch } = useStore();
   const [notify, setNotify] = useState({ display: "none" });
   const nav = useNavigate();
   useEffect(() => {
-    window.scroll({
-      top: 0,
-      left: 0,
-      behavior: "smooth",
-    });
-
     if (verification) {
       setNotify({
         display: "flex",
@@ -71,7 +64,10 @@ function SigninPage() {
         });
         setTimeout(() => {
           setNotify({ display: "none" });
-          setUser(res);
+          dispatch({
+            type: "ADD_USER",
+            payload: res,
+          });
           nav(
             window.location.pathname !== "/signin"
               ? window.location.pathname
@@ -120,10 +116,7 @@ function SigninPage() {
             {errors.password?.type === "minLength" &&
               "*Password much contain atlest 8 character"}
           </span>
-          <Link
-            className="link forget-pass-link"
-            to="/user/password-reset"
-          >
+          <Link className="link forget-pass-link" to="/user/password-reset">
             Forget password
           </Link>{" "}
           <button
@@ -141,7 +134,7 @@ function SigninPage() {
               />
             )}
           </button>
-          <p style={{ fontSize: "12px",textAlign:"center" }}>
+          <p style={{ fontSize: "12px", textAlign: "center" }}>
             Don't have an account{" "}
             <Link style={{ textDecoration: "none" }} to="/signup">
               SignUp

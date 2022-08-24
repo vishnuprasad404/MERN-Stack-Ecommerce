@@ -13,13 +13,13 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import Notification from "../../Components/Notification/Notification";
-import { useContext } from "react";
-import { EContextData } from "../../EContextData";
 import { useNavigate } from "react-router-dom";
 import { Loading, SmallLoading } from "../../Components/Loading/Loading";
+import { useStore } from "../../Hooks/useStore";
 
 function FavoritesPage() {
-  const { user } = useContext(EContextData);
+  const { state } = useStore();
+  const { user } = state;
   const nav = useNavigate();
   const [favoriteProducts, setFavoriteProducts] = useState([]);
   const [notify, setNotify] = useState({ display: "none" });

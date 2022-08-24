@@ -1,12 +1,13 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import "./UpdateAccountForm.css";
 import { useForm } from "react-hook-form";
-import { EContextData } from "../../EContextData";
 import axios from "axios";
 import { Loading } from "../../Components/Loading/Loading";
+import { useStore } from "../../Hooks/useStore";
 
 function UpdateAccountForm({ setNotify }) {
-  const { user } = useContext(EContextData);
+  const { state } = useStore();
+  const { user } = state;
   const [changePassword, setChangePassword] = useState(false);
   const [updateLoading, setUpdateLoading] = useState(false);
   const {
@@ -34,22 +35,22 @@ function UpdateAccountForm({ setNotify }) {
               text: "Account details updated successfully",
               type: "SUCCESS",
             });
-            setTimeout(()=>{
+            setTimeout(() => {
               setNotify({
-                display : 'none'
-              })
-            },2000)
+                display: "none",
+              });
+            }, 2000);
           } else {
             setNotify({
               display: "flex",
               text: "Network error try again!",
               type: "WARNING",
             });
-            setTimeout(()=>{
+            setTimeout(() => {
               setNotify({
-                display : 'none'
-              })
-            },2000)
+                display: "none",
+              });
+            }, 2000);
           }
         });
     } else {
@@ -71,11 +72,11 @@ function UpdateAccountForm({ setNotify }) {
               text: "Current Password Does't Match!",
               type: "DANGER",
             });
-            setTimeout(()=>{
+            setTimeout(() => {
               setNotify({
-                display : 'none'
-              })
-            },2000)
+                display: "none",
+              });
+            }, 2000);
           }
           if (res.data.updated) {
             setNotify({
@@ -83,11 +84,11 @@ function UpdateAccountForm({ setNotify }) {
               text: "Account details updated successfully",
               type: "SUCCESS",
             });
-            setTimeout(()=>{
+            setTimeout(() => {
               setNotify({
-                display : 'none'
-              })
-            },2000)
+                display: "none",
+              });
+            }, 2000);
           }
         });
     }
@@ -194,7 +195,11 @@ function UpdateAccountForm({ setNotify }) {
             </span>
           </div>
           <button>
-            {updateLoading ? <Loading color="white" style={{height: 'auto'}} /> : "Update Account"}
+            {updateLoading ? (
+              <Loading color="white" style={{ height: "auto" }} />
+            ) : (
+              "Update Account"
+            )}
           </button>
         </form>
       ) : null}

@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React from "react";
 import "./AdminLoginPage.css";
 import { useForm } from "react-hook-form";
 import axios from "axios";
@@ -6,11 +6,10 @@ import { useNavigate } from "react-router-dom";
 import { Loading } from "../../Components/Loading/Loading";
 import { useState } from "react";
 import Notification from "../../Components/Notification/Notification";
-import {EContextData} from '../../EContextData'
-
+import { useStore } from "../../Hooks/useStore";
 function AdminLoginPage() {
   const nav = useNavigate();
-  const {setAdmin} = useContext(EContextData)
+  const { dispatch } = useStore();
   const [loading, setLoading] = useState(false);
   const [notify, setNotify] = useState({ display: "none" });
   const {
@@ -24,7 +23,10 @@ function AdminLoginPage() {
       .post(`${process.env.REACT_APP_BASE_URL}/admin/signin`, data)
       .then((res) => {
         setLoading(false);
-        setAdmin(true)
+        dispatch({
+          type: "ADD_ADMIN",
+          payload: true,
+        });
         if (res.data) {
           setNotify({
             display: "flex",

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import "./CartPage.css";
 import Navbar from "../../Components/Navbar/Navbar";
 import Rating from "../../Components/Rating/Rating";
@@ -7,7 +7,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import EmptyItemsPage from "../../Components/EmptyItemsPage/EmptyItemsPage";
 import empty_cart from "../../Assets/emptyCart.gif";
-import { EContextData as GlobalData } from "../../EContextData";
 import { Loading, SmallLoading } from "../../Components/Loading/Loading";
 import {
   RemoveCartItemProvider,
@@ -17,9 +16,11 @@ import {
   GetCartTotalProvider,
 } from "../../ApiRenderController";
 import ConfirmBox from "../../Components/ConfirmBox/ConfirmBox";
+import { useStore } from "../../Hooks/useStore";
 
 function CartPage() {
-  const { user } = useContext(GlobalData);
+  const { state, dispatch } = useStore();
+  const { user } = state;
   const nav = useNavigate();
   const [cartItems, setCartItems] = useState([]);
   const [totalPrise, setTotalPrise] = useState("");
@@ -32,12 +33,12 @@ function CartPage() {
 
   useEffect(() => {
     getCart();
-  }, []);
+  }, [user]);
 
   const getCart = async () => {
     let res = await GetAllCartProductProvider();
     if (res) {
-      setLoading(false); 
+      setLoading(false);
       setCartItems(res);
       if (res.length >= 1) {
         let total = await GetCartTotalProvider();
@@ -111,6 +112,12 @@ function CartPage() {
           let cartItemCopy = cartItems;
           cartItemCopy.splice(refrence.current, 1);
           setCartItems([...cartItemCopy]);
+          dispatch({
+            type: "REMOVE_FROM_CART",
+            payload: {
+              id: refrence.product_id,
+            },
+          });
         }
         setRemoveCartLoading((prev) => {
           const updated = new Set(prev);
@@ -241,7 +248,11 @@ function CartPage() {
           </div>
         </div>
       ) : !loading && cartItems.length < 1 ? (
-        <EmptyItemsPage image={empty_cart} text="YOUR CART IS EMPTY" imageSize="600px"/>
+        <EmptyItemsPage
+          image={empty_cart}
+          text="YOUR CART IS EMPTY"
+          imageSize="600px"
+        />
       ) : (
         <Loading height="400px" />
       )}

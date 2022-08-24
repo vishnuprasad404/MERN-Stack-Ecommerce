@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./ViewProductPage.css";
 import Rating from "../../Components/Rating/Rating";
 import Review from "../../Components/Review/Review";
@@ -8,13 +8,14 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBolt, faCartPlus } from "@fortawesome/free-solid-svg-icons";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import { EContextData } from "../../EContextData";
 import Notification from "../../Components/Notification/Notification";
 import { AddToCartProvider } from "../../ApiRenderController";
 import { Loading } from "../../Components/Loading/Loading";
+import { useStore } from "../../Hooks/useStore";
 
 function ViewProductPage() {
-  const { user } = useContext(EContextData);
+  const { state } = useStore();
+  const { user } = state;
   const { id } = useParams();
   const nav = useNavigate();
   const [product, setProduct] = useState();
@@ -82,7 +83,9 @@ function ViewProductPage() {
     <div className="view-product-page" id="view-product">
       <Navbar />
       {loading ? (
-        <div className="view-product-page-loading-container"><Loading /></div>
+        <div className="view-product-page-loading-container">
+          <Loading />
+        </div>
       ) : product ? (
         <>
           <div className="view-product-page-left-container">
