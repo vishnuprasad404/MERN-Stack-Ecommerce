@@ -136,8 +136,8 @@ function Product({
               <Rating
                 id={pid}
                 style={{
-                  marginBottom: "10px", 
-                  width: '45px',
+                  marginBottom: "10px",
+                  width: "45px",
                   height: "24px",
                 }}
               />
@@ -184,7 +184,7 @@ function Product({
                   />
                 )}
               </button>
-              {!skelton ? (
+              {!skelton && inStock >= 1 ? (
                 <>
                   <FontAwesomeIcon
                     style={favIconStyle}

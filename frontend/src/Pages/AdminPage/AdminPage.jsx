@@ -13,8 +13,8 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 function AdminPage() {
-  const [pageContent, setPageContent] = useState("all-products");
   const [sidebarState, setSidebarState] = useState("");
+  const [sidebarActive, setSidebarActive] = useState("Dashboard");
 
   return (
     <div className="admin-page">
@@ -29,38 +29,71 @@ function AdminPage() {
         Admin Dashboard
       </div>
       <div className="admin-content" onClick={() => setSidebarState("")}>
-        <EContextData.Provider value={{ pageContent, setPageContent }}>
-          <div className="sidebar" style={{ display: `${sidebarState}` }}>
-            <h3>Admin Dashboard</h3>
-            <SidebarContent icon={faDashboard} title="Dashboard" path="" />
-            <SidebarContent icon={faBolt} title="Orders" path="orders" />
-            <SidebarContent
-              icon={faMobile}
-              title="All Products"
-              path="products"
-            />
-            <SidebarContent
-              icon={faPlus}
-              title="Add Product"
-              path="product/add"
-            />
-            <SidebarContent icon={faUsers} title="Users" path="users" />
-            <SidebarContent icon={faRightFromBracket} title="LogOut" />
-          </div>
-          <div className="admin-page-content">
-            <Outlet />
-          </div>
-        </EContextData.Provider>
+        <div className="sidebar" style={{ display: `${sidebarState}` }}>
+          <h3>Admin Dashboard</h3>
+          <SidebarContent
+            icon={faDashboard}
+            title="Dashboard"
+            path=""
+            setSidebarActive={setSidebarActive}
+            sidebarActive={sidebarActive}
+          />
+          <SidebarContent
+            icon={faBolt}
+            title="Orders"
+            path="orders"
+            setSidebarActive={setSidebarActive}
+            sidebarActive={sidebarActive}
+          />
+          <SidebarContent
+            icon={faMobile}
+            title="All Products"
+            setSidebarActive={setSidebarActive}
+            sidebarActive={sidebarActive}
+            path="products"
+          />
+          <SidebarContent
+            icon={faPlus}
+            title="Add Product"
+            sidebarActive={sidebarActive}
+            setSidebarActive={setSidebarActive}
+            path="product/add"
+          />
+          <SidebarContent
+            icon={faUsers}
+            title="Users"
+            path="users"
+            setSidebarActive={setSidebarActive}
+            sidebarActive={sidebarActive}
+          />
+          <SidebarContent icon={faRightFromBracket} title="LogOut" />
+        </div>
+        <div className="admin-page-content">
+          <Outlet />
+        </div>
       </div>
     </div>
   );
 }
 
-function SidebarContent(props) {
-  const { path, title, icon } = props;
+function SidebarContent({
+  path,
+  title,
+  icon,
+  setSidebarActive,
+  sidebarActive,
+}) {
   const nav = useNavigate();
   return (
-    <div className="sidebar-content" onClick={() => nav(path)}>
+    <div
+      className={`sidebar-content ${
+        sidebarActive === title ? "sidebar-active" : null
+      }`}
+      onClick={() => {
+        nav(path);
+        setSidebarActive(title);
+      }}
+    >
       <FontAwesomeIcon icon={icon} className="icon" />
       <p>{title}</p>
     </div>

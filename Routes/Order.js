@@ -49,6 +49,7 @@ router.get("/admin/orders", async (req, res) => {
         {
           $project: {
             username: "$username",
+            email: "$email",
             address: "$address",
             item: "$products.item",
             quantity: "$products.quantity",
@@ -208,6 +209,7 @@ router.post("/create-order", async (req, res) => {
       let orderObj = {
         user: ObjectId(req.session.user._id),
         username: req.session.user.username,
+        email : req.session.user.email,
         order_id: orderID,
         created_at: new Date(),
         address: address,

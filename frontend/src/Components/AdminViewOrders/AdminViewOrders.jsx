@@ -55,6 +55,13 @@ function AdminViewOrders() {
       }
     })
     .map((itm, key) => {
+      let date = new Date(itm.created_at);
+      const yyyy = date.getFullYear();
+      let mm = date.getMonth() + 1;
+      let dd = date.getDate();
+      if (dd < 10) dd = "0" + dd;
+      if (mm < 10) mm = "0" + mm;
+      date = dd + "/" + mm + "/" + yyyy;
       return (
         <tbody
           style={{
@@ -73,9 +80,9 @@ function AdminViewOrders() {
             {itm.product.title}
           </td>
           <td data-label="User">{itm.username}</td>
-          <td data-label="Place"></td>
+          <td data-label="Place">{itm.address.state}</td>
           <td data-label="Phone">{itm.prise}</td>
-          <td data-label="Date">{itm.created_at}</td>
+          <td data-label="Date">{date}</td>
           <td data-label="Prise">$ {itm.prise}</td>
           <td
             data-label="Status"

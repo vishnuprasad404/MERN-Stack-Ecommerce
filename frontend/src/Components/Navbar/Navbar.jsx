@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import "./Navbar.css";
 import { useNavigate, Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -12,13 +12,12 @@ import {
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import {
-  GetAllCartProductProvider,
   LogoutUserProvider,
 } from "../../ApiRenderController";
 import { useStore } from "../../Hooks/useStore";
 
 function Navbar() {
-  const { state, dispatch } = useStore();
+  const { state } = useStore();
   const { user, cart } = state;
   const nav = useNavigate();
   const [drawer, setDrawer] = useState(false);
@@ -32,17 +31,6 @@ function Navbar() {
       nav(`/products?item=${event.target.value}`);
     }
   };
-
-  // useEffect(() => {
-  //   const getCart = async () => {
-  //     let res = await GetAllCartProductProvider();
-  //     dispatch({
-  //       type: "ADD_TO_CART",
-  //       payload: [...res],
-  //     });
-  //   };
-  //   getCart();
-  // }, [dispatch]);
 
   return (
     <>
