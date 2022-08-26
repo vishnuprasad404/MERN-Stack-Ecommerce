@@ -14,7 +14,7 @@ import {
   RemoveCheckoutItemProvider,
 } from "../../ApiRenderController";
 import Notification from "../../Components/Notification/Notification";
-import Carousal from 'react-elastic-carousel'
+import Carousal from "react-elastic-carousel";
 
 function OrderProductPage() {
   const nav = useNavigate();
@@ -183,75 +183,77 @@ function OrderProductPage() {
           <div className="order-product-item-container-wrapper">
             <div className="order-item-container-wrapper">
               <Carousal>
-              {checkOutProducts.map((itm, key) => {
-                return (
-                  <div className="order-item" key={key}>
-                    <div className="order-item-image">
-                      <img
-                        width="100%"
-                        src={itm.product.image1}
-                        alt="product"
-                      />
-                    </div>
-                    <div className="order-item-details">
-                      <p className="order-product-title">{itm.product.title}</p>
-                      <div className="order-item-prise-container">
-                        <p className="dis-prise">₹ {itm.prise}</p>
-                        <del className="org-prise">
-                          {itm.product.orginalPrise}
-                        </del>
-                      </div>
-                      <div className="order-item-quantity">
-                        <button
-                          disabled={
-                            itm.quantity <= 1 || quantityLoading.has(key)
-                              ? true
-                              : false
-                          }
-                          className="order-product-quantity-btn"
-                          onClick={() =>
-                            changeOrderItemQuantity(itm, "decreese", key)
-                          }
-                        >
-                          -
-                        </button>
-                        <p>{itm.quantity}</p>
-                        <button
-                          disabled={
-                            itm.quantity >= itm.product.inStock ||
-                            quantityLoading.has(key)
-                              ? true
-                              : false
-                          }
-                          className="order-product-quantity-btn"
-                          onClick={() =>
-                            changeOrderItemQuantity(itm, "increese", key)
-                          }
-                        >
-                          +
-                        </button>
-                      </div>
-                    </div>
-                    <div className="remove-order-product-btn">
-                      {!removeOrderItemLoading.has(key) ? (
-                        <FontAwesomeIcon
-                          icon={faTrash}
-                          style={{
-                            display: `${
-                              checkOutProducts.length < 2 ? "none" : null
-                            }`,
-                          }}
-                          onClick={() =>
-                            removeCheckoutItem(itm._id, itm.item, key)
-                          }
+                {checkOutProducts.map((itm, key) => {
+                  return (
+                    <div className="order-item" key={key}>
+                      <div className="order-item-image">
+                        <img
+                          width="100%"
+                          src={itm.product.image1}
+                          alt="product"
                         />
-                      ) : (
-                        <SmallLoading />
-                      )}
+                      </div>
+                      <div className="order-item-details">
+                        <p className="order-product-title">
+                          {itm.product.title}
+                        </p>
+                        <div className="order-item-prise-container">
+                          <p className="dis-prise">₹ {itm.prise}</p>
+                          <del className="org-prise">
+                            {itm.product.orginalPrise}
+                          </del>
+                        </div>
+                        <div className="order-item-quantity">
+                          <button
+                            disabled={
+                              itm.quantity <= 1 || quantityLoading.has(key)
+                                ? true
+                                : false
+                            }
+                            className="order-product-quantity-btn"
+                            onClick={() =>
+                              changeOrderItemQuantity(itm, "decreese", key)
+                            }
+                          >
+                            -
+                          </button>
+                          <p>{itm.quantity}</p>
+                          <button
+                            disabled={
+                              itm.quantity >= itm.product.inStock ||
+                              quantityLoading.has(key)
+                                ? true
+                                : false
+                            }
+                            className="order-product-quantity-btn"
+                            onClick={() =>
+                              changeOrderItemQuantity(itm, "increese", key)
+                            }
+                          >
+                            +
+                          </button>
+                        </div>
+                      </div>
+                      <div className="remove-order-product-btn">
+                        {!removeOrderItemLoading.has(key) ? (
+                          <FontAwesomeIcon
+                            icon={faTrash}
+                            style={{
+                              display: `${
+                                checkOutProducts.length < 2 ? "none" : null
+                              }`,
+                            }}
+                            onClick={() =>
+                              removeCheckoutItem(itm._id, itm.item, key)
+                            }
+                          />
+                        ) : (
+                          <SmallLoading />
+                        )}
+                      </div>
                     </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
               </Carousal>
             </div>
             <div className="check-out-details">
@@ -294,7 +296,11 @@ function OrderProductPage() {
             <h4>Shipping Address</h4>
             {addressLoading ? (
               <SmallLoading
-                smallLoadingStyle={{ margin: `30px 0`, height: "auto",width : "95%" }}
+                smallLoadingStyle={{
+                  margin: `30px 0`,
+                  height: "auto",
+                  width: "95%",
+                }}
               />
             ) : address ? (
               <DeliveryAddressContainer
@@ -305,7 +311,10 @@ function OrderProductPage() {
                 pincode={address.pincode}
               />
             ) : null}
-            <Link to="/delivery-address" className="change-address-link">
+            <Link
+              to={`/delivery-address?redirect=/checkout/${OrderId}`}
+              className="change-address-link"
+            >
               {addressLoading
                 ? null
                 : address

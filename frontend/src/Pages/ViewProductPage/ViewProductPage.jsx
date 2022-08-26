@@ -57,7 +57,7 @@ function ViewProductPage() {
         }, 2000);
       }
     } else {
-      nav("/signin");
+      nav(`/signin?redirect=/product/${id}`);
     }
   };
   const onPurchase = () => {
@@ -75,7 +75,7 @@ function ViewProductPage() {
           }
         });
     } else {
-      nav("/signin");
+      nav(`/signin?redirect=/product/${id}`);
     }
   };
 

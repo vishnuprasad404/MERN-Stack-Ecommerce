@@ -11,10 +11,10 @@ router.get("/getshippingaddress", async (req, res) => {
         .collection(process.env.ADDRESS_COLLECTION)
         .findOne({ user: ObjectId(req.session.user._id) });
 
-      if(address){
+      if (address) {
         res.json(address);
-      }else{
-        res.send(false)
+      } else {
+        res.send(false);
       }
     }
   } catch (error) {
@@ -22,40 +22,61 @@ router.get("/getshippingaddress", async (req, res) => {
   }
 });
 
-router.post("/addshippingaddress", async (req, res) => {
-  try {
-    if (req.session.user) {
-      let addressExist = await db
-        .get()
-        .collection(process.env.ADDRESS_COLLECTION)
-        .findOne({ user: ObjectId(req.session.user._id) });
+router.post("/add/deliveryAddress", async (req, res) => {
+  if (req.session.user) {
+    req.body.user = ObjectId(req.session.user._id);
+    db.get()
+      .collection(process.env.ADDRESS_COLLECTION)
+      .insertOne(req.body)
+      .then(() => {
+        res.send(true);
+      });
+  }
+});
 
-      if (!addressExist) {
-        req.body.user = ObjectId(req.session.user._id);
-        db.get()
-          .collection(process.env.ADDRESS_COLLECTION)
-          .insertOne(req.body)
-          .then(() => {
-            res.send(true);
-          });
-      } else {
-        db.get()
-          .collection(process.env.ADDRESS_COLLECTION)
-          .updateOne(
-            {
-              user: ObjectId(req.session.user._id),
+router.put("/update/deliveryAddress", async (req, res) => {
+  if (req.session.user) {
+    const {
+      name,
+      mobile,
+      pincode,
+      locality,
+      address,
+      district,
+      state,
+      landmark,
+      altPhone,
+    } = req.body;
+    const currentAddress = await db
+      .get()
+      .collection(process.env.ADDRESS_COLLECTION)
+      .findOne({ user: ObjectId(req.session.user._id) });
+
+    if (currentAddress) {
+      db.get()
+        .collection(process.env.ADDRESS_COLLECTION)
+        .updateOne(
+          {
+            user: ObjectId(req.session.user._id),
+          },
+          {
+            $set: {
+              name: name || currentAddress.name,
+              state: state || currentAddress.state,
+              mobile: mobile || currentAddress.mobile,
+              address: address || currentAddress.address,
+              pincode: pincode || currentAddress.pincode,
+              locality: locality || currentAddress.locality,
+              district: district || currentAddress.district,
+              altPhone: altPhone || currentAddress.altPhone,
+              landmark: landmark || currentAddress.landmark,
             },
-            {
-              $set: req.body,
-            }
-          )
-          .then(() => {
-            res.send(true);
-          });
-      }
+          }
+        )
+        .then(() => {
+          res.send(true);
+        });
     }
-  } catch (error) {
-    console.log(err);
   }
 });
 

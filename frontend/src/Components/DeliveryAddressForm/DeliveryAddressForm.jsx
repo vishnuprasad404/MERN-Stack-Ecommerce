@@ -5,11 +5,17 @@ import DeliveryAddressInputBox from "../../Components/DeliveryAddressInputBox/De
 import { Loading } from "../../Components/Loading/Loading";
 import { usePost } from "../../Hooks/usePost";
 import { useStore } from "../../Hooks/useStore";
+import { useUpdate } from "../../Hooks/useUpdate";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 function DeliveryAddressForm() {
+  const [searchParams] = useSearchParams();
+  const redirect = searchParams.get("redirect");
+  const nav = useNavigate();
   const { state, dispatch } = useStore();
   const { deliveryAddress } = state;
-  const { execute, loading } = usePost("/addshippingaddress");
+  const { execute, loading } = usePost("/add/deliveryAddress");
+  const { execute: updateAddress, loading: updateAddressLoading } = useUpdate();
   const {
     register,
     formState: { errors },
@@ -17,13 +23,25 @@ function DeliveryAddressForm() {
   } = useForm();
 
   const onSaveAddress = (data) => {
-    execute({ data: data }, (result) => {
-      // after add or update delivery address
-      dispatch({
-        type: "SET_ADDRESS",
-        payload: data,
+    if (!deliveryAddress) {
+      execute({ data: data }, (result) => {
+        // after add or update delivery address
+        dispatch({
+          type: "SET_ADDRESS",
+          payload: data,
+        });
+
+        if (redirect) {
+          nav(redirect);
+        }
       });
-    });
+    } else {
+      updateAddress(
+        "/update/deliveryAddress",
+        { data: data },
+        (res, error) => {}
+      );
+    }
   };
 
   return (
@@ -35,10 +53,10 @@ function DeliveryAddressForm() {
               placeholder={deliveryAddress ? deliveryAddress.name : "Full Name"}
               register={register}
               registerName="name"
-              required={true}
+              required={deliveryAddress ? false : true}
               label="Full Name"
             />
-            <span className="err">
+            <span className="address-err">
               {errors.name?.type === "required" && `* Full Name is required`}
             </span>
           </div>
@@ -50,10 +68,10 @@ function DeliveryAddressForm() {
               }
               register={register}
               registerName="mobile"
-              required={true}
+              required={deliveryAddress ? false : true}
               label="Mobile Number"
             />
-            <span className="err">
+            <span className="address-err">
               {errors.mobile?.type === "required" &&
                 `* Mobile number is required`}
             </span>
@@ -67,10 +85,10 @@ function DeliveryAddressForm() {
               }
               register={register}
               registerName="pincode"
-              required={true}
+              required={deliveryAddress ? false : true}
               label="Pincode"
             />
-            <span className="err">
+            <span className="address-err">
               {errors.pincode?.type === "required" && `* Pin Code is required`}
             </span>
           </div>
@@ -78,13 +96,13 @@ function DeliveryAddressForm() {
             <DeliveryAddressInputBox
               register={register}
               registerName="locality"
-              required={true}
+              required={deliveryAddress ? false : true}
               placeholder={
                 deliveryAddress ? deliveryAddress.locality : "Locality"
               }
               label="Locality"
             />
-            <span className="err">
+            <span className="address-err">
               {errors.locality?.type === "required" &&
                 `* Locality number is required`}
             </span>
@@ -92,7 +110,9 @@ function DeliveryAddressForm() {
         </div>
         <div className="inp-container">
           <textarea
-            {...register("address", { required: true })}
+            {...register("address", {
+              required: deliveryAddress ? false : true,
+            })}
             placeholder={
               deliveryAddress
                 ? deliveryAddress.address
@@ -101,7 +121,7 @@ function DeliveryAddressForm() {
           ></textarea>
           <br />
 
-          <span className="err">
+          <span className="address-err">
             {errors.address?.type === "required" &&
               "* Address number is required"}
           </span>
@@ -112,7 +132,7 @@ function DeliveryAddressForm() {
             <DeliveryAddressInputBox
               register={register}
               registerName="district"
-              required={true}
+              required={deliveryAddress ? false : true}
               placeholder={
                 deliveryAddress
                   ? deliveryAddress.district
@@ -121,7 +141,7 @@ function DeliveryAddressForm() {
               label="District"
             />
 
-            <span className="err">
+            <span className="address-err">
               {errors.district?.type === "required" &&
                 `* This Field is required`}
             </span>
@@ -129,7 +149,9 @@ function DeliveryAddressForm() {
           <div className="inp-container">
             <select
               className="select-state "
-              {...register("state", { required: true })}
+              {...register("state", {
+                required: deliveryAddress ? false : true,
+              })}
             >
               <option value="">State</option>
               <option value="Andhra Pradesh">Andhra Pradesh</option>
@@ -175,7 +197,7 @@ function DeliveryAddressForm() {
             </select>
             <br />
             {/* <div className="pt-"> */}
-            <span className="err">
+            <span className="address-err">
               {errors.state?.type === "required" && `* This Field is required`}
             </span>
             {/* </div> */}
@@ -211,11 +233,8 @@ function DeliveryAddressForm() {
           </div>
         </div>
 
-        <button
-          type="submit"
-          style={{ backgroundColor: loading ? "rgb(233, 233, 233)" : null }}
-        >
-          {loading ? (
+        <button type="submit">
+          {loading || updateAddressLoading ? (
             <Loading style={{ height: "0px" }} iconSpace="5px" iconSize="5px" />
           ) : deliveryAddress ? (
             "Update Address"

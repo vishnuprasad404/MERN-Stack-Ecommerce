@@ -5,25 +5,15 @@ import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Loading } from "../../Components/Loading/Loading";
 import Notification from "../../Components/Notification/Notification";
 import { LoginUserProvider } from "../../ApiRenderController";
-import { useEffect } from "react";
 import { useStore } from "../../Hooks/useStore";
 
 function SigninPage() {
   const [searchParams] = useSearchParams();
-  let verification = searchParams.get("verification_progress");
+  let redirect = searchParams.get("redirect");
   const [loading, setLoading] = useState(false);
   const { dispatch } = useStore();
   const [notify, setNotify] = useState({ display: "none" });
   const nav = useNavigate();
-  useEffect(() => {
-    if (verification) {
-      setNotify({
-        display: "flex",
-        text: `A Verification link has been sent to your email account `,
-        type: "SUCCESS",
-      });
-    }
-  }, [verification]);
   const {
     register,
     formState: { errors },
@@ -68,11 +58,15 @@ function SigninPage() {
             type: "ADD_USER",
             payload: res,
           });
-          nav(
-            window.location.pathname !== "/signin"
-              ? window.location.pathname
-              : "/"
-          );
+          if (redirect) {
+            nav(redirect);
+          } else {
+            nav(
+              window.location.pathname !== "/signin"
+                ? window.location.pathname
+                : "/"
+            );
+          }
         }, 500);
       } else if (res.isLoggedIn === false) {
         setNotify({

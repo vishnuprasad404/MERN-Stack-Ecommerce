@@ -10,6 +10,7 @@ export const useUpdate = () => {
       .put(`${process.env.REACT_APP_BASE_URL}${endPoint}`, data, {
         headers: {
           "Content-Type": "multipart/form-data",
+          "content-type": "application/json",
         },
       })
       .then((result) => {
