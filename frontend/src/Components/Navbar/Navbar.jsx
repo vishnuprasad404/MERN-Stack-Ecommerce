@@ -11,13 +11,11 @@ import {
   faBars,
   faXmark,
 } from "@fortawesome/free-solid-svg-icons";
-import {
-  LogoutUserProvider,
-} from "../../ApiRenderController";
 import { useStore } from "../../Hooks/useStore";
+import { useFetch } from "../../Hooks/useFetch";
 
 function Navbar() {
-  const { state } = useStore();
+  const { state, dispatch } = useStore();
   const { user, cart } = state;
   const nav = useNavigate();
   const [drawer, setDrawer] = useState(false);
@@ -29,6 +27,16 @@ function Navbar() {
   const onSearch = (event) => {
     if (event.key === "Enter") {
       nav(`/products?item=${event.target.value}`);
+    }
+  };
+
+  const OnLogOut = () => {
+    const { data } = useFetch("/signout");
+    if (data) {
+      dispatch({
+        type: "REMOVE_USER",
+        payload: false,
+      });
     }
   };
 
@@ -66,7 +74,7 @@ function Navbar() {
             <Link
               className="nav-link nl-5 toggler-link"
               to="/signin"
-              onClick={() => LogoutUserProvider()}
+              onClick={OnLogOut}
             >
               Logout
             </Link>

@@ -76,9 +76,12 @@ router.put("/admin/change-order-status/:id/:status/:pid", (req, res) => {
     db.get()
       .collection(process.env.ORDERS_COLLECTION)
       .updateOne(
-        { _id: ObjectId(req.params.id),"products.item" : ObjectId(req.params.pid) },
         {
-          $set: { 'products.$.status': req.params.status },
+          _id: ObjectId(req.params.id),
+          "products.item": ObjectId(req.params.pid),
+        },
+        {
+          $set: { "products.$.status": req.params.status },
         }
       )
       .then(() => {
@@ -209,7 +212,7 @@ router.post("/create-order", async (req, res) => {
       let orderObj = {
         user: ObjectId(req.session.user._id),
         username: req.session.user.username,
-        email : req.session.user.email,
+        email: req.session.user.email,
         order_id: orderID,
         created_at: new Date(),
         address: address,
@@ -270,11 +273,12 @@ router.delete("/remove-checkout-item/:OrderId/:ItemId", (req, res) => {
             _id: ObjectId(req.params.OrderId),
           },
           {
-            $pull: { products: { item: ObjectId(req.params.ItemId )} },
+            $pull: { products: { item: ObjectId(req.params.ItemId) } },
           }
-        ).then(()=>{
-          res.send(true)
-        })
+        )
+        .then(() => {
+          res.send(true);
+        });
     }
   } catch (error) {
     console.log(error);

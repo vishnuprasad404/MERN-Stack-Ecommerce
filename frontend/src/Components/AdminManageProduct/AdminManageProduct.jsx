@@ -3,12 +3,13 @@ import "./AdminManageProduct.css";
 import AdminSelectImage from "./AdminSelectImage/AdminSelectImage";
 import { useForm } from "react-hook-form";
 import { useParams, useSearchParams } from "react-router-dom";
-import axios from "axios";
 import { useEffect } from "react";
 import { Loading } from "../Loading/Loading";
+import { useFetch } from "../../Hooks/useFetch";
+import { usePost } from "../../Hooks/usePost";
+import { useUpdate } from "../../Hooks/useUpdate";
 
 function AdminManageProduct() {
-  const [loading] = useState(false);
   const { action } = useParams();
   const [searchParams] = useSearchParams();
   let id = searchParams.get("id");
@@ -37,12 +38,14 @@ function AdminManageProduct() {
     img4: "",
   });
   const [updateImage, setUpdateImage] = useState(false);
+  const { data } = useFetch("/products");
+  const { loading: addProductLoading, execute } = usePost("/admin/addproduct");
+  const { loading: updateProductLoading, execute: executeUpdate } = useUpdate();
 
   useEffect(() => {
     if (action === "update") {
-      axios.get(`${process.env.REACT_APP_BASE_URL}/products`).then((res) => {
-        let product_array = [...res.data];
-        let product = product_array.filter((item) => {
+      if (data.length > 0) {
+        let product = data.filter((item) => {
           return item._id === id;
         });
         setUpdateProduct({
@@ -59,9 +62,9 @@ function AdminManageProduct() {
           img3: product[0].image3,
           img4: product[0].image4,
         });
-      });
+      }
     }
-  }, [action, id]);
+  }, [action, id, data]);
 
   const manageProduct = (data) => {
     const formData = new FormData();
@@ -98,52 +101,44 @@ function AdminManageProduct() {
         image2 !== undefined &&
         image3 !== undefined
       ) {
-        axios
-          .post(
-            `${process.env.REACT_APP_BASE_URL}/admin/addproduct`,
-            formData,
-            {
-              headers: {
-                "Content-Type": "multipart/form-data",
-              },
-            }
-          )
-          .then((res) => {
-            console.log(res.data);
-            if (res.data) {
-              alert("Item Added");
-            } else {
-              alert("item Cannot be added");
-            }
-          });
+        execute({ data: formData }, (result, error) => {
+          if (result) {
+            alert("Item Added");
+          } else {
+            alert("item Cannot be added");
+          }
+        });
       } else {
         setimageError("block");
       }
     } else {
       if (!updateImage) {
-        axios
-          .put(`${process.env.REACT_APP_BASE_URL}/admin/update-product/${id}`, {
-            title: data.title ? data.title : updateProduct.title,
-            discountPrise: data.disPrise
-              ? data.disPrise
-              : updateProduct.discountPrise,
-            orginalPrise: data.orgPrise
-              ? data.orgPrise
-              : updateProduct.orginalPrise,
-            inStock: data.inStock ? data.inStock : updateProduct.inStock,
-            description: data.description
-              ? data.description
-              : updateProduct.description,
-            category: data.category ? data.category : updateProduct.category,
-          })
-          .then((res) => {
-            console.log(res.data);
-            if (res.data) {
+        executeUpdate(
+          `/admin/update-product/${id}`,
+          {
+            data: {
+              title: data.title ? data.title : updateProduct.title,
+              discountPrise: data.disPrise
+                ? data.disPrise
+                : updateProduct.discountPrise,
+              orginalPrise: data.orgPrise
+                ? data.orgPrise
+                : updateProduct.orginalPrise,
+              inStock: data.inStock ? data.inStock : updateProduct.inStock,
+              description: data.description
+                ? data.description
+                : updateProduct.description,
+              category: data.category ? data.category : updateProduct.category,
+            },
+          },
+          (result, error) => {
+            if (result) {
               alert("Item Updated");
             } else {
               alert("item Cannot be Updated");
             }
-          });
+          }
+        );
       } else {
         if (
           image !== undefined &&
@@ -151,24 +146,17 @@ function AdminManageProduct() {
           image2 !== undefined &&
           image3 !== undefined
         ) {
-          axios
-            .put(
-              `${process.env.REACT_APP_BASE_URL}/admin/update-product/${id}`,
-              formData,
-              {
-                headers: {
-                  "Content-Type": "multipart/form-data",
-                },
-              }
-            )
-            .then((res) => {
-              console.log(res.data);
-              if (res.data) {
+          executeUpdate(
+            `/admin/update-product/${id}`,
+            { data: formData },
+            (result, error) => {
+              if (result) {
                 alert("Item Updated");
               } else {
                 alert("item Cannot be Updated");
               }
-            });
+            }
+          );
         } else {
           setimageError("block");
         }
@@ -198,9 +186,9 @@ function AdminManageProduct() {
               required: action === "update" ? false : true,
             })}
           />
-          <error className="err">
+          <span className="err">
             {errors.title?.type === "required" && "*Product Title is required"}
-          </error>
+          </span>
           <input
             type="number"
             placeholder="Orginal Prise"
@@ -209,10 +197,10 @@ function AdminManageProduct() {
               required: action === "update" ? false : true,
             })}
           />
-          <error className="err">
+          <span className="err">
             {errors.orgPrise?.type === "required" &&
               "*Orginal Prise is required"}
-          </error>
+          </span>
           <input
             type="number"
             placeholder="Discount Prise"
@@ -223,10 +211,10 @@ function AdminManageProduct() {
               required: action === "update" ? false : true,
             })}
           />
-          <error className="err">
+          <span className="err">
             {errors.disPrise?.type === "required" &&
               "*Discount Prise is required"}
-          </error>
+          </span>
           <input
             type="number"
             placeholder="Product inStock"
@@ -235,9 +223,9 @@ function AdminManageProduct() {
               required: action === "update" ? false : true,
             })}
           />
-          <error className="err">
+          <span className="err">
             {errors.inStock?.type === "required" && "*inStock is required"}
-          </error>
+          </span>
           <textarea
             rows="6"
             placeholder="Product Description"
@@ -246,10 +234,10 @@ function AdminManageProduct() {
               required: action === "update" ? false : true,
             })}
           ></textarea>
-          <error className="err">
+          <span className="err">
             {errors.description?.type === "required" &&
               "*Product Description is required"}
-          </error>
+          </span>
           <select
             {...register("category", {
               required: action === "update" ? false : true,
@@ -264,19 +252,19 @@ function AdminManageProduct() {
             <option value="watches">Watches</option>
             <option value="desktops">Desktops & Accessories</option>
           </select>
-          <error className="err">
+          <span className="err">
             {errors.category?.type === "required" &&
               "*Product Category is required"}
-          </error>
+          </span>
           <button className="add-product-btn" type="submit">
-            {!loading ? (
+            {!addProductLoading && !updateProductLoading ? (
               action === "add" ? (
                 "Add Product"
               ) : (
                 "Update"
               )
             ) : (
-              <Loading />
+              <Loading style={{ height: "auto" }} />
             )}
           </button>
         </form>

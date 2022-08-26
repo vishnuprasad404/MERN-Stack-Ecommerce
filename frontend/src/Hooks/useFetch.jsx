@@ -3,18 +3,12 @@ import { useEffect, useState } from "react";
 
 export const useFetch = (endPoint) => {
   const [fetchData, setFetchData] = useState({
-    loading: false,
+    loading: true,
     data: [],
     error: undefined,
   });
 
   useEffect(() => {
-    setFetchData({
-      loading: true,
-      data: [],
-      error: undefined,
-    });
-
     axios
       .get(`${process.env.REACT_APP_BASE_URL}${endPoint}`)
       .then((response) => {

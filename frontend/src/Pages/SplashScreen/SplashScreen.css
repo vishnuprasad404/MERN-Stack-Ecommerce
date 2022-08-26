@@ -1,0 +1,31 @@
+.splashscreen {
+  width: 100%;
+  min-height: 90vh;
+  max-height: 90vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #ffffff;
+  position: absolute;
+  top: 0;
+}
+.splashscreen img {
+  width: 300px;
+}
+.splash-text {
+  position: absolute;
+  bottom: 0px;
+  letter-spacing: 2px;
+  font-size: 18px;
+  font-weight: 600;
+  color: rgb(180, 180, 180);
+}
+
+@media (max-width: 400px) {
+  .splashscreen img {
+    width: 260px;
+  }
+  .splash-text {
+    font-size: 14px;
+  }
+}

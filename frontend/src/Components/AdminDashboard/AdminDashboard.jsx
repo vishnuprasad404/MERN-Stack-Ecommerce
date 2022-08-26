@@ -61,7 +61,7 @@ function AdminDashboard() {
       <div className="latest-orders-container">
         <h5>Latest Orders</h5>
         <table>
-          {orders.slice(0,6).map((itm, key) => {
+          {orders.slice(0, 6).map((itm, key) => {
             let date = new Date(itm.created_at);
             const yyyy = date.getFullYear();
             let mm = date.getMonth() + 1;
@@ -71,34 +71,40 @@ function AdminDashboard() {
             date = dd + "/" + mm + "/" + yyyy;
             return (
               <tbody key={key}>
-                <td>{key + 1}</td>
-                <td className="latest-order-status-username">{itm.username}</td>
-                <td>{itm.email}</td>
-                <td>₹ {itm.prise}</td>
-                <td>
-                  {" "}
-                  <h1
-                    className={`latest-order-status ${
-                      itm.status === "placed"
-                        ? "lo-pending"
-                        : itm.status === "dispatched"
-                        ? "lo-dispatched"
-                        : itm.status === "completed"
-                        ? "lo-completed"
-                        : itm.status === "cancelled"
-                        ? "lo-cancelled"
-                        : null
-                    }`}
-                  >
-                    {itm.status === "placed" ? "pending" : itm.status}
-                  </h1>{" "}
-                </td>
-                <td>{date}</td>
+                <tr>
+                  <td>{key + 1}</td>
+                  <td className="latest-order-status-username">
+                    {itm.username}
+                  </td>
+                  <td>{itm.email}</td>
+                  <td>₹ {itm.prise}</td>
+                  <td>
+                    {" "}
+                    <h1
+                      className={`latest-order-status ${
+                        itm.status === "placed"
+                          ? "lo-pending"
+                          : itm.status === "dispatched"
+                          ? "lo-dispatched"
+                          : itm.status === "completed"
+                          ? "lo-completed"
+                          : itm.status === "cancelled"
+                          ? "lo-cancelled"
+                          : null
+                      }`}
+                    >
+                      {itm.status === "placed" ? "pending" : itm.status}
+                    </h1>{" "}
+                  </td>
+                  <td>{date}</td>
+                </tr>
               </tbody>
             );
           })}
         </table>
-        <Link to="/admin/orders" className="link">see more</Link>
+        <Link to="/admin/orders" className="link">
+          see more
+        </Link>
       </div>
     </div>
   );

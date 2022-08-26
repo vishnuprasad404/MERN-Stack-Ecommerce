@@ -28,11 +28,6 @@ function FavoritesPage() {
   const [favoriteRemoveLoading, setFavoriteRemoveLoading] = useState(new Set());
 
   useEffect(() => {
-    window.scroll({
-      top: 0,
-      left: 0,
-      behavior: "smooth",
-    });
     getAllWishlist();
   }, []);
 
@@ -114,7 +109,7 @@ function FavoritesPage() {
                         className="card-img-top"
                         onClick={() => nav(`/product/${itm.item}`)}
                       >
-                        <img width="40%" src={itm.product[0].image1} alt="" />
+                        <img width="40%" src={itm.product.image1} alt="" />
                       </div>
                       <div className="card-body">
                         <Rating
@@ -126,20 +121,16 @@ function FavoritesPage() {
                           }}
                         />
                         <h6 className="fav-title card-title">
-                          {itm.product[0].title}
+                          {itm.product.title}
                         </h6>
                         <p className="fav-prise">
-                          ₹ {itm.product[0].discountPrise}
-                          <del>{itm.product[0].orginalPrise}</del>
+                          ₹ {itm.product.discountPrise}
+                          <del>{itm.product.orginalPrise}</del>
                         </p>
                         <button
                           className="p-2 fav-to-cart-btn"
                           onClick={() =>
-                            addToCart(
-                              itm.item,
-                              itm.product[0].discountPrise,
-                              key
-                            )
+                            addToCart(itm.item, itm.product.discountPrise, key)
                           }
                         >
                           {!addToCartLoading.has(key) ? (

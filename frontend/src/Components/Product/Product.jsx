@@ -3,15 +3,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHeart, faCartPlus } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import "./Product.css";
-import {
-  AddToCartProvider,
-  AddToFavoritesProvider,
-  CreateOrderProvider,
-} from "../../ApiRenderController";
 import Notification from "../Notification/Notification";
 import Rating from "../../Components/Rating/Rating";
 import { Loading } from "../../Components/Loading/Loading";
 import { useStore } from "../../Hooks/useStore";
+import { usePost } from "../../Hooks/usePost";
 
 function Product({
   title,
@@ -34,23 +30,27 @@ function Product({
   const nav = useNavigate();
   const [loading1, setLoading1] = useState(new Set());
 
+  //
+  const { execute: addtoCart } = usePost("/addtocart");
+  const { execute: addtoFav } = usePost("/addtofavorites");
+  const { execute: createOrder } = usePost("/create-order");
+  //
   const onPurchase = async (selectedIndex) => {
     setLoading1((prev) => new Set([...prev, selectedIndex]));
     if (user) {
-      let orderObj = {
+      let order = {
         item: pid,
         quantity: 1,
         prise: parseInt(disPrise),
       };
-      let res = await CreateOrderProvider([orderObj]);
-      if (res) {
+      createOrder({ data: [order] }, (res, err) => {
         setLoading1((prev) => {
           const updated = new Set(prev);
           updated.delete(selectedIndex);
           return updated;
         });
         nav(`/checkout/${res.OrderId}`);
-      }
+      });
     } else {
       nav("/signin");
     }
@@ -58,31 +58,32 @@ function Product({
 
   const addToCart = async () => {
     if (user) {
-      let result = await AddToCartProvider(pid, disPrise);
-      if (result.itemAdded) {
-        dispatch({
-          type: "ADD_TO_CART",
-          payload: [{ pid, disPrise }],
-        });
-        setNotify({
-          display: "flex",
-          text: "Item added to cart",
-          type: "SUCCESS",
-        });
-        setTimeout(() => {
-          setNotify({ display: "none" });
-        }, 2000);
-      }
-      if (result.inCart) {
-        setNotify({
-          display: "flex",
-          text: "Item already in cart",
-          type: "WARNING",
-        });
-        setTimeout(() => {
-          setNotify({ display: "none" });
-        }, 2000);
-      }
+      addtoCart({ data: { pid, disPrise } }, (result, err) => {
+        if (result.itemAdded) {
+          dispatch({
+            type: "ADD_TO_CART",
+            payload: [{ pid, disPrise }],
+          });
+          setNotify({
+            display: "flex",
+            text: "Item added to cart",
+            type: "SUCCESS",
+          });
+          setTimeout(() => {
+            setNotify({ display: "none" });
+          }, 2000);
+        }
+        if (result.inCart) {
+          setNotify({
+            display: "flex",
+            text: "Item already in cart",
+            type: "WARNING",
+          });
+          setTimeout(() => {
+            setNotify({ display: "none" });
+          }, 2000);
+        }
+      });
     } else {
       nav("/signin");
     }
@@ -90,27 +91,28 @@ function Product({
 
   const addToFavorites = async () => {
     if (user) {
-      let res = await AddToFavoritesProvider(pid);
-      if (res.itemAdded) {
-        setNotify({
-          display: "flex",
-          text: "Item added to your wishlist",
-          type: "SUCCESS",
-        });
-        setTimeout(() => {
-          setNotify({ display: "none" });
-        }, 2000);
-      }
-      if (res.itemExist) {
-        setNotify({
-          display: "flex",
-          text: "Item already in your wishlist",
-          type: "WARNING",
-        });
-        setTimeout(() => {
-          setNotify({ display: "none" });
-        }, 2000);
-      }
+      addtoFav({ data: { pid } }, (res, err) => {
+        if (res.itemAdded) {
+          setNotify({
+            display: "flex",
+            text: "Item added to your wishlist",
+            type: "SUCCESS",
+          });
+          setTimeout(() => {
+            setNotify({ display: "none" });
+          }, 2000);
+        }
+        if (res.itemExist) {
+          setNotify({
+            display: "flex",
+            text: "Item already in your wishlist",
+            type: "WARNING",
+          });
+          setTimeout(() => {
+            setNotify({ display: "none" });
+          }, 2000);
+        }
+      });
     } else {
       nav("/signin");
     }

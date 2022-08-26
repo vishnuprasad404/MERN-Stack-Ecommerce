@@ -7,7 +7,7 @@ router.post("/addtofavorites", async (req, res) => {
   try {
     if (req.session.user) {
       let proObj = {
-        item: ObjectId(req.body.item),
+        item: ObjectId(req.body.pid),
       };
       let favExist = await db
         .get()
@@ -83,6 +83,9 @@ router.get("/getfavorites", async (req, res) => {
               as: "product",
             },
           },
+          {
+            $unwind: "$product"
+          }
         ])
         .toArray();
 

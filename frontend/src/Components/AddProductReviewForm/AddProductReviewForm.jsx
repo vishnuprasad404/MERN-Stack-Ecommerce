@@ -1,13 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import "./AddProductReviewForm.css";
 import { useForm } from "react-hook-form";
-import {
-  AddProductReviewProvider,
-  GetUserOwnReviewProvider,
-} from "../../ApiRenderController";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
 import { Loading } from "../Loading/Loading";
+import { usePost } from "../../Hooks/usePost";
+import { useFetch } from "../../Hooks/useFetch";
 
 function AddProductReviewForm({ pid }) {
   const {
@@ -15,31 +13,15 @@ function AddProductReviewForm({ pid }) {
     formState: { errors },
     handleSubmit,
   } = useForm();
+  const { execute, loading: addReviewLoading } = usePost("/add-review");
+  const { data: isReview } = useFetch(`/user/review/${pid}`);
   const [ratingHover, setRatingHover] = useState();
-  const [isReview, setIsReview] = useState("");
   const [rating, setRating] = useState("");
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    const getReview = async () => {
-      let res = await GetUserOwnReviewProvider(pid);
-      if (res) {
-        setRating(res.rating);
-        setIsReview(res);
-      }
-    };
-    getReview();
-  }, [pid]);
 
   const addReview = async (data) => {
-    setLoading(true);
     data.id = pid;
-    let res = await AddProductReviewProvider(data);
-    if (res) {
-      setLoading(false);
-    }
+    execute({ data: data });
   };
-
   return (
     <div className="add-review">
       <p>Add a review</p>
@@ -64,7 +46,8 @@ function AddProductReviewForm({ pid }) {
                   className="order-rating-star"
                   style={{
                     color: `${
-                      ratingValue <= (ratingHover || rating)
+                      ratingValue <=
+                      (ratingHover || rating ? rating : isReview.rating)
                         ? "gold"
                         : "lightgrey"
                     }`,
@@ -91,7 +74,7 @@ function AddProductReviewForm({ pid }) {
           {errors.feedback?.type === "required" && "Please add your feedback"}
         </span>
         <button type="submit" className="review-btn">
-          {loading ? (
+          {addReviewLoading ? (
             <Loading style={{ height: "auto" }} />
           ) : isReview ? (
             "Update Review"

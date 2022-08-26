@@ -14,7 +14,7 @@ import {
 
 function AdminPage() {
   const [sidebarState, setSidebarState] = useState("");
-  const [sidebarActive, setSidebarActive] = useState("Dashboard");
+  const [sidebarActive, setSidebarActive] = useState("/admin");
 
   return (
     <div className="admin-page">
@@ -34,14 +34,14 @@ function AdminPage() {
           <SidebarContent
             icon={faDashboard}
             title="Dashboard"
-            path=""
+            path="/admin"
             setSidebarActive={setSidebarActive}
             sidebarActive={sidebarActive}
           />
           <SidebarContent
             icon={faBolt}
             title="Orders"
-            path="orders"
+            path="/admin/orders"
             setSidebarActive={setSidebarActive}
             sidebarActive={sidebarActive}
           />
@@ -50,14 +50,14 @@ function AdminPage() {
             title="All Products"
             setSidebarActive={setSidebarActive}
             sidebarActive={sidebarActive}
-            path="products"
+            path="/admin/products"
           />
           <SidebarContent
             icon={faPlus}
             title="Add Product"
             sidebarActive={sidebarActive}
             setSidebarActive={setSidebarActive}
-            path="product/add"
+            path="/admin/product/add"
           />
           <SidebarContent
             icon={faUsers}
@@ -66,7 +66,7 @@ function AdminPage() {
             setSidebarActive={setSidebarActive}
             sidebarActive={sidebarActive}
           />
-          <SidebarContent icon={faRightFromBracket} title="LogOut" />
+          <SidebarContent icon={faRightFromBracket} title="LogOut" path="" />
         </div>
         <div className="admin-page-content">
           <Outlet />
@@ -87,11 +87,11 @@ function SidebarContent({
   return (
     <div
       className={`sidebar-content ${
-        sidebarActive === title ? "sidebar-active" : null
+        sidebarActive === path ? "sidebar-active" : null
       }`}
       onClick={() => {
         nav(path);
-        setSidebarActive(title);
+        setSidebarActive(window.location.pathname);
       }}
     >
       <FontAwesomeIcon icon={icon} className="icon" />

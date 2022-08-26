@@ -5,13 +5,16 @@ import { useFetch } from "../Hooks/useFetch";
 export const Store = createContext();
 
 const InitialState = {
-  user: false,
   admin: false,
+  user: false,
+  deliveryAddress: {},
   cart: [],
 };
 const reducer = (state, action) => {
   switch (action.type) {
     case "ADD_USER":
+      return { ...state, user: action.payload };
+    case "REMOVE_USER":
       return { ...state, user: action.payload };
     case "ADD_ADMIN":
       return { ...state, admin: action.payload };
@@ -24,25 +27,30 @@ const reducer = (state, action) => {
           return c.item !== action.payload.id;
         }),
       };
+    case "SET_ADDRESS":
+      return { ...state, deliveryAddress: action.payload };
     default:
       return state;
   }
 };
 
 export const StoreContext = ({ children }) => {
-  const { data } = useFetch("/getcartproducts");
-
+  const { data: cart } = useFetch("/getcartproducts");
+  const { data: deliveryAddress } = useFetch("/getshippingaddress");
   useEffect(() => {
-    if (data.length > 0) {
+    if (cart.length > 0) {
       dispatch({
         type: "ADD_TO_CART",
-        payload: data,
+        payload: cart,
       });
     }
-  }, [data]);
+    dispatch({
+      type: "SET_ADDRESS",
+      payload: deliveryAddress,
+    });
+  }, [cart, deliveryAddress]);
 
   const [state, dispatch] = useReducer(reducer, InitialState);
-  // console.log(state);
   return (
     <Store.Provider value={{ state, dispatch }}>{children}</Store.Provider>
   );

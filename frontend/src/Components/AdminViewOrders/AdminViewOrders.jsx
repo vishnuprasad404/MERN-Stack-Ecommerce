@@ -7,24 +7,15 @@ import {
   faCircleDot,
   faSearch,
 } from "@fortawesome/free-solid-svg-icons";
-import { useEffect } from "react";
-import axios from "axios";
-import { AdminGetAllOrdersProvider } from "../../ApiRenderController";
+import { useFetch } from "../../Hooks/useFetch";
+import { useUpdate } from "../../Hooks/useUpdate";
 
 function AdminViewOrders() {
-  const [orders, setOrders] = useState([]);
+  const { data: orders } = useFetch("/admin/orders");
+  const {execute}= useUpdate()
   const [filterQuery, setFilterQuery] = useState("");
   const [active, setActive] = useState("");
   const [pageNumber, setPageNumber] = useState(0);
-
-  useEffect(() => {
-    getAllOrders();
-  }, []);
-
-  const getAllOrders = async () => {
-    let res = await AdminGetAllOrdersProvider();
-    setOrders(res);
-  };
 
   const selectStatus = (key) => {
     setActive(key);
@@ -32,13 +23,9 @@ function AdminViewOrders() {
   };
 
   const changeOrderStatus = (e, order_id, pid) => {
-    axios
-      .put(
-        `${process.env.REACT_APP_BASE_URL}/admin/change-order-status/${order_id}/${e.target.value}/${pid}`
-      )
-      .then((res) => {
-        getAllOrders();
-      });
+    execute(`/admin/change-order-status/${order_id}/${e.target.value}/${pid}`,{},(result)=>{
+      console.log("results",result);
+    })
   };
 
   const ordersPerPage = 5;
@@ -48,7 +35,6 @@ function AdminViewOrders() {
     .slice(pagesVisited, pagesVisited + ordersPerPage)
     .filter((data) => {
       if (filterQuery !== "") {
-        console.log(data);
         return data.status === filterQuery;
       } else {
         return data;
@@ -64,6 +50,7 @@ function AdminViewOrders() {
       date = dd + "/" + mm + "/" + yyyy;
       return (
         <tbody
+          key={key}
           style={{
             textDecoration: `${
               itm.status === "cancelled"
@@ -72,90 +59,94 @@ function AdminViewOrders() {
             }`,
           }}
         >
-          <td data-label="ID"># {key + 1}</td>
-          <td data-label="Product">
-            <img width="50px" src={itm.product.image1} alt="" />
-          </td>
-          <td data-label="Title" className="admin-orders-title">
-            {itm.product.title}
-          </td>
-          <td data-label="User">{itm.username}</td>
-          <td data-label="Place">{itm.address.state}</td>
-          <td data-label="Phone">{itm.prise}</td>
-          <td data-label="Date">{date}</td>
-          <td data-label="Prise">$ {itm.prise}</td>
-          <td
-            data-label="Status"
-            style={{
-              color: `${
-                itm.status === "cancelled"
-                  ? "red"
-                  : itm.status === "placed"
-                  ? "rgb(255, 144, 53)"
-                  : "green"
-              }`,
-            }}
-          >
-            <div className="status-container">
-              <FontAwesomeIcon
-                icon={itm.status === "completed" ? faCircleCheck : faCircleDot}
-              />
-              <span style={{ marginLeft: "10px" }}>
-                {itm.status === "placed"
-                  ? "Pending"
-                  : itm.status === "dispatched"
-                  ? "Dispatched"
-                  : itm.status === "completed"
-                  ? "Completed"
-                  : itm.status === "cancelled"
-                  ? "Canceled"
-                  : null}
-              </span>
-            </div>
-          </td>
-          <td
-            style={{
-              display: `${
-                itm.status === "cancelled" || itm.status === "completed"
-                  ? "none"
-                  : "flex"
-              }`,
-            }}
-          >
-            <select
-              onChange={(e) => changeOrderStatus(e, itm._id, itm.item)}
-              value={itm.status}
+          <tr>
+            <td data-label="ID">{key + 1}</td>
+            <td data-label="Product">
+              <img width="50px" src={itm.product.image1} alt="" />
+            </td>
+            <td data-label="Title" className="admin-orders-title">
+              {itm.product.title}
+            </td>
+            <td data-label="User">{itm.username}</td>
+            <td data-label="Place">{itm.address && itm.address.state}</td>
+            <td data-label="Phone">{itm.address && itm.address.mobile}</td>
+            <td data-label="Date">{date}</td>
+            <td data-label="Prise">$ {itm.prise}</td>
+            <td
+              data-label="Status"
+              style={{
+                color: `${
+                  itm.status === "cancelled"
+                    ? "red"
+                    : itm.status === "placed"
+                    ? "rgb(255, 144, 53)"
+                    : "green"
+                }`,
+              }}
             >
-              <option
-                value=""
-                disabled={
-                  itm.status === "pending" ||
-                  itm.status === "dispatched" ||
-                  itm.status === "completed"
-                    ? true
-                    : false
-                }
+              <div className="status-container">
+                <FontAwesomeIcon
+                  icon={
+                    itm.status === "completed" ? faCircleCheck : faCircleDot
+                  }
+                />
+                <span style={{ marginLeft: "10px" }}>
+                  {itm.status === "placed"
+                    ? "Pending"
+                    : itm.status === "dispatched"
+                    ? "Dispatched"
+                    : itm.status === "completed"
+                    ? "Completed"
+                    : itm.status === "cancelled"
+                    ? "Canceled"
+                    : null}
+                </span>
+              </div>
+            </td>
+            <td
+              style={{
+                display: `${
+                  itm.status === "cancelled" || itm.status === "completed"
+                    ? "none"
+                    : "flex"
+                }`,
+              }}
+            >
+              <select
+                onChange={(e) => changeOrderStatus(e, itm._id, itm.item)}
+                value={itm.status}
               >
-                Pending
-              </option>
-              <option
-                value="dispatched"
-                disabled={
-                  itm.status === "dispatched" || itm.status === "completed"
-                    ? true
-                    : false
-                }
-              >
-                Dispatched
-              </option>
-              <option
-                value="completed"
-                disabled={itm.status === "completed" ? true : false}
-              >
-                Completed
-              </option>
-            </select>
-          </td>
+                <option
+                  value=""
+                  disabled={
+                    itm.status === "pending" ||
+                    itm.status === "dispatched" ||
+                    itm.status === "completed"
+                      ? true
+                      : false
+                  }
+                >
+                  Pending
+                </option>
+                <option
+                  value="dispatched"
+                  disabled={
+                    itm.status === "dispatched" || itm.status === "completed"
+                      ? true
+                      : false
+                  }
+                >
+                  Dispatched
+                </option>
+                <option
+                  value="completed"
+                  disabled={itm.status === "completed" ? true : false}
+                >
+                  Completed
+                </option>
+              </select>
+            </td>
+          </tr>
         </tbody>
       );
     });
@@ -208,16 +199,18 @@ function AdminViewOrders() {
       <div className="orders-list">
         <table className="table">
           <thead>
-            <th>id</th>
-            <th>Product</th>
-            <th>Title</th>
-            <th>name</th>
-            <th>Place</th>
-            <th>Phone</th>
-            <th>Date</th>
-            <th>Prise</th>
-            <th>Status</th>
-            <th>Action</th>
+            <tr>
+              <th>id</th>
+              <th>Product</th>
+              <th>Title</th>
+              <th>name</th>
+              <th>Place</th>
+              <th>Phone</th>
+              <th>Date</th>
+              <th>Prise</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
           </thead>
           {displayOrders.length >= 1 ? displayOrders : null}
         </table>

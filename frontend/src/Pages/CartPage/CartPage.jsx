@@ -140,6 +140,7 @@ function CartPage() {
           prise: itm.prise,
         };
       });
+      console.log(OrderDetails);
       let res = await CreateOrderProvider(OrderDetails);
       if (res) {
         setOrderLoading(false);

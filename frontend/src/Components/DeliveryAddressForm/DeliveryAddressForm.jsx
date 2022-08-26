@@ -1,36 +1,29 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useForm } from "react-hook-form";
 import "./DeliveryAddressForm.css";
 import DeliveryAddressInputBox from "../../Components/DeliveryAddressInputBox/DeliveryAddressInputBox";
-import {
-  AddDeliverAddressProvider,
-  GetDeliveryAddressProvider,
-} from "../../ApiRenderController";
 import { Loading } from "../../Components/Loading/Loading";
+import { usePost } from "../../Hooks/usePost";
+import { useStore } from "../../Hooks/useStore";
 
 function DeliveryAddressForm() {
-  const [shippingAddress, setShippingAddress] = useState({});
-  const [loading, setLoading] = useState(false);
+  const { state, dispatch } = useStore();
+  const { deliveryAddress } = state;
+  const { execute, loading } = usePost("/addshippingaddress");
   const {
     register,
     formState: { errors },
     handleSubmit,
   } = useForm();
 
-  useEffect(() => {
-    getShippingAddress();
-  });
-  const getShippingAddress = async () => {
-    let res = await GetDeliveryAddressProvider();
-    setShippingAddress(res);
-  };
   const onSaveAddress = (data) => {
-    setLoading(true);
-      let res = AddDeliverAddressProvider(data);
-      if (res) {
-        setLoading(false);
-        getShippingAddress();
-      }
+    execute({ data: data }, (result) => {
+      // after add or update delivery address
+      dispatch({
+        type: "SET_ADDRESS",
+        payload: data,
+      });
+    });
   };
 
   return (
@@ -39,7 +32,7 @@ function DeliveryAddressForm() {
         <div className="inp-pair">
           <div className="inp-container">
             <DeliveryAddressInputBox
-              placeholder={shippingAddress ? shippingAddress.name : "Full Name"}
+              placeholder={deliveryAddress ? deliveryAddress.name : "Full Name"}
               register={register}
               registerName="name"
               required={true}
@@ -53,7 +46,7 @@ function DeliveryAddressForm() {
           <div className="inp-container">
             <DeliveryAddressInputBox
               placeholder={
-                shippingAddress ? shippingAddress.mobile : "Mobile Number"
+                deliveryAddress ? deliveryAddress.mobile : "Mobile Number"
               }
               register={register}
               registerName="mobile"
@@ -70,7 +63,7 @@ function DeliveryAddressForm() {
           <div className="inp-container">
             <DeliveryAddressInputBox
               placeholder={
-                shippingAddress ? shippingAddress.pincode : "Pincode"
+                deliveryAddress ? deliveryAddress.pincode : "Pincode"
               }
               register={register}
               registerName="pincode"
@@ -87,7 +80,7 @@ function DeliveryAddressForm() {
               registerName="locality"
               required={true}
               placeholder={
-                shippingAddress ? shippingAddress.locality : "Locality"
+                deliveryAddress ? deliveryAddress.locality : "Locality"
               }
               label="Locality"
             />
@@ -101,8 +94,8 @@ function DeliveryAddressForm() {
           <textarea
             {...register("address", { required: true })}
             placeholder={
-              shippingAddress
-                ? shippingAddress.address
+              deliveryAddress
+                ? deliveryAddress.address
                 : "Address (Area and Street) & House No"
             }
           ></textarea>
@@ -121,8 +114,8 @@ function DeliveryAddressForm() {
               registerName="district"
               required={true}
               placeholder={
-                shippingAddress
-                  ? shippingAddress.district
+                deliveryAddress
+                  ? deliveryAddress.district
                   : "City/District/Town"
               }
               label="District"
@@ -197,8 +190,8 @@ function DeliveryAddressForm() {
               required={false}
               label="Landmark"
               placeholder={
-                shippingAddress
-                  ? shippingAddress.landmark
+                deliveryAddress
+                  ? deliveryAddress.landmark
                   : "Land Mark (Optional)"
               }
             />
@@ -210,8 +203,8 @@ function DeliveryAddressForm() {
               required={false}
               label="Alternate Phone Number"
               placeholder={
-                shippingAddress
-                  ? shippingAddress.altPhone
+                deliveryAddress
+                  ? deliveryAddress.altPhone
                   : "Altranate Phone (Optional)"
               }
             />
@@ -224,7 +217,7 @@ function DeliveryAddressForm() {
         >
           {loading ? (
             <Loading style={{ height: "0px" }} iconSpace="5px" iconSize="5px" />
-          ) : shippingAddress ? (
+          ) : deliveryAddress ? (
             "Update Address"
           ) : (
             "Add Address"

@@ -75,6 +75,7 @@ router.post("/admin/addproduct", (req, res) => {
           image2: process.env.BASE_URL + "/uploads/" + image2.md5 + ".png",
           image3: process.env.BASE_URL + "/uploads/" + image3.md5 + ".png",
           image4: process.env.BASE_URL + "/uploads/" + image4.md5 + ".png",
+          created_at: new Date(),
           reviews: [],
         })
         .then((response) => {
