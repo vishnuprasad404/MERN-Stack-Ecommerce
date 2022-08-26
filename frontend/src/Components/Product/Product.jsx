@@ -8,6 +8,8 @@ import Rating from "../../Components/Rating/Rating";
 import { Loading } from "../../Components/Loading/Loading";
 import { useStore } from "../../Hooks/useStore";
 import { usePost } from "../../Hooks/usePost";
+import { LazyLoadImage } from "react-lazy-load-image-component";
+import "react-lazy-load-image-component/src/effects/blur.css";
 
 function Product({
   title,
@@ -131,7 +133,16 @@ function Product({
             }`}
             onClick={() => nav(`/product/${pid}`)}
           >
-            {!skelton ? <img src={image} alt="img" /> : null}
+            {!skelton ? (
+              <LazyLoadImage
+                effect="blur"
+                src={image}
+                alt="img"
+                className="img"
+                width="auto"
+                style={{ display: "flex", justifyContent: "center" }}
+              />
+            ) : null}
           </div>
           <div className="card-body">
             {!skelton ? (

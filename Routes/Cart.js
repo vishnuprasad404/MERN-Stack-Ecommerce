@@ -4,10 +4,11 @@ const db = require("../database_config");
 const ObjectId = require("mongodb").ObjectId;
 
 router.post("/addtocart", async (req, res) => {
+  console.log(req.body);
   try {
     let productObj = {
       item: ObjectId(req.body.pid),
-      prise: req.body.prise,
+      prise: parseInt(req.body.disPrise),
       quantity: 1,
     };
 
@@ -66,39 +67,39 @@ router.post("/addtocart", async (req, res) => {
 router.get("/getcartproducts", (req, res) => {
   try {
     if (req.session.user) {
-    db.get()
-      .collection(process.env.CART_COLLECTION)
-      .aggregate([
-        {
-          $match: { user: ObjectId(req.session.user._id) },
-        },
-        {
-          $unwind: "$products",
-        },
-        {
-          $project: {
-            item: "$products.item",
-            prise: "$products.prise",
-            quantity: "$products.quantity",
+      db.get()
+        .collection(process.env.CART_COLLECTION)
+        .aggregate([
+          {
+            $match: { user: ObjectId(req.session.user._id) },
           },
-        },
-        {
-          $lookup: {
-            from: "products",
-            localField: "item",
-            foreignField: "_id",
-            as: "product",
+          {
+            $unwind: "$products",
           },
-        },
-        {
-          $unwind: "$product",
-        },
-      ])
-      .toArray()
-      .then((result) => {
-        // console.log(result);
-        res.json(result);
-      });
+          {
+            $project: {
+              item: "$products.item",
+              prise: "$products.prise",
+              quantity: "$products.quantity",
+            },
+          },
+          {
+            $lookup: {
+              from: "products",
+              localField: "item",
+              foreignField: "_id",
+              as: "product",
+            },
+          },
+          {
+            $unwind: "$product",
+          },
+        ])
+        .toArray()
+        .then((result) => {
+          // console.log(result);
+          res.json(result);
+        });
     }
   } catch (error) {
     console.log(error);

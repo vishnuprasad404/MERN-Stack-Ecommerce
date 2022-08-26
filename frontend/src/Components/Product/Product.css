@@ -34,7 +34,7 @@
   background-position: var(--seklton-position);
   animation: skelton 3s infinite;
 }
-.product-image-container img {
+.product-image-container .img {
   width: 45%;
 }
 .product-card-title {
@@ -111,6 +111,10 @@
   background-color: rgb(162, 204, 253);
   color: white;
 }
+.lazy-load-image-background{
+  display: flex !important;
+  justify-content: center;
+}
 @media (max-width: 450px) {
   .product-card {
     height: auto !important;
@@ -136,7 +140,7 @@
 }
 
 @media (max-width: 400px) {
-  .product-image-container img {
+  .product-image-container .img {
     width: 60%;
   }
   .product-action-btns {
@@ -161,7 +165,7 @@
   .product-image-container {
     height: max-content;
   }
-  .product-image-container img {
+  .product-image-container .img {
     width: 40%;
   }
 }
