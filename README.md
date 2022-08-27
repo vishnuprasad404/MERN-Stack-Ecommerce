@@ -89,6 +89,10 @@ REACT_APP_RAZORPAY_KEY_ID = // your razorpay key id
 ![Screenshot at 2022-08-20 19-12-04](https://user-images.githubusercontent.com/109088129/186895391-97ce7576-1241-458a-947e-4e2311eb69dd.png)
 ##
 ![Screenshot at 2022-08-20 19-18-38](https://user-images.githubusercontent.com/109088129/186895448-6228b96d-23b0-417c-aac2-1bf0de4ab4db.png)
+##
+### Admin Dashboard
+
+![Screenshot at 2022-08-27 10-57-05](https://user-images.githubusercontent.com/109088129/187016302-51b0e395-682f-4c08-903c-d2411a178f77.png)
 
 #### Deployed on
 [https://ecartonline.herokuapp.com/](https://ecartonline.herokuapp.com/)
