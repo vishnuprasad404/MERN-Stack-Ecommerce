@@ -1,8 +1,7 @@
 import React from "react";
 import "./OrderPlacedNotifyPage.css";
-import image from "../../Assets/order-placed-success.png";
+import image from "../../Assets/orderplaced.gif";
 import { useNavigate, useParams } from "react-router-dom";
-import { HashLink as Link } from "react-router-hash-link";
 import { useEffect } from "react";
 import { GetAllOrdersProvider } from "../../ApiRenderController";
 
@@ -32,17 +31,12 @@ function OrderPlacedNotifyPage() {
     <div className="order-placed-notify-page">
       <div className="order-placed-notify-container">
         <div className="order-placed-container">
-          <h3>Your Order Placed Successfully</h3>
-          <p className="order-id">Order Id : ({OrderId}) </p>
           <img src={image} alt="" />
           <p>Thankyou for shopping</p>
-          <button onClick={() => nav("/")}>Continue Shopping</button>
-          <span className="order-placed-link">
-            or <br />
-            <Link className="link" to="/orders">
-              My orders
-            </Link>
-          </span>
+          <div className="order-placed-success-btns">
+            <button onClick={() => nav("/orders")}>My Orders</button>
+            <button onClick={() => nav("/")}>Continue Shopping</button>
+          </div>
         </div>
       </div>
     </div>

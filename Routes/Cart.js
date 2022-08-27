@@ -4,7 +4,6 @@ const db = require("../database_config");
 const ObjectId = require("mongodb").ObjectId;
 
 router.post("/addtocart", async (req, res) => {
-  console.log(req.body);
   try {
     let productObj = {
       item: ObjectId(req.body.pid),

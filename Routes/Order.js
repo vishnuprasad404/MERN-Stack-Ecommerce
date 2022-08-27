@@ -307,6 +307,9 @@ router.put(
             )
             .then((result) => {
               if (result) {
+                res.json({
+                  status: "placed",
+                });
                 db.get()
                   .collection(process.env.ORDERS_COLLECTION)
                   .aggregate([
@@ -323,9 +326,8 @@ router.put(
                       },
                     },
                   ])
-                  .forEach(async (pro) => {
-                    let updateInStock = await db
-                      .get()
+                  .forEach((pro) => {
+                    db.get()
                       .collection(process.env.PRODUCTS_COLLECTION)
                       .updateOne(
                         {
@@ -335,11 +337,6 @@ router.put(
                           $inc: { inStock: -pro.quantity },
                         }
                       );
-                    if (updateInStock) {
-                      res.json({
-                        status: "placed",
-                      });
-                    }
                   });
               }
             });

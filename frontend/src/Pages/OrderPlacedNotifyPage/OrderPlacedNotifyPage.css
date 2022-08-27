@@ -1,27 +1,16 @@
-.order-placed-notify-page {
-  background: linear-gradient(
-    45deg,
-    red,
-    rgb(0, 255, 0),
-    rgb(0, 195, 255),
-    rgb(255, 85, 0)
-  );
-  padding-top: 7px;
-}
-
 .order-placed-notify-container {
   width: 100%;
   min-height: 100vh;
-  border-top: 5px solid limegreen red;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: rgb(243, 243, 243);
+  background-color: rgba(245, 245, 245, 0.87);
   text-align: center;
 }
 
 .order-placed-container {
   width: 50%;
+  height: 600px;
   padding: 50px;
   display: flex;
   flex-direction: column;
@@ -29,19 +18,31 @@
   justify-content: center;
   background-color: rgb(255, 255, 255);
 }
-
-.order-placed-container button {
-  padding: 8px 30px;
+.order-placed-container p {
+  font-size: 20px;
   margin-top: 20px;
+}
+.order-placed-container img {
+  width: 300px;
+}
+.order-placed-success-btns {
+  width: 100%;
+}
+.order-placed-success-btns button {
+  width: 170px;
+  height: 40px;
   background-color: rgb(113, 180, 255);
   color: white;
+  font-size: 14px;
+  letter-spacing: 1px;
+  margin: 20px 8px;
 }
-.order-placed-link{
-  margin-top: 10px;
-}
-.order-placed-link .link{
-  text-decoration: none;
-
+.order-placed-success-btns button:nth-child(2) {
+  width: 170px;
+  height: 40px;
+  background-color: rgb(26, 26, 27);
+  color: rgb(255, 255, 255);
+  margin: 5px;
 }
 
 @media (max-width: 1000px) {
@@ -50,15 +51,15 @@
   }
   .order-placed-container {
     width: 100%;
+    all: unset;
   }
-
 }
 
-@media (max-width: 500px) {
-  .order-placed-container h3{
-    font-size: 20px;
+@media (max-width: 384px) {
+  .order-placed-success-btns button {
+    width: 100%;
   }
-  .order-placed-container .order-id{
-    font-size: 12px;
+  .order-placed-success-btns button:nth-child(2) {
+    width: 100%;
   }
 }
