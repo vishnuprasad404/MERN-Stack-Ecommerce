@@ -10,6 +10,7 @@ import { useStore } from "../../Hooks/useStore";
 import { usePost } from "../../Hooks/usePost";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import "react-lazy-load-image-component/src/effects/blur.css";
+import { SmallLoading } from "../Loading/Loading";
 
 function Product({
   title,
@@ -19,18 +20,20 @@ function Product({
   inStock,
   pid,
   Mapkey,
-  skelton,
   buttonStyle,
   cartIconStyle,
   favIconStyle,
   cardStyle,
   notificationStyle,
+  showInstock,
 }) {
   const { state, dispatch } = useStore();
   const { user } = state;
   const [notify, setNotify] = useState({ display: "none" });
   const nav = useNavigate();
   const [loading1, setLoading1] = useState(new Set());
+  const [addToFavoriteLoading, setAddToFavoriteLoading] = useState(new Set());
+  const [cartLoading, setCartLoading] = useState(new Set());
 
   //
   const { execute: addtoCart } = usePost("/addtocart");
@@ -58,9 +61,17 @@ function Product({
     }
   };
 
-  const addToCart = async () => {
+  const addToCart = async (selectedIndex) => {
     if (user) {
+      setCartLoading((prev) => new Set([...prev, Mapkey]));
       addtoCart({ data: { pid, disPrise } }, (result, err) => {
+        if (result) {
+          setCartLoading((prev) => {
+            let updated = new Set(prev);
+            updated.delete(selectedIndex);
+            return updated;
+          });
+        }
         if (result.itemAdded) {
           dispatch({
             type: "ADD_TO_CART",
@@ -91,9 +102,17 @@ function Product({
     }
   };
 
-  const addToFavorites = async () => {
+  const addToFavorites = async (selectedIndex) => {
     if (user) {
+      setAddToFavoriteLoading((prev) => new Set([...prev, Mapkey]));
       addtoFav({ data: { pid } }, (res, err) => {
+        if (res) {
+          setAddToFavoriteLoading((prev) => {
+            let updated = new Set(prev);
+            updated.delete(selectedIndex);
+            return updated;
+          });
+        }
         if (res.itemAdded) {
           setNotify({
             display: "flex",
@@ -128,48 +147,33 @@ function Product({
       >
         <div className="card product-card" style={cardStyle}>
           <div
-            className={`${
-              !skelton ? "product-image-container" : "skelton-image-container"
-            }`}
+            className="product-image-container"
             onClick={() => nav(`/product/${pid}`)}
           >
-            {!skelton ? (
-              <LazyLoadImage
-                effect="blur"
-                src={image}
-                alt="img"
-                className="img"
-                width="auto"
-                style={{ display: "flex", justifyContent: "center" }}
-              />
-            ) : null}
+            <LazyLoadImage
+              effect="blur"
+              src={image}
+              alt="img"
+              className="img"
+              width="auto"
+              style={{ display: "flex", justifyContent: "center" }}
+            />
           </div>
           <div className="card-body">
-            {!skelton ? (
-              <Rating
-                id={pid}
-                style={{
-                  marginBottom: "10px",
-                  width: "45px",
-                  height: "24px",
-                }}
-              />
-            ) : null}
-            <h6
-              className={`card-title product-card-title ${
-                skelton ? "skelton-product-title" : null
-              }`}
-            >
-              {title}
-            </h6>
-            <p
-              className={`card-text mb-0 ${skelton ? "skelton-prise" : null} `}
-            >
-              {!skelton ? "₹ " : null}
-              {disPrise}
+            <Rating
+              id={pid}
+              style={{
+                marginBottom: "10px",
+                width: "45px",
+                height: "24px",
+              }}
+            />
+            <h6 className="card-title product-card-title">{title}</h6>
+            <p className="card-text mb-0">
+              ₹{disPrise}
               <del>{cutPrise}</del>
             </p>
-            {!skelton ? (
+            {showInstock === true ? (
               <span
                 className="instock"
                 style={{ color: inStock >= 1 ? "green" : "red" }}
@@ -180,7 +184,7 @@ function Product({
             <div className="product-action-btns">
               <button
                 style={buttonStyle}
-                className={`${skelton ? "skelton-btn" : "buy"}`}
+                className="buy"
                 onClick={() => onPurchase(Mapkey)}
               >
                 {!loading1.has(Mapkey) ? (
@@ -197,20 +201,33 @@ function Product({
                   />
                 )}
               </button>
-              {!skelton && inStock >= 1 ? (
+              {inStock >= 1 ? (
                 <>
-                  <FontAwesomeIcon
-                    style={favIconStyle}
-                    icon={faHeart}
-                    className="fav-icon"
-                    onClick={addToFavorites}
-                  />
-                  <FontAwesomeIcon
-                    style={cartIconStyle}
-                    icon={faCartPlus}
-                    className="cart-icon"
-                    onClick={addToCart}
-                  />
+                  <div className="fav-icon">
+                    {!addToFavoriteLoading.has(Mapkey) ? (
+                      <FontAwesomeIcon
+                        style={favIconStyle}
+                        icon={faHeart}
+                        className="fav-icon"
+                        onClick={() => addToFavorites(Mapkey)}
+                      />
+                    ) : (
+                      <SmallLoading />
+                    )}
+                  </div>
+                  <div className="cart-icon">
+                    {!cartLoading.has(Mapkey) ? (
+                      <FontAwesomeIcon
+                        style={cartIconStyle}
+                        icon={faCartPlus}
+                        onClick={() => {
+                          addToCart(Mapkey);
+                        }}
+                      />
+                    ) : (
+                      <SmallLoading />
+                    )}
+                  </div>
                 </>
               ) : null}
             </div>

@@ -103,7 +103,6 @@ function ProductsPage() {
             cardStyle={{
               border: "1px solid rgb(223, 223, 223)",
               boxShadow: "none",
-              minHeight: "300px",
               maxHeight: "300px",
             }}
             buttonStyle={{ display: "none" }}
@@ -113,13 +112,11 @@ function ProductsPage() {
               right: "10px",
               padding: "0",
             }}
+            showInstock
           />
         </Fragment>
       );
     });
-
-  console.log(DispalyProducts);
-
   return (
     <div className="products-page" id="allproducts">
       <Navbar />
@@ -155,8 +152,8 @@ function ProductsPage() {
               <input
                 type="range"
                 className="prise-range"
-                min={MinRef.current}
-                max={MaxRef.current / 2}
+                min={toString(MinRef.current)}
+                max={toString(MaxRef.current / 2)}
                 value={minValue}
                 onChange={(e) => {
                   setMinValue(parseInt(e.target.value));
@@ -165,8 +162,8 @@ function ProductsPage() {
               <input
                 type="range"
                 className="prise-range"
-                min={MaxRef.current / 2}
-                max={MaxRef.current}
+                min={toString(MaxRef.current / 2)}
+                max={toString(MaxRef.current)}
                 value={maxValue}
                 onChange={(e) => {
                   setMaxValue(parseInt(e.target.value));
@@ -178,8 +175,8 @@ function ProductsPage() {
                 type="number"
                 placeholder="Minimum"
                 value={minValue}
-                min={MinRef.current}
-                max={MaxRef.current / 2}
+                min={toString(MinRef.current)}
+                max={toString(MaxRef.current / 2)}
                 onChange={(e) => {
                   setMinValue(e.target.value);
                 }}
@@ -188,8 +185,8 @@ function ProductsPage() {
                 type="number"
                 placeholder="Maximum"
                 value={maxValue}
-                min={MaxRef.current / 2}
-                max={MaxRef.current}
+                min={toString(MaxRef.current / 2)}
+                max={toString(MaxRef.current)}
                 onChange={(e) => {
                   setMaxValue(e.target.value);
                 }}

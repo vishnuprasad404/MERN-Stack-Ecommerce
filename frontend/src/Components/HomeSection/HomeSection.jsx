@@ -18,13 +18,19 @@ import SplashScreen from "../../Pages/SplashScreen/SplashScreen";
 
 function HomeSection() {
   const { data: products, loading } = useFetch("/products");
-  const [skelton, setSkelton] = useState(true);
   const [splashscreen, setSplashscreen] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
 
-  useEffect(() => {
-    if (!loading) {
-      setSkelton(false);
+  const handleResize = () => {
+    if (window.innerWidth < 720) {
+      setIsMobile(true);
+    } else {
+      setIsMobile(false);
     }
+  };
+  useEffect(() => {
+    window.addEventListener("resize", handleResize);
+
     // remove splash screen after 1.5 second//
     setTimeout(() => {
       setSplashscreen(false);
@@ -59,9 +65,9 @@ function HomeSection() {
             enableTilt={true}
           >
             <Banner
-              image={window.screen.width <= "500" ? banner1small : banner1}
+              image={window.screen.width <= "500" ? banner1small : banner2}
             />
-            <Banner image={banner2} />
+            <Banner image={banner1} />
             <Banner image={banner3} />
             <Banner image={banner1} />
             <Banner image={banner2} />
@@ -69,6 +75,9 @@ function HomeSection() {
           <div className="products-container container-fluid ">
             <div className="row gy-5">
               {shuffleArray(products)
+                .filter((item) => {
+                  return item.inStock > 0;
+                })
                 .slice(0, 6)
                 .map((itm, key) => {
                   return (
@@ -81,7 +90,7 @@ function HomeSection() {
                         disPrise={itm.discountPrise}
                         cutPrise={itm.orginalPrise}
                         inStock={itm.inStock}
-                        skelton={skelton}
+                        showInstock={!isMobile ? true : false}
                       />
                     </Fragment>
                   );

@@ -25,6 +25,14 @@
   margin-bottom: 40px;
   display: grid;
   place-items: center;
+  position: relative;
+}
+.view-product-favorite-icon{
+  position: absolute;
+  top: 15px;
+  right: 20px;
+  color: rgb(179, 179, 179);
+  cursor: pointer;
 }
 .sub-image-container-wrapper {
   display: flex;
@@ -52,6 +60,9 @@
 .view-product-btns button:nth-child(1){
   background: #6685ff;
   color: white;
+}
+.view-product-btns .comming-soon-btn{
+  width: 350px;
 }
 
 .view-product-page-right-container {
@@ -129,7 +140,9 @@
     width: 100%;
     margin: 10px 0px;
     font-size: 13px;
-
+  }
+  .view-product-btns .comming-soon-btn{
+    width: 100%;
   }
 }
 

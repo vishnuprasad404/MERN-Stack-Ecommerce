@@ -9,12 +9,6 @@ function OrderPlacedNotifyPage() {
   const nav = useNavigate();
   const { OrderId } = useParams();
   useEffect(() => {
-    window.scroll({
-      top: 0,
-      left: 0,
-      behavior: "smooth",
-    });
-
     const getAllOrders = async () => {
       let res = await GetAllOrdersProvider();
       let findOrder = res.filter((data) => {

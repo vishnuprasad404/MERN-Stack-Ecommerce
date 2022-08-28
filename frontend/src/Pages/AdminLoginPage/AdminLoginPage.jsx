@@ -23,11 +23,11 @@ function AdminLoginPage() {
       .post(`${process.env.REACT_APP_BASE_URL}/admin/signin`, data)
       .then((res) => {
         setLoading(false);
-        dispatch({
-          type: "ADD_ADMIN",
-          payload: true,
-        });
         if (res.data) {
+          dispatch({
+            type: "ADD_ADMIN",
+            payload: true,
+          });
           setNotify({
             display: "flex",
             text: "Admin login Successfully",

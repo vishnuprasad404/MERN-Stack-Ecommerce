@@ -108,6 +108,7 @@ function UpdateAccountForm({ setNotify }) {
               type="text"
               {...register("username", { required: true })}
               defaultValue={user.user.username}
+              className="update-profile-input"
             />
             <label>Username</label>
             <span className="form_err">
@@ -123,6 +124,7 @@ function UpdateAccountForm({ setNotify }) {
                 minLength: 10,
                 maxLength: 10,
               })}
+              className="update-profile-input"
             />
             <label>Phone</label>
             <span className="form_err">
@@ -144,6 +146,7 @@ function UpdateAccountForm({ setNotify }) {
                   required: true,
                   pattern: "/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$/i",
                 })}
+                className="update-profile-input"
               />
               <label>Email</label>
               <span className="form_err">
@@ -162,6 +165,7 @@ function UpdateAccountForm({ setNotify }) {
                 style={{
                   outline: `${changePassword ? "1px solid blue" : "none"} `,
                 }}
+                className="update-profile-input"
               />
               <label>Current Password</label>
               <br />
@@ -185,6 +189,7 @@ function UpdateAccountForm({ setNotify }) {
               style={{
                 outline: `${changePassword ? "1px solid blue" : "none"} `,
               }}
+              className="update-profile-input"
             />
             <label>New Password</label>
             <span className="form_err">

@@ -5,22 +5,27 @@ import Review from "../../Components/Review/Review";
 import Navbar from "../../Components/Navbar/Navbar";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBolt, faCartPlus } from "@fortawesome/free-solid-svg-icons";
+import { faBolt, faCartPlus, faHeart } from "@fortawesome/free-solid-svg-icons";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import Notification from "../../Components/Notification/Notification";
 import { AddToCartProvider } from "../../ApiRenderController";
 import { Loading } from "../../Components/Loading/Loading";
 import { useStore } from "../../Hooks/useStore";
+import { usePost } from "../../Hooks/usePost";
+import { SmallLoading } from "../../Components/Loading/Loading";
 
 function ViewProductPage() {
   const { state } = useStore();
+  const { execute: addtoFav, loading: addToFavLoading } =
+    usePost("/addtofavorites");
   const { user } = state;
   const { id } = useParams();
   const nav = useNavigate();
   const [product, setProduct] = useState();
   const [notify, setNotify] = useState({ display: "none" });
   const [loading, setloading] = useState(true);
+  const [productImage, setProductImage] = useState();
 
   useEffect(() => {
     axios.get(`${process.env.REACT_APP_BASE_URL}/products`).then((res) => {
@@ -32,7 +37,6 @@ function ViewProductPage() {
     });
   }, [id]);
 
-  const [productImage, setProductImage] = useState();
   const addToCart = async (pid, prise) => {
     if (user) {
       let result = await AddToCartProvider(pid, prise);
@@ -79,6 +83,35 @@ function ViewProductPage() {
     }
   };
 
+  const addToFavorites = async () => {
+    if (user) {
+      addtoFav({ data: { pid: id } }, (res, err) => {
+        if (res.itemAdded) {
+          setNotify({
+            display: "flex",
+            text: "Item added to your wishlist",
+            type: "SUCCESS",
+          });
+          setTimeout(() => {
+            setNotify({ display: "none" });
+          }, 2000);
+        }
+        if (res.itemExist) {
+          setNotify({
+            display: "flex",
+            text: "Item already in your wishlist",
+            type: "WARNING",
+          });
+          setTimeout(() => {
+            setNotify({ display: "none" });
+          }, 2000);
+        }
+      });
+    } else {
+      nav("/signin");
+    }
+  };
+
   return (
     <div className="view-product-page" id="view-product">
       <Navbar />
@@ -95,6 +128,13 @@ function ViewProductPage() {
                 src={productImage ? productImage : product.image1}
                 alt=""
               />
+              <div className="view-product-favorite-icon">
+                {!addToFavLoading ? (
+                  <FontAwesomeIcon icon={faHeart} onClick={addToFavorites} />
+                ) : (
+                  <SmallLoading />
+                )}
+              </div>
             </div>
             <div className="sub-image-container-wrapper">
               <div className="sub-image-container">
@@ -102,9 +142,6 @@ function ViewProductPage() {
                   className="sub-image"
                   onClick={() => setProductImage(product.image2)}
                   onMouseEnter={() => setProductImage(product.image2)}
-                  onMouseLeave={() => {
-                    setProductImage(product.image1);
-                  }}
                 >
                   <img width="90%" src={product.image2} alt="" />
                 </div>
@@ -114,9 +151,6 @@ function ViewProductPage() {
                   className="sub-image"
                   onClick={() => setProductImage(product.image3)}
                   onMouseEnter={() => setProductImage(product.image3)}
-                  onMouseLeave={() => {
-                    setProductImage(product.image1);
-                  }}
                 >
                   <img width="90%" src={product.image3} alt="" />
                 </div>
@@ -126,9 +160,6 @@ function ViewProductPage() {
                   className="sub-image"
                   onClick={() => setProductImage(product.image4)}
                   onMouseEnter={() => setProductImage(product.image4)}
-                  onMouseLeave={() => {
-                    setProductImage(product.image1);
-                  }}
                 >
                   <img width="90%" src={product.image4} alt="" />
                 </div>
@@ -143,10 +174,10 @@ function ViewProductPage() {
               </button>
               <button
                 style={{
-                  width: `${product.inStock < 1 ? "300px" : null}`,
                   cursor: product.inStock < 1 ? "not-allowed" : null,
                 }}
                 onClick={product.inStock >= 1 ? onPurchase : null}
+                className={`${product.inStock < 1 ? "comming-soon-btn" : null}`}
               >
                 <FontAwesomeIcon icon={faBolt} />{" "}
                 {product.inStock < 1 ? "Comming Soon" : "BUY NOW"}

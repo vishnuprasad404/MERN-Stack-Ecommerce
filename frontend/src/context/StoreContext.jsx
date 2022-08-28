@@ -27,6 +27,11 @@ const reducer = (state, action) => {
           return c.item !== action.payload.id;
         }),
       };
+    case "REMOVE_ALL_FROM_CART":
+      return {
+        ...state,
+        cart: action.payload,
+      };
     case "SET_ADDRESS":
       return { ...state, deliveryAddress: action.payload };
     default:

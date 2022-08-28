@@ -10,7 +10,7 @@ import {
 
 function Footer() {
   return (
-    <footer className="footer text-white w-100">
+    <footer className="footer w-100 ">
       <div className="footer-social-media-container">
         <span>Get connected with us on social networks</span>
         <div className="footer-social-media-icons">
@@ -25,14 +25,13 @@ function Footer() {
           </a>
         </div>
       </div>
-      <div className="container-fluid p-5 footer-container">
+      <div className="container p-5 footer-container">
         <div className="row">
-          <div className="col-md-3 footer-content">
+          <div className="col-md-4 footer-content">
             <h5>Ecart</h5>
             <p>
               Lorem ipsum dolor sit amet consectetur adipisicing elit. Culpa
-              saepe quibusdam debitis. Fugit molestias doloremque corrupti.
-              Praesentium, eligendi modi. Numquam.
+              saepe quibusdam debitis. Fugit 
             </p>
           </div>
           <div className="col-md-3 footer-content">
@@ -69,10 +68,10 @@ function Footer() {
               </li>
             </ul>
           </div>
-          <div className="col-md-3 footer-content">
+          <div className="col-md-2 footer-content">
             <h5>Contacts</h5>
             <ul>
-              <li>India ,Kerala,Pathanamthitta</li>
+              <li>Kerala,Pathanamthitta</li>
               <li>ecartonline@gmail.com</li>
               <li>+91 1000203043</li>
               <li>+91 1000203043</li>

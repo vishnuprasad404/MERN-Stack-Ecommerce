@@ -18,7 +18,7 @@ import Notification from "../../Components/Notification/Notification";
 import { useStore } from "../../Hooks/useStore";
 
 function AccountPage() {
-  const { state } = useStore();
+  const { state, dispatch } = useStore();
   const { user } = state;
   const [loading, setLoading] = useState(true);
   const [notify, setNotify] = useState({ display: "none" });
@@ -33,7 +33,15 @@ function AccountPage() {
   const onLogOut = async () => {
     let res = await LogoutUserProvider();
     if (res) {
-      nav("/signin");
+      dispatch({
+        type: "REMOVE_USER",
+        payload: false,
+      });
+      dispatch({
+        type: "REMOVE_ALL_FROM_CART",
+        payload: [],
+      });
+      nav("/");
     }
   };
 

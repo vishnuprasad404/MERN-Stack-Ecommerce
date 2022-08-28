@@ -1,16 +1,3 @@
-:root {
-  --skelton-background: linear-gradient(
-      to right,
-      rgba(255, 255, 255, 0),
-      rgba(255, 255, 255, 0.5) 50%,
-      rgba(255, 255, 255, 0) 80%
-    ),
-    rgb(230, 230, 230);
-  --skelton-repeat: repeat-y;
-  --skelton-size: 50% 100%;
-  --seklton-position: 0 0;
-}
-
 .product-card {
   min-height: 250px;
   border: none;
@@ -25,15 +12,6 @@
   justify-content: center;
   overflow: hidden;
 }
-.skelton-image-container {
-  width: 100%;
-  height: 130px;
-  background: var(--skelton-background);
-  background-repeat: var(--skelton-repeat);
-  background-size: var(--skelton-size);
-  background-position: var(--seklton-position);
-  animation: skelton 3s infinite;
-}
 .product-image-container .img {
   width: 45%;
 }
@@ -41,22 +19,6 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-}
-.skelton-product-title {
-  min-height: 10px;
-  background: var(--skelton-background);
-  background-repeat: var(--skelton-repeat);
-  background-size: var(--skelton-size);
-  background-position: var(--seklton-position);
-  animation: skelton 3s infinite;
-}
-.skelton-prise {
-  max-height: 10px;
-  background: var(--skelton-background);
-  background-repeat: var(--skelton-repeat);
-  background-size: var(--skelton-size);
-  background-position: var(--seklton-position);
-  animation: skelton 3s infinite;
 }
 .card-body {
   padding: 10px !important;
@@ -77,17 +39,6 @@
   align-items: center;
   justify-content: space-between;
   padding-top: 20px;
-}
-.skelton-btn {
-  width: 70%;
-  height: 30px;
-  background: var(--skelton-background);
-  background-repeat: var(--skelton-repeat);
-  background-size: var(--skelton-size);
-  background-position: var(--seklton-position);
-  animation: skelton 3s infinite;
-  color: transparent;
-  border-radius: 0;
 }
 .instock {
   font-size: 10px;
@@ -111,7 +62,7 @@
   background-color: rgb(162, 204, 253);
   color: white;
 }
-.lazy-load-image-background{
+.lazy-load-image-background {
   display: flex !important;
   justify-content: center;
 }
@@ -153,9 +104,6 @@
     height: 35px;
     margin-top: 5px;
   }
-  .instock{
-    display: none;
-  }
 }
 
 @media (max-width: 350px) {
@@ -167,18 +115,5 @@
   }
   .product-image-container .img {
     width: 40%;
-  }
-}
-
-/* ---------------sekelton animation------- */
-@keyframes skelton {
-  0% {
-    background-position: 0% 0, 0 0;
-  }
-  50% {
-    background-position: 100% 0, 0 0;
-  }
-  100% {
-    background-position: 0% 0, 0 0;
   }
 }

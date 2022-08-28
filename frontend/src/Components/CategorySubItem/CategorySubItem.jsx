@@ -57,7 +57,7 @@ function CategorySubItem() {
             className="category-list-item"
             key={key}
           >
-            <img width="28px" src={itm.image} alt="" />
+            <img width="28px" src={itm.image} alt="" loading="lazy" />
             <p>{itm.title}</p>
           </div>
         );

@@ -11,11 +11,9 @@
   position: relative;
   margin: 40px 0;
 }
-.input-area input[type="text"],
-input[type="email"],
-input[type="password"] {
+.input-area .update-profile-input {
   width: 100%;
-  height: 45px;
+  height: 50px;
   border-radius: 5px;
   border: 1px solid rgb(220, 220, 220);
   padding-left: 10px;
@@ -23,9 +21,9 @@ input[type="password"] {
 }
 .input-area label {
   position: absolute;
-  top: -12px;
+  top: -11px;
   left: 10px;
-  font-size: 14px;
+  font-size: 13px;
   background-color: rgb(246, 246, 246);
   padding: 0px 5px;
   color: grey;
@@ -39,9 +37,7 @@ input[type="password"] {
   align-items: flex-start;
 }
 
-.email-and-pass-area .input-area input[type="text"],
-input[type="email"],
-input[type="password"] {
+.email-and-pass-area .input-area .update-profile-input {
   width: 95%;
 }
 
@@ -61,7 +57,7 @@ input[type="password"] {
   margin-right: 5px;
 }
 
-.update-account-form button{
+.update-account-form button {
   width: 98%;
   height: 45px;
   border-radius: 5px;
@@ -72,18 +68,18 @@ input[type="password"] {
   margin-bottom: 20px;
 }
 
-@media (max-width : 350px) {
-  .input-area input[type="text"],input[type="email"]{
+@media (max-width: 350px) {
+  .input-area .update-profile-input {
     font-size: 11px;
   }
-  .input-area label{
+  .input-area label {
     font-size: 11px;
     top: -9px;
   }
 }
 
-@media (max-width : 300px) {
-  .email-and-pass-area{
+@media (max-width: 300px) {
+  .email-and-pass-area {
     display: block;
   }
 }

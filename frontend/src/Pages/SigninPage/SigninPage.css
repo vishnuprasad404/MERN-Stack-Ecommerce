@@ -5,6 +5,7 @@
   align-items: center;
   justify-content: center;
   background: rgb(240, 238, 238);
+  position: relative;
 }
 
 .signin-page-container {
@@ -17,6 +18,7 @@
   background-color: white;
   border-radius: 10px;
   padding: 0;
+  z-index: 10;
 }
 .signin-page-container h1 {
   font-size: 2.2rem;
@@ -26,7 +28,7 @@
   text-align: center;
 
 }
-.signin-page-container .signin-input {
+.signin-page-container #signin-input {
   width: 100%;
   border: none;
   border-bottom: 1px solid rgb(221, 213, 213);
@@ -58,22 +60,40 @@
   font-weight: 100;
 }
 .forget-pass-link{
-  font-size: 11px;
-  align-self: auto;
+  font-size: 12px;
+}
+.wave{
+  position: absolute;
+  top: 0;
+  overflow: hidden;
+}
+.wave-svg{
+  height: 600px;
+  fill: rgb(31, 64, 124);
 }
 
 @media (max-width: 500px) {
+  .wave {
+    max-width: 100%;
+  }
+  .signin-page {
+    background: rgb(255, 255, 255);
+  }
+  
   .signin-page-container {
-    width: 90%;
-    height: 450px;
+    all: unset;
+    width: 100%;
+    align-items: flex-start;
+    padding: 30px;
+    z-index: 111;
+    background: none;
+    display: block;
   }
-}
-
-@media (max-width: 400px) {
-  .signin-page-container .signin-input {
-    width: 90%;
+  .signin-page-container #signin-input {
+    background-color: #ffffff80;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid rgb(238, 238, 238);
   }
-  .signin-page-container .form-btn {
-    width: 90%;
-  }
+  
 }
