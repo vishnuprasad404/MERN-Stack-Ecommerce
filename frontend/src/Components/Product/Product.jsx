@@ -28,7 +28,7 @@ function Product({
   showInstock,
 }) {
   const { state, dispatch } = useStore();
-  const { user } = state;
+  const { user,address } = state;
   const [notify, setNotify] = useState({ display: "none" });
   const nav = useNavigate();
   const [loading1, setLoading1] = useState(new Set());
@@ -54,7 +54,12 @@ function Product({
           updated.delete(selectedIndex);
           return updated;
         });
-        nav(`/checkout/${res.OrderId}`);
+        if(!address){
+          nav(`/delivery-address?redirect=/checkout/${res.OrderId}`)
+        }else{
+          nav(`/checkout/${res.OrderId}`);
+        }
+        
       });
     } else {
       nav("/signin");
@@ -203,10 +208,9 @@ function Product({
               </button>
               {inStock >= 1 ? (
                 <>
-                  <div className="fav-icon">
+                  <div className="fav-icon" style={favIconStyle}>
                     {!addToFavoriteLoading.has(Mapkey) ? (
                       <FontAwesomeIcon
-                        style={favIconStyle}
                         icon={faHeart}
                         className="fav-icon"
                         onClick={() => addToFavorites(Mapkey)}
@@ -215,10 +219,9 @@ function Product({
                       <SmallLoading />
                     )}
                   </div>
-                  <div className="cart-icon">
+                  <div className="cart-icon" style={cartIconStyle}>
                     {!cartLoading.has(Mapkey) ? (
                       <FontAwesomeIcon
-                        style={cartIconStyle}
                         icon={faCartPlus}
                         onClick={() => {
                           addToCart(Mapkey);

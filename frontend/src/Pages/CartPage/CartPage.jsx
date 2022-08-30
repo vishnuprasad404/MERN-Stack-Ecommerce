@@ -162,7 +162,7 @@ function CartPage() {
                     className="cart-item-image"
                     onClick={() => nav(`/product/${itm.product._id}`)}
                   >
-                    <img width="99%" src={itm.product.image1} alt="" />
+                    <img width="99%" src={itm.product.thumbnail} alt="" />
                   </div>
                   <div className="cart-item-details">
                     <h4>

@@ -125,7 +125,7 @@ function ViewProductPage() {
             <div className="view-product-image-container">
               <img
                 width="80%"
-                src={productImage ? productImage : product.image1}
+                src={productImage ? productImage : product.images[0]}
                 alt=""
               />
               <div className="view-product-favorite-icon">
@@ -137,33 +137,20 @@ function ViewProductPage() {
               </div>
             </div>
             <div className="sub-image-container-wrapper">
-              <div className="sub-image-container">
-                <div
-                  className="sub-image"
-                  onClick={() => setProductImage(product.image2)}
-                  onMouseEnter={() => setProductImage(product.image2)}
-                >
-                  <img width="90%" src={product.image2} alt="" />
-                </div>
-              </div>{" "}
-              <div className="sub-image-container">
-                <div
-                  className="sub-image"
-                  onClick={() => setProductImage(product.image3)}
-                  onMouseEnter={() => setProductImage(product.image3)}
-                >
-                  <img width="90%" src={product.image3} alt="" />
-                </div>
-              </div>{" "}
-              <div className="sub-image-container">
-                <div
-                  className="sub-image"
-                  onClick={() => setProductImage(product.image4)}
-                  onMouseEnter={() => setProductImage(product.image4)}
-                >
-                  <img width="90%" src={product.image4} alt="" />
-                </div>
-              </div>
+              {product &&
+                product.images.map((item, key) => {
+                  return (
+                    <div className="sub-image-container">
+                      <div
+                        className="sub-image"
+                        onClick={() => setProductImage(item)}
+                        onMouseEnter={() => setProductImage(item)}
+                      >
+                        <img width="90%" src={item} alt="" />
+                      </div>
+                    </div>
+                  );
+                })}
             </div>
             <div className="view-product-btns">
               <button

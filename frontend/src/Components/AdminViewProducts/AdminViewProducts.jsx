@@ -16,8 +16,6 @@ function AdminViewProducts() {
   const [loading, setLoading] = useState(new Set());
   const [searchQuery, setSearchQuery] = useState("");
 
-
-
   const removeProduct = (id, selectedIndex) => {
     setLoading((prev) => new Set([...prev, selectedIndex]));
     execute(`/admin/remove-product/${id}`, {}, (result) => {
@@ -71,7 +69,7 @@ function AdminViewProducts() {
             <td data-label="Id">{key + 1}</td>
             <td data-label="Product">
               {" "}
-              <img width="40px" src={itm.image1} alt="" />
+              <img width="40px" src={itm.thumbnail} alt="" />
             </td>
             <td data-label="Title" className="admin-product-title">
               {itm.title}

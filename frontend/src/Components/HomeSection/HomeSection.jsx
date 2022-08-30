@@ -80,13 +80,14 @@ function HomeSection() {
                 })
                 .slice(0, 6)
                 .map((itm, key) => {
+                  console.log(itm);
                   return (
                     <Fragment key={key}>
                       <Product
                         key={key}
                         pid={itm._id}
                         title={itm.title}
-                        image={itm.image1}
+                        image={itm.thumbnail}
                         disPrise={itm.discountPrise}
                         cutPrise={itm.orginalPrise}
                         inStock={itm.inStock}

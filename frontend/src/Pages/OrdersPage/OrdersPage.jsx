@@ -70,7 +70,7 @@ function OrdersPage() {
                         >
                           <section className="orders-item-details">
                             <div className="orders-item-image">
-                              <img src={itm.product.image1} alt="" />
+                              <img src={itm.product.thumbnail} alt="" />
                             </div>
                             <div className="orders-item-title-and-prise">
                               <h6

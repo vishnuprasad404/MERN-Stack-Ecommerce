@@ -36,11 +36,11 @@ function DeliveryAddressForm() {
         }
       });
     } else {
-      updateAddress(
-        "/update/deliveryAddress",
-        { data: data },
-        (res, error) => {}
-      );
+      updateAddress("/update/deliveryAddress", { data: data }, (res, error) => {
+        if (redirect) {
+          nav(redirect);
+        }
+      });
     }
   };
 

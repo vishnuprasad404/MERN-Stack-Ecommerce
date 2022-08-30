@@ -109,7 +109,7 @@ function FavoritesPage() {
                         className="card-img-top"
                         onClick={() => nav(`/product/${itm.item}`)}
                       >
-                        <img width="40%" src={itm.product.image1} alt="" />
+                        <img width="40%" src={itm.product.thumbnail} alt="" />
                       </div>
                       <div className="card-body">
                         <Rating

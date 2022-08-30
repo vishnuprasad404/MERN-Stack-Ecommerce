@@ -1,15 +1,15 @@
 import React, { useState } from "react";
 import "./AdminManageProduct.css";
-import AdminSelectImage from "./AdminSelectImage/AdminSelectImage";
 import { useForm } from "react-hook-form";
 import { useParams, useSearchParams } from "react-router-dom";
-import { useEffect } from "react";
 import { Loading } from "../Loading/Loading";
-import { useFetch } from "../../Hooks/useFetch";
 import { usePost } from "../../Hooks/usePost";
 import { useUpdate } from "../../Hooks/useUpdate";
+import DragAndDrop from "../DragAndDrop/DragAndDrop";
+import Notification from "../Notification/Notification";
 
 function AdminManageProduct() {
+  const [files, setFiles] = useState([]);
   const { action } = useParams();
   const [searchParams] = useSearchParams();
   let id = searchParams.get("id");
@@ -18,149 +18,59 @@ function AdminManageProduct() {
     formState: { errors },
     handleSubmit,
   } = useForm();
-  const [updateProduct, setUpdateProduct] = useState({
-    title: "",
-    orginalPrise: "",
-    discountPrise: "",
-    inStock: "",
-    description: "",
-    category: "",
-  });
-  const [image, setImage] = useState();
-  const [image1, setImage1] = useState();
-  const [image2, setImage2] = useState();
-  const [image3, setImage3] = useState();
-  const [imageError, setimageError] = useState("none");
-  const [updateImagePreview, setUpdateImagePreview] = useState({
-    img1: "",
-    img2: "",
-    img3: "",
-    img4: "",
-  });
-  const [updateImage, setUpdateImage] = useState(false);
-  const { data } = useFetch("/products");
-  const { loading: addProductLoading, execute } = usePost("/admin/addproduct");
+  const { loading: addProductLoading, execute: executeAddProduct } =
+    usePost("/admin/addproduct");
   const { loading: updateProductLoading, execute: executeUpdate } = useUpdate();
-
-  useEffect(() => {
-    if (action === "update") {
-      if (data.length > 0) {
-        let product = data.filter((item) => {
-          return item._id === id;
-        });
-        setUpdateProduct({
-          title: product[0].title,
-          orginalPrise: product[0].orginalPrise,
-          discountPrise: product[0].discountPrise,
-          inStock: product[0].inStock,
-          description: product[0].description,
-          category: product[0].category,
-        });
-        setUpdateImagePreview({
-          img1: product[0].image1,
-          img2: product[0].image2,
-          img3: product[0].image3,
-          img4: product[0].image4,
-        });
-      }
-    }
-  }, [action, id, data]);
+  const [notify, setNotify] = useState({ display: "none" });
 
   const manageProduct = (data) => {
-    const formData = new FormData();
-    formData.append("title", data.title ? data.title : updateProduct.title);
-    formData.append(
-      "orgPrise",
-      data.orgPrise ? data.orgPrise : updateProduct.orginalPrise
-    );
-    formData.append(
-      "disPrise",
-      data.disPrise ? data.disPrise : updateProduct.discountPrise
-    );
-    formData.append(
-      "description",
-      data.description ? data.description : updateProduct.description
-    );
-    formData.append(
-      "category",
-      data.category ? data.category : updateProduct.category
-    );
-    formData.append(
-      "inStock",
-      data.inStock ? data.inStock : updateProduct.inStock
-    );
-    formData.append("image1", image);
-    formData.append("image2", image1);
-    formData.append("image3", image2);
-    formData.append("image4", image3);
+    let formData = new FormData();
+
+    // let formData = new FormData();
+    formData.append("title", data.title);
+    formData.append("orgPrise", data.orgPrise);
+    formData.append("disPrise", data.disPrise);
+    formData.append("inStock", data.inStock);
+    formData.append("description", data.description);
+    formData.append("category", data.category);
+    // append array of image to form data//
+    for (let i = 0; i < files.length; i++) {
+      formData.append("images", files[i]);
+    }
+    //;
 
     if (action === "add") {
-      if (
-        image !== undefined &&
-        image1 !== undefined &&
-        image2 !== undefined &&
-        image3 !== undefined
-      ) {
-        execute({ data: formData }, (result, error) => {
-          if (result) {
-            alert("Item Added");
-          } else {
-            alert("item Cannot be added");
-          }
-        });
-      } else {
-        setimageError("block");
-      }
-    } else {
-      if (!updateImage) {
-        executeUpdate(
-          `/admin/update-product/${id}`,
-          {
-            data: {
-              title: data.title ? data.title : updateProduct.title,
-              discountPrise: data.disPrise
-                ? data.disPrise
-                : updateProduct.discountPrise,
-              orginalPrise: data.orgPrise
-                ? data.orgPrise
-                : updateProduct.orginalPrise,
-              inStock: data.inStock ? data.inStock : updateProduct.inStock,
-              description: data.description
-                ? data.description
-                : updateProduct.description,
-              category: data.category ? data.category : updateProduct.category,
-            },
-          },
-          (result, error) => {
-            if (result) {
-              alert("Item Updated");
-            } else {
-              alert("item Cannot be Updated");
-            }
-          }
-        );
-      } else {
-        if (
-          image !== undefined &&
-          image1 !== undefined &&
-          image2 !== undefined &&
-          image3 !== undefined
-        ) {
-          executeUpdate(
-            `/admin/update-product/${id}`,
-            { data: formData },
-            (result, error) => {
-              if (result) {
-                alert("Item Updated");
-              } else {
-                alert("item Cannot be Updated");
-              }
-            }
-          );
-        } else {
-          setimageError("block");
+      executeAddProduct({ data: formData }, (res) => {
+        if (res) {
+          setNotify({
+            display: "flex",
+            text: res.message,
+            type: res.status === "FAILED" ? "WARNING" : res.status,
+          });
+          setTimeout(() => {
+            setNotify({
+              display: "none",
+            });
+          }, 2000);
         }
-      }
+      });
+    } else {
+      executeUpdate(
+        `/admin/update-product/${id}`,
+        { data: formData },
+        (res) => {
+          setNotify({
+            display: "flex",
+            text: res.message,
+            type: res.status === "FAILED" ? "WARNING" : res.status,
+          });
+          setTimeout(() => {
+            setNotify({
+              display: "none",
+            });
+          }, 2000);
+        }
+      );
     }
   };
 
@@ -181,7 +91,6 @@ function AdminManageProduct() {
           <input
             type="text"
             placeholder="Product Title"
-            defaultValue={action === "update" ? updateProduct.title : ""}
             {...register("title", {
               required: action === "update" ? false : true,
             })}
@@ -192,7 +101,6 @@ function AdminManageProduct() {
           <input
             type="number"
             placeholder="Orginal Prise"
-            defaultValue={action === "update" ? updateProduct.orginalPrise : ""}
             {...register("orgPrise", {
               required: action === "update" ? false : true,
             })}
@@ -204,9 +112,6 @@ function AdminManageProduct() {
           <input
             type="number"
             placeholder="Discount Prise"
-            defaultValue={
-              action === "update" ? updateProduct.discountPrise : ""
-            }
             {...register("disPrise", {
               required: action === "update" ? false : true,
             })}
@@ -218,7 +123,6 @@ function AdminManageProduct() {
           <input
             type="number"
             placeholder="Product inStock"
-            defaultValue={action === "update" ? updateProduct.inStock : ""}
             {...register("inStock", {
               required: action === "update" ? false : true,
             })}
@@ -229,7 +133,6 @@ function AdminManageProduct() {
           <textarea
             rows="6"
             placeholder="Product Description"
-            defaultValue={action === "update" ? updateProduct.description : ""}
             {...register("description", {
               required: action === "update" ? false : true,
             })}
@@ -242,7 +145,6 @@ function AdminManageProduct() {
             {...register("category", {
               required: action === "update" ? false : true,
             })}
-            defaultValue={action === "update" ? updateProduct.category : ""}
           >
             <option value="">Category</option>
             <option value="mobiles">Mobiles</option>
@@ -270,35 +172,19 @@ function AdminManageProduct() {
         </form>
       </div>
       <div className="admin-add-product-image-container">
-        <AdminSelectImage
-          setImage={setImage}
-          setImage1={setImage1}
-          setImage2={setImage2}
-          setImage3={setImage3}
-          updateImg={updateImagePreview}
-        />
-        <p style={{ fontSize: "10px", color: "red", display: `${imageError}` }}>
-          *A product must contain three images
-        </p>
-        {action === "update" ? (
-          <label className="update-image">
-            {" "}
-            <input
-              type="checkbox"
-              onClick={() => {
-                setUpdateImage(updateImage === false ? true : false);
-                setUpdateImagePreview({
-                  img1: null,
-                  img2: null,
-                  img3: null,
-                  img4: null,
-                });
-              }}
-            />{" "}
-            Update images
-          </label>
-        ) : null}
+        <DragAndDrop files={files} setFiles={setFiles} />
       </div>
+      <Notification
+        status={notify}
+        style={{ width: "600px" }}
+        parentStyle={{
+          width: "80%",
+          height: "100px",
+          top: "20px",
+          alignItems: "flex-end",
+          justifyContent: "flex-end",
+        }}
+      />
     </div>
   );
 }

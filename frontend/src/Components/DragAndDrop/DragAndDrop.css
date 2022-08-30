@@ -1,0 +1,63 @@
+.dragndrop {
+  width: 600px;
+  height: 250px;
+  border: 1px dashed rgb(173, 168, 168);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgb(255, 255, 255);
+}
+.dragOverActive {
+  border: 1px dashed rgb(42, 98, 255);
+}
+
+.dragndrop .inner {
+  color: grey;
+  letter-spacing: 0.6px;
+}
+.dragndrop .browse {
+  color: black;
+}
+.dragndrop .file-input {
+  display: none;
+}
+.image-preview-container {
+  width: 600px;
+  max-height: 300px;
+  background-color: rgb(255, 255, 255);
+  padding: 10px 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-gap: 10px;
+}
+.image-preview {
+  width: 140px;
+  min-height: 120px;
+  max-height: 150px;
+  background-size: cover;
+  background-repeat: no-repeat;
+  position: relative;
+  padding: 10px;
+  border: 1px solid rgb(207, 207, 207);
+  background-position: center;
+  overflow: hidden;
+}
+.image-preview img {
+  width: 100%;
+  object-fit: cover;
+}
+.image-preview .remove-icon {
+  position: absolute;
+  top: 5px;
+  right: 10px;
+  color: grey;
+  display: none;
+  cursor: pointer;
+}
+.image-preview:hover > .remove-icon {
+  display: block;
+}
+.image-error{
+  color: red;
+}

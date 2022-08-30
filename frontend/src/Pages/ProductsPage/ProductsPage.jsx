@@ -95,7 +95,7 @@ function ProductsPage() {
             Mapkey={key}
             pid={itm._id}
             title={itm.title}
-            image={itm.image1}
+            image={itm.thumbnail}
             skelton={false}
             cutPrise={itm.orginalPrise}
             disPrise={itm.discountPrise}
@@ -110,6 +110,12 @@ function ProductsPage() {
               position: "absolute",
               top: "40px",
               right: "10px",
+              padding: "0",
+            }}
+            favIconStyle={{
+              position: "absolute",
+              top: "5px",
+              right: "0",
               padding: "0",
             }}
             showInstock

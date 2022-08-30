@@ -2,6 +2,23 @@ const express = require("express");
 const router = express.Router();
 const db = require("../database_config");
 const ObjectId = require("mongodb").ObjectId;
+const multer = require("multer");
+const sharp = require("sharp");
+
+// multer file upload config start //
+
+const storage = multer.diskStorage({
+  destination: (req, file, callback) => {
+    callback(null, "./public/uploads");
+  },
+  filename: (req, file, callback) => {
+    callback(null, Date.now() + file.originalname);
+  },
+});
+
+var uploads = multer({ storage: storage });
+
+// multer file upload config end //
 
 //get products start
 
@@ -18,13 +35,12 @@ router.get("/products", (req, res) => {
             description: "$description",
             category: "$category",
             inStock: "$inStock",
-            image1: "$image1",
-            image2: "$image2",
-            image3: "$image3",
-            image4: "$image4",
+            thumbnail: "$thumbnail",
+            images: "$images",
             reviews: "$reviews",
             total_reviews: { $sum: { $size: "$reviews.feedback" } },
             total_ratings: { $avg: "$reviews.rating" },
+            created_at : "$created_at"
           },
         },
       ])
@@ -41,53 +57,54 @@ router.get("/products", (req, res) => {
 
 //admin add product start
 
-router.post("/admin/addproduct", (req, res) => {
-  try {
-    let image1 = req.files.image1;
-    let image2 = req.files.image2;
-    let image3 = req.files.image3;
-    let image4 = req.files.image4;
-
-    if (req.body) {
-      if (image1) {
-        image1.mv("public/uploads/" + image1.md5 + ".png", (err) => {});
-      }
-      if (image2) {
-        image2.mv("public/uploads/" + image2.md5 + ".png", (err) => {});
-      }
-      if (image3) {
-        image3.mv("public/uploads/" + image3.md5 + ".png", (err) => {});
-      }
-      if (image4) {
-        image4.mv("public/uploads/" + image4.md5 + ".png", (err) => {});
-      }
-
-      db.get()
-        .collection(process.env.PRODUCTS_COLLECTION)
-        .insertOne({
-          title: req.body.title,
-          discountPrise: parseInt(req.body.disPrise),
-          orginalPrise: parseInt(req.body.orgPrise),
-          description: req.body.description,
-          category: req.body.category,
-          inStock: parseInt(req.body.inStock),
-          image1: process.env.BASE_URL + "/uploads/" + image1.md5 + ".png",
-          image2: process.env.BASE_URL + "/uploads/" + image2.md5 + ".png",
-          image3: process.env.BASE_URL + "/uploads/" + image3.md5 + ".png",
-          image4: process.env.BASE_URL + "/uploads/" + image4.md5 + ".png",
-          created_at: new Date(),
-          reviews: [],
-        })
-        .then((response) => {
-          if (response) {
-            res.send(true);
-          } else {
-            res.send(false);
-          }
+router.post("/admin/addproduct", uploads.array("images", 4), (req, res) => {
+  const files = req.files.length;
+  if (files > 1 && files < 4) {
+    // resize image //
+    const resizableFile = req.files[0].filename;
+    sharp(`public/uploads/${resizableFile}`)
+      .resize({ width: 300 })
+      .toFormat("jpeg")
+      .jpeg({ quality: 100, chromaSubsampling: "4:4:4" })
+      .toFile(`public/thumb/${resizableFile}`)
+      .then(() => {
+        // change images array to url//
+        const images = req.files.map((item) => {
+          return `${process.env.BASE_URL}/uploads/${item.filename}`;
         });
-    }
-  } catch (error) {
-    console.log(error);
+        //
+        db.get()
+          .collection(process.env.PRODUCTS_COLLECTION)
+          .insertOne({
+            title: req.body.title,
+            discountPrise: parseInt(req.body.disPrise),
+            orginalPrise: parseInt(req.body.orgPrise),
+            description: req.body.description,
+            category: req.body.category,
+            inStock: parseInt(req.body.inStock),
+            thumbnail: process.env.BASE_URL + "/thumb/" + req.files[0].filename,
+            images: images,
+            created_at: new Date(),
+            reviews: [],
+          })
+          .then(() => {
+            res.json({
+              message: "Product added succesfully",
+              status: "SUCCESS",
+            });
+          })
+          .catch(() => {
+            res.json({
+              message: "Network issue try again!",
+              status: "FAILED",
+            });
+          });
+      });
+  } else {
+    res.json({
+      message: "A product contain minimum and maximum four images",
+      status: "FAILED",
+    });
   }
 });
 
@@ -95,66 +112,75 @@ router.post("/admin/addproduct", (req, res) => {
 
 //admin update products start//
 
-router.put("/admin/update-product/:id", (req, res) => {
-  try {
-    if (req.files) {
-      let image1 = req.files.image1;
-      let image2 = req.files.image2;
-      let image3 = req.files.image3;
-      let image4 = req.files.image4;
-      if (image1) {
-        image1.mv("public/uploads/" + image1.md5 + ".png", (err) => {});
-      }
-      if (image2) {
-        image2.mv("public/uploads/" + image2.md5 + ".png", (err) => {});
-      }
-      if (image3) {
-        image3.mv("public/uploads/" + image3.md5 + ".png", (err) => {});
-      }
-      if (image4) {
-        image4.mv("public/uploads/" + image4.md5 + ".png", (err) => {});
-      }
+router.put(
+  "/admin/update-product/:id",
+  uploads.array("images", 4),
+  (req, res) => {
+    const { id } = req.params;
+    const { title, orgPrise, disPrise, inStock, description, category } =
+      req.body;
+    const files = req.files.length;
+    var thumbnailImage;
+    var images = [];
 
-      let updateObject = {
-        title: req.body.title,
-        discountPrise: parseInt(req.body.disPrise),
-        orginalPrise: parseInt(req.body.orgPrise),
-        description: req.body.description,
-        category: req.body.category,
-        inStock: parseInt(req.body.inStock),
-        image1: process.env.BASE_URL + "/uploads/" + image1.md5 + ".png",
-        image2: process.env.BASE_URL + "/uploads/" + image2.md5 + ".png",
-        image3: process.env.BASE_URL + "/uploads/" + image3.md5 + ".png",
-        image4: process.env.BASE_URL + "/uploads/" + image4.md5 + ".png",
-      };
-      db.get()
-        .collection(process.env.PRODUCTS_COLLECTION)
-        .updateOne(
-          { _id: ObjectId(req.params.id) },
-          {
-            $set: updateObject,
-          }
-        )
+    if (files > 0) {
+      // resize image //
+      const resizableFile = req.files[0].filename;
+      sharp(`public/uploads/${resizableFile}`)
+        .resize({ width: 300 })
+        .toFormat("jpeg")
+        .jpeg({ quality: 100, chromaSubsampling: "4:4:4" })
+        .toFile(`public/thumb/${resizableFile}`)
         .then(() => {
-          res.status(200).send(true);
+          // change images array to url//
+          images = req.files.map((item) => {
+            return `${process.env.BASE_URL}/uploads/${item.filename}`;
+          });
         });
-    } else {
-      db.get()
-        .collection(process.env.PRODUCTS_COLLECTION)
-        .updateOne(
-          { _id: ObjectId(req.params.id) },
-          {
-            $set: req.body,
-          }
-        )
-        .then(() => {
-          res.status(200).send(true);
-        });
+      thumbnailImage = process.env.BASE_URL + "/thumb/" + req.files[0].filename;
     }
-  } catch (error) {
-    console.log(error);
+    db.get()
+      .collection(process.env.PRODUCTS_COLLECTION)
+      .findOne({ _id: ObjectId(id) })
+      .then((product) => {
+        db.get()
+          .collection(process.env.PRODUCTS_COLLECTION)
+          .updateOne(
+            {
+              _id: ObjectId(id),
+            },
+            {
+              $set: {
+                title: title || product.title,
+                inStock: inStock || product.inStock,
+                orginalPrise: orgPrise || product.orginalPrise,
+                discountPrise: disPrise || product.discountPrise,
+                category: category || product.category,
+                description: description || product.description,
+                thumbnail: thumbnailImage || product.thumbnail,
+                images: [
+                  images[0] || product.images[0],
+                  images[1] || product.images[1],
+                  images[2] || product.images[2],
+                ],
+              },
+            }
+          )
+          .then((result) => {
+            if (!result) {
+              return res.json({
+                message: "Failed to update product!",
+                status: "FAILED",
+              });
+            }
+            res.json({
+              message: "Product Updated Successfully",
+              status: "SUCCESS",
+            });
+          });
+      });
   }
-});
+);
 
 //admin update products end//
 

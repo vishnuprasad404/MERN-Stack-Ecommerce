@@ -189,7 +189,7 @@ function OrderProductPage() {
                       <div className="order-item-image">
                         <img
                           width="100%"
-                          src={itm.product.image1}
+                          src={itm.product.thumbnail}
                           alt="product"
                         />
                       </div>

@@ -29,11 +29,6 @@ function OrdersItemDetailPage() {
   const nav = useNavigate();
 
   useEffect(() => {
-    window.scroll({
-      top: 0,
-      left: 0,
-      behavior: "smooth",
-    });
     const GetAllOrders = async () => {
       let res = await GetAllOrdersProvider();
       if (res) {
@@ -102,7 +97,7 @@ function OrdersItemDetailPage() {
                   <div className="purshased-item-image">
                     <img
                       width="100%"
-                      src={orderdItem[0].product.image1}
+                      src={orderdItem[0].product.thumbnail}
                       alt=""
                     />
                   </div>

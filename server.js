@@ -4,7 +4,7 @@ const PORT = process.env.PORT || 3001;
 require("dotenv").config();
 const path = require("path");
 const cors = require("cors");
-const fileUpload = require("express-fileupload");
+// const fileUpload = require("express-fileupload");
 const database = require("./database_config");
 //database connection
 database.connect();
@@ -30,7 +30,7 @@ app.use(
     credentials: true,
   })
 );
-app.use(fileUpload());
+// app.use(fileUpload());
 app.use(cookieParser());
 app.use(
   session({
