@@ -28,7 +28,7 @@ function Product({
   showInstock,
 }) {
   const { state, dispatch } = useStore();
-  const { user,address } = state;
+  const { user, address } = state;
   const [notify, setNotify] = useState({ display: "none" });
   const nav = useNavigate();
   const [loading1, setLoading1] = useState(new Set());
@@ -54,12 +54,11 @@ function Product({
           updated.delete(selectedIndex);
           return updated;
         });
-        if(!address){
-          nav(`/delivery-address?redirect=/checkout/${res.OrderId}`)
-        }else{
+        if (!address) {
+          nav(`/delivery-address?redirect=/checkout/${res.OrderId}`);
+        } else {
           nav(`/checkout/${res.OrderId}`);
         }
-        
       });
     } else {
       nav("/signin");
@@ -69,37 +68,29 @@ function Product({
   const addToCart = async (selectedIndex) => {
     if (user) {
       setCartLoading((prev) => new Set([...prev, Mapkey]));
-      addtoCart({ data: { pid, disPrise } }, (result, err) => {
-        if (result) {
+      addtoCart({ data: { pid, disPrise } }, (res, err) => {
+        if (res) {
+          console.log(res);
           setCartLoading((prev) => {
             let updated = new Set(prev);
-            updated.delete(selectedIndex);
+            updated.delete(selectedIndex); 
             return updated;
           });
-        }
-        if (result.itemAdded) {
-          dispatch({
-            type: "ADD_TO_CART",
-            payload: [{ pid, disPrise }],
-          });
           setNotify({
             display: "flex",
-            text: "Item added to cart",
-            type: "SUCCESS",
+            text: res.message,
+            type: res.status === "FAILED" ? "DANGER" : res.status,
           });
           setTimeout(() => {
             setNotify({ display: "none" });
           }, 2000);
-        }
-        if (result.inCart) {
-          setNotify({
-            display: "flex",
-            text: "Item already in cart",
-            type: "WARNING",
-          });
-          setTimeout(() => {
-            setNotify({ display: "none" });
-          }, 2000);
+
+          if (res.status === "SUCCESS") {
+            dispatch({
+              type: "ADD_TO_CART",
+              payload: [{ pid, disPrise }],
+            });
+          }
         }
       });
     } else {
@@ -112,35 +103,22 @@ function Product({
       setAddToFavoriteLoading((prev) => new Set([...prev, Mapkey]));
       addtoFav({ data: { pid } }, (res, err) => {
         if (res) {
+          console.log(res);
           setAddToFavoriteLoading((prev) => {
             let updated = new Set(prev);
             updated.delete(selectedIndex);
             return updated;
           });
-        }
-        if (res.itemAdded) {
           setNotify({
             display: "flex",
-            text: "Item added to your wishlist",
-            type: "SUCCESS",
-          });
-          setTimeout(() => {
-            setNotify({ display: "none" });
-          }, 2000);
-        }
-        if (res.itemExist) {
-          setNotify({
-            display: "flex",
-            text: "Item already in your wishlist",
-            type: "WARNING",
+            text: res.message,
+            type: res.status === "FAILED" ? "DANGER" : res.status,
           });
           setTimeout(() => {
             setNotify({ display: "none" });
           }, 2000);
         }
       });
-    } else {
-      nav("/signin");
     }
   };
 

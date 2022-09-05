@@ -40,7 +40,7 @@ router.get("/products", (req, res) => {
             reviews: "$reviews",
             total_reviews: { $sum: { $size: "$reviews.feedback" } },
             total_ratings: { $avg: "$reviews.rating" },
-            created_at : "$created_at"
+            created_at: "$created_at",
           },
         },
       ])

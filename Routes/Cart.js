@@ -4,60 +4,76 @@ const db = require("../database_config");
 const ObjectId = require("mongodb").ObjectId;
 
 router.post("/addtocart", async (req, res) => {
-  try {
-    let productObj = {
-      item: ObjectId(req.body.pid),
-      prise: parseInt(req.body.disPrise),
-      quantity: 1,
-    };
+  const { pid, disPrise } = req.body;
 
-    if (req.session.user) {
-      let userCart = await db
-        .get()
-        .collection(process.env.CART_COLLECTION)
-        .findOne({ user: ObjectId(req.session.user._id) });
+  const product = {
+    item: ObjectId(pid),
+    prise: parseInt(disPrise), 
+    quantity: 1,
+  };
 
-      if (userCart) {
-        let productExist = userCart.products.findIndex((product) => {
-          return product.item == req.body.pid;
-        });
-        if (productExist == -1) {
+  if (req.session.user) {
+    db.get()
+      .collection(process.env.CART_COLLECTION)
+      .findOne({ user: ObjectId(req.session.user._id) })
+      .then((result) => {
+        if (!result) {
           db.get()
             .collection(process.env.CART_COLLECTION)
-            .updateOne(
-              {
-                user: ObjectId(req.session.user._id),
-              },
-              {
-                $push: {
-                  products: productObj,
-                },
-              }
-            )
-            .then((result) => {
-              if (result) {
-                res.send({ itemAdded: true });
-              }
+            .insertOne({
+              user: ObjectId(req.session.user._id),
+              products: [product],
+            })
+            .then(() => {
+              res.json({
+                message: "Item added to your cart",
+                status: "SUCCESS",
+              });
+            })
+            .catch((err) => {
+              res.json({
+                message: error.message,
+                status: "FAILED",
+              });
             });
         } else {
-          res.send({ inCart: true });
-        }
-      } else {
-        db.get()
-          .collection(process.env.CART_COLLECTION)
-          .insertOne({
-            user: ObjectId(req.session.user._id),
-            products: [productObj],
-          })
-          .then((response) => {
-            if (response) {
-              res.send({ itemAdded: true });
-            }
+          const productExist = result.products.findIndex((product) => {
+            return product.item == pid;
           });
-      }
-    }
-  } catch (error) {
-    console.log(error);
+          if (productExist == -1) {
+            db.get()
+              .collection(process.env.CART_COLLECTION)
+              .updateOne(
+                {
+                  user: ObjectId(req.session.user._id),
+                },
+                {
+                  $push: {
+                    products: product,
+                  },
+                }
+              )
+              .then((isAdded) => {
+                if (isAdded) {
+                  res.json({
+                    message: "Item added to your cart",
+                    status: "SUCCESS",
+                  });
+                } else {
+                  res.json({
+                    message: "Network Issue",
+                    status: "FAILED",
+                  });
+                }
+              });
+          } else {
+            res.json({
+              message: "Item already in your cart!",
+              status: "WARNING",
+            });
+          }
+        }
+      });
   }
 });
 

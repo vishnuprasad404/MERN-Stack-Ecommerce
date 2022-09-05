@@ -30,7 +30,6 @@ function HomeSection() {
   };
   useEffect(() => {
     window.addEventListener("resize", handleResize);
-
     // remove splash screen after 1.5 second//
     setTimeout(() => {
       setSplashscreen(false);
@@ -80,7 +79,6 @@ function HomeSection() {
                 })
                 .slice(0, 6)
                 .map((itm, key) => {
-                  console.log(itm);
                   return (
                     <Fragment key={key}>
                       <Product

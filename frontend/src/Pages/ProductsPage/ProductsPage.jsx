@@ -20,8 +20,8 @@ function ProductsPage() {
   const [maxValue, setMaxValue] = useState(0);
   const [excludeStock, setExcludeStock] = useState(false);
   const [ratingQuery, setRatingQuery] = useState(0);
-  const MinRef = useRef();
-  const MaxRef = useRef();
+  const MinRef = useRef(0);
+  const MaxRef = useRef(0);
 
   useEffect(() => {
     axios.get(`${process.env.REACT_APP_BASE_URL}/products`).then((res) => {
@@ -123,6 +123,19 @@ function ProductsPage() {
         </Fragment>
       );
     });
+
+  // clear all filters //
+
+  const clearFilter = () => {
+    setSearchParams("all");
+    setRatingQuery(0);
+    setMinValue(MinRef.current);
+    setMaxValue(MaxRef.current);
+  };
+
+  // let m = MaxRef.current / 2
+  // console.log(typem);
+
   return (
     <div className="products-page" id="allproducts">
       <Navbar />
@@ -147,19 +160,19 @@ function ProductsPage() {
             <select onChange={(e) => setSearchParams({ item: e.target.value })}>
               <option value="all">All Products</option>
               <option value="mobiles">Mobiles</option>
-              <option value="electronics">Elactronics</option>
+              <option value="electronics">Electronics</option>
               <option value="appliences">Appliences</option>
               <option value="headphones">Headphones</option>
               <option value="watches">Watches</option>
-              <option value="desktops">Desktops</option>
+              <option value="desktops">Desktops & Accessory</option>
             </select>
             <p className="fiter-heading">Filter by Prise</p>
             <div className="prise-filter-range">
               <input
                 type="range"
                 className="prise-range"
-                min={toString(MinRef.current)}
-                max={toString(MaxRef.current / 2)}
+                min={MinRef.current}
+                max={MaxRef.current / 2}
                 value={minValue}
                 onChange={(e) => {
                   setMinValue(parseInt(e.target.value));
@@ -168,8 +181,8 @@ function ProductsPage() {
               <input
                 type="range"
                 className="prise-range"
-                min={toString(MaxRef.current / 2)}
-                max={toString(MaxRef.current)}
+                min={MaxRef}
+                max={MaxRef.current}
                 value={maxValue}
                 onChange={(e) => {
                   setMaxValue(parseInt(e.target.value));
@@ -181,8 +194,8 @@ function ProductsPage() {
                 type="number"
                 placeholder="Minimum"
                 value={minValue}
-                min={toString(MinRef.current)}
-                max={toString(MaxRef.current / 2)}
+                min={MinRef.current}
+                max={MaxRef.current / 2}
                 onChange={(e) => {
                   setMinValue(e.target.value);
                 }}
@@ -191,8 +204,8 @@ function ProductsPage() {
                 type="number"
                 placeholder="Maximum"
                 value={maxValue}
-                min={toString(MaxRef.current / 2)}
-                max={toString(MaxRef.current)}
+                min={MaxRef.current / 2}
+                max={MaxRef.current}
                 onChange={(e) => {
                   setMaxValue(e.target.value);
                 }}
@@ -265,6 +278,9 @@ function ProductsPage() {
               </span>
             </div>
           </div>
+          <button className="clear-filter" onClick={clearFilter}>
+            Clear Filter
+          </button>
         </div>
         {!loading ? (
           <div className="container-fluid p-2">

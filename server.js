@@ -6,9 +6,9 @@ const path = require("path");
 const cors = require("cors");
 // const fileUpload = require("express-fileupload");
 const database = require("./database_config");
-//database connection
-database.connect();
-//
+// //database connection
+// database.connect();
+// //
 const cookieParser = require("cookie-parser");
 const session = require("express-session");
 const Admin = require("./Routes/Admin");
@@ -30,7 +30,6 @@ app.use(
     credentials: true,
   })
 );
-// app.use(fileUpload());
 app.use(cookieParser());
 app.use(
   session({
@@ -75,11 +74,21 @@ app.get("/api/user", (req, res) => {
 
 //serve react app page //
 
-app.use(express.static(path.join(__dirname, "./frontend/build")));
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "./frontend/build", "index.html"));
-});
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(path.join(__dirname, "./frontend/build")));
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "./frontend/build", "index.html"));
+  });
+} else {
+  app.get("*", (req, res) => {
+    res.send("Sorry for the inconvenience Website Under construction!!");
+  });
+}
 
 //serve react app page //
 
-app.listen(PORT);
+database.connect(() => {
+  app.listen(PORT, () => {
+    console.log("Server started");
+  });
+});

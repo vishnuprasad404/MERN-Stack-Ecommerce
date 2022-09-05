@@ -9,6 +9,8 @@
   height: fit-content;
   background-color: rgba(240, 241, 243, 0.24);
   padding: 10px;
+  position: sticky;
+  top: 90px;
 }
 .filter-container h5 {
   letter-spacing: 1px;
@@ -118,7 +120,15 @@
   background-color: rgb(231, 231, 231);
   margin-top: 20px;
 }
-
+.clear-filter {
+  margin: 10px;
+  width: 140px;
+  height: 30px;
+  background: #161515;
+  color: white;
+  font-size: 12px;
+  letter-spacing: 1px;
+}
 .products-list-container {
   width: 84%;
   padding: 10px;
@@ -164,14 +174,13 @@
   align-items: center;
   justify-content: center;
 }
-.no-product-text{
+.no-product-text {
   font-size: 20px;
   color: rgb(88, 86, 86);
 }
-@media (max-width : 1400px) {
+@media (max-width: 1400px) {
   .no-product-container {
     width: 100%;
-
   }
 }
 

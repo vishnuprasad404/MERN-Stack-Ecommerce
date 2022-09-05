@@ -4,56 +4,57 @@ const db = require("../database_config");
 const ObjectId = require("mongodb").ObjectId;
 
 router.post("/addtofavorites", async (req, res) => {
-  try {
-    if (req.session.user) {
-      let proObj = {
-        item: ObjectId(req.body.pid),
-      };
-      let favExist = await db
-        .get()
-        .collection(process.env.FAVORITES_COLLECTION)
-        .findOne({
-          user: ObjectId(req.session.user._id),
-        });
-
-      if (favExist) {
-        let productExist = favExist.products.findIndex((product) => {
-          return product.item == req.body.item;
-        });
-
-        if (productExist === -1) {
+  const { pid } = req.body;
+  if (req.session.user) {
+    db.get()
+      .collection(process.env.FAVORITES_COLLECTION)
+      .findOne({ user: ObjectId(req.session.user._id) })
+      .then((result) => {
+        if (!result) {
           db.get()
             .collection(process.env.FAVORITES_COLLECTION)
-            .updateOne(
-              {
-                user: ObjectId(req.session.user._id),
-              },
-              {
-                $push: { products: proObj },
-              }
-            )
-            .then((result) => {
-              res.send({ itemAdded: true });
+            .insertOne({
+              user: ObjectId(req.session.user._id),
+              products: [{ item: ObjectId(pid) }],
             });
         } else {
-          res.send({ itemExist: true });
-        }
-      } else {
-        db.get()
-          .collection(process.env.FAVORITES_COLLECTION)
-          .insertOne({
-            user: ObjectId(req.session.user._id),
-            products: [proObj],
-          })
-          .then((result) => {
-            if (result) {
-              res.send({ itemAdded: true });
-            }
+          const favExist = result.products.findIndex((product) => {
+            return product.item == pid;
           });
-      }
-    }
-  } catch (error) {
-    console.log(error);
+          if (favExist === -1) {
+            db.get()
+              .collection(process.env.FAVORITES_COLLECTION)
+              .updateOne(
+                {
+                  user: ObjectId(req.session.user._id),
+                },
+                {
+                  $push: { products: { item: ObjectId(pid) } },
+                }
+              )
+              .then(() => {
+                res.json({
+                  message: "Item added to your wishlist",
+                  status: "SUCCESS",
+                });
+              })
+              .catch(() => {
+                res.json({
+                  message: "Network error!",
+                  status: "FAILED",
+                });
+              });
+          } else {
+            res.json({
+              message: "Item already in your wishlist!",
+              status: "WARNING",
+            });
+          }
+        }
+      })
+      .catch((err) => {
+        res.send(err);
+      });
   }
 });
 
@@ -84,8 +85,8 @@ router.get("/getfavorites", async (req, res) => {
             },
           },
           {
-            $unwind: "$product"
-          }
+            $unwind: "$product",
+          },
         ])
         .toArray();
 

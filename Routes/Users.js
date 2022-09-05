@@ -6,7 +6,7 @@ const { ObjectId } = require("mongodb");
 const { v4: uuidv4 } = require("uuid");
 const nodemailer = require("nodemailer");
 
-// email verification //
+// email verification // 
 
 let transporter = nodemailer.createTransport({
   service: "gmail",
