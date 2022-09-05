@@ -23,6 +23,11 @@
 }
 .password-reset-request-form-container input {
   width: 100%;
+  height: 40px;
+  outline: none;
+  border: 1px solid lightgrey;
+  padding: 10px;
+  border-radius: 4px;
 }
 .password-reset-request-form-container button {
   width: 100%;
