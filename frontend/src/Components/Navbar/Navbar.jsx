@@ -13,6 +13,7 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { useStore } from "../../Hooks/useStore";
 import { useFetch } from "../../Hooks/useFetch";
+import icon from '../../Assets/icon.png'
 
 function Navbar() {
   const { state, dispatch } = useStore();
@@ -49,7 +50,8 @@ function Navbar() {
             icon={!drawer ? faBars : faXmark}
             className="navbar-bar"
           />
-          ECART
+          <img src={icon} width="30px" alt="" style={{marginRight : '10px'}}/>
+           ECART
         </div>
         <div className={drawer ? "toggler" : "nav-links"}>
           <Link className="nav-link nl-1" to="/">
