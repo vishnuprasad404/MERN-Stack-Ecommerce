@@ -133,9 +133,6 @@ function ProductsPage() {
     setMaxValue(MaxRef.current);
   };
 
-  // let m = MaxRef.current / 2
-  // console.log(typem);
-
   return (
     <div className="products-page" id="allproducts">
       <Navbar />
@@ -277,10 +274,18 @@ function ProductsPage() {
                 & above{" "}
               </span>
             </div>
+            <div className="toggler-btns">
+              <button className="clear-filter" onClick={clearFilter}>
+                Clear Filter
+              </button>
+              <button
+                className="apply-filter-toggler-btn"
+                onClick={() => setFilterToggler(filterToggler ? false : true)}
+              >
+                {filterToggler ? "Apply" : "Filter"}
+              </button>
+            </div>
           </div>
-          <button className="clear-filter" onClick={clearFilter}>
-            Clear Filter
-          </button>
         </div>
         {!loading ? (
           <div className="container-fluid p-2">
@@ -289,7 +294,11 @@ function ProductsPage() {
                 DispalyProducts
               ) : (
                 <div className="no-product-container">
-                  <img width="250px" src={noProductImg} alt="" />
+                  <img
+                    width="250px"
+                    src={noProductImg}
+                    alt="No Products Found!"
+                  />
                   <h1 className="no-product-text">No Products Avalible!</h1>
                 </div>
               )}

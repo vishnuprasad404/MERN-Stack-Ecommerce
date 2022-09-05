@@ -1,8 +1,8 @@
 .products-page-container-wrapper {
   width: 100%;
-  min-height: 100vh;
+  max-height: 90vh;
   display: flex;
-  padding-top: 10px;
+  overflow: auto;
 }
 .filter-container {
   width: 300px;
@@ -10,7 +10,7 @@
   background-color: rgba(240, 241, 243, 0.24);
   padding: 10px;
   position: sticky;
-  top: 90px;
+  top: 0px;
 }
 .filter-container h5 {
   letter-spacing: 1px;
@@ -22,13 +22,22 @@
   width: 100%;
   display: none;
 }
-.filter-toggle-btns button {
+.filter-toggle-btns button,
+.apply-filter-toggler-btn {
   width: 50%;
   height: 50px;
   border-radius: none;
   border: 1px solid rgb(255, 255, 255);
   margin: 0 0px;
   background-color: rgb(236, 248, 255);
+}
+.apply-filter-toggler-btn {
+  display: none;
+  width: 50%;
+  height: 31.2px;
+  background-color: rgb(161, 219, 253);
+  font-size: 13px;
+  letter-spacing: 1px;
 }
 
 .fiter-heading {
@@ -189,7 +198,13 @@
     width: 100%;
     height: 50px;
     padding: 0;
+    position: static;
+    position: sticky;
+    z-index: 111;
+    top: 0px;
+    background: white;
   }
+
   .filter-container h5 {
     display: none;
   }
@@ -202,10 +217,18 @@
     width: 100%;
     padding: 20px;
     background-color: rgb(255, 255, 255);
-    position: absolute;
+    position: fixed;
+    top: 0px;
     box-shadow: 10px 10px 5px 5px rgb(172, 168, 168);
     opacity: 1;
     z-index: 1;
+  }
+  .toggler-btns {
+    display: flex;
+    align-items: center;
+  }
+  .filter-toggler-open .apply-filter-toggler-btn {
+    display: block;
   }
   .filter-toggler-close {
     opacity: 0;
