@@ -135,7 +135,7 @@ function ProductsPage() {
 
   return (
     <div className="products-page" id="allproducts">
-      <Navbar />
+      <Navbar searchTerm={searchTerm} />
       <CategorySubItem />
       <div className="products-page-container-wrapper">
         <div className="filter-container">
