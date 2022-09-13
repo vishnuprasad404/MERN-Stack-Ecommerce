@@ -14,11 +14,9 @@ import { useFetch } from "../../Hooks/useFetch";
 import { useState } from "react";
 import Navbar from ".././Navbar/Navbar";
 import Footer from ".././Footer/Footer";
-import SplashScreen from "../../Pages/SplashScreen/SplashScreen";
 
 function HomeSection() {
   const { data: products, loading } = useFetch("/products");
-  const [splashscreen, setSplashscreen] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
 
   const handleResize = () => {
@@ -30,10 +28,6 @@ function HomeSection() {
   };
   useEffect(() => {
     window.addEventListener("resize", handleResize);
-    // remove splash screen after 1.5 second//
-    setTimeout(() => {
-      setSplashscreen(false);
-    }, 1500);
   }, [loading]);
 
   //shuffle products array start //
@@ -51,9 +45,6 @@ function HomeSection() {
 
   return (
     <Fragment>
-      {splashscreen ? (
-        <SplashScreen />
-      ) : (
         <div className="home-section">
           <Navbar />
           <CategorySubItem />
@@ -125,7 +116,6 @@ function HomeSection() {
           </section>
           <Footer />
         </div>
-      )}
     </Fragment>
   );
 }

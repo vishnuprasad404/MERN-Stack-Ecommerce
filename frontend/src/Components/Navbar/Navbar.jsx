@@ -1,4 +1,4 @@
-import React, { useState} from "react";
+import React, { useState } from "react";
 import "./Navbar.css";
 import { useNavigate, Link } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -15,7 +15,7 @@ import { useStore } from "../../Hooks/useStore";
 import { useFetch } from "../../Hooks/useFetch";
 import icon from "../../Assets/icon.png";
 
-function Navbar({searchTerm}) {
+function Navbar({ searchTerm }) {
   const { state, dispatch } = useStore();
   const { user, cart } = state;
   const nav = useNavigate();
@@ -42,7 +42,7 @@ function Navbar({searchTerm}) {
   return (
     <>
       <div className="navbar">
-        <div className="nav-title">
+        <div className="nav-title" onClick={() => nav("/")}>
           <FontAwesomeIcon
             onClick={openDrawer}
             icon={!drawer ? faBars : faXmark}
@@ -51,7 +51,10 @@ function Navbar({searchTerm}) {
           <img src={icon} width="30px" alt="" style={{ marginRight: "10px" }} />
           ECART
         </div>
-        <div className={drawer ? "toggler-container" : null} onClick={()=>setDrawer(false)}>
+        <div
+          className={drawer ? "toggler-container" : null}
+          onClick={() => setDrawer(false)}
+        >
           <div className={drawer ? "toggler" : "nav-links"}>
             <Link className="nav-link nl-1" to="/">
               Home
@@ -89,8 +92,8 @@ function Navbar({searchTerm}) {
               onChange={onSearch}
               type="text"
               placeholder="Search Products"
-              value={searchTerm}
-              autoFocus={searchTerm  ? true : false}
+              defaultValue={searchTerm}
+              autoFocus={searchTerm ? true : false}
             />
           </div>
           <Link to="/favorites">
